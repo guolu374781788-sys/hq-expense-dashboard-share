@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>费用看板</title>
+  <title>璐圭敤鐪嬫澘</title>
   <style>
 :root {
   --bg: #edf4fb;
@@ -953,21 +953,17 @@ tbody td {
   }
 }
 
-  </style>
+</style>
 </head>
 <body>
   <div id="app"></div>
   <script>
 const overview = {
-  actual: "8,520",
-  diff: "+840 涓囧厓",
-  mom: "+8.3%",
-  yoy: "+12.4%",
   summary:
     '鏈湡瀹為檯璐圭敤 8,520 涓囧厓锛岀幆姣?+8.3%锛屽悓姣?+12.4%锛岃緝棰勭畻瓒呮敮 5.1%銆傛暣浣撶湅锛屾湰鏈堣垂鐢ㄥ睘浜?<span class="pill pill-amber">灞€閮ㄥ紓甯?/span>锛屼富鍥犳槸 <span class="pill pill-sky">鐮斿彂璐圭敤涓€娆℃€у墠缃?/span> 鍜?<span class="pill pill-sky">鍖哄煙缁忚惀鎶曞叆澧炲姞</span>锛涘叾涓?<strong>鍖哄煙璐圭敤鏁堢巼闂浼樺厛绾ф洿楂?/strong>銆?,
 };
 
-const blocks = [
+const waterfallBlocks = [
   {
     id: "rd",
     name: "鐮斿彂璐圭敤",
@@ -977,11 +973,11 @@ const blocks = [
     momRate: "+10%",
     yoyRate: "+20%",
     budgetExecDiff: "+16%",
-    summary: "椤圭洰闆嗕腑楠屾敹瀵艰嚧璐圭敤鍓嶇疆纭銆?,
+    summary: "椤圭洰闆嗕腑楠屾敹瀵艰嚧璐圭敤鍓嶇疆纭锛屾槸鏈湀鏈€澶х殑鍗曢」宸紓鏉ユ簮銆?,
     items: [
-      ["澶栧寘寮€鍙戣垂", "520", "+165", "+31.2%", "+38.4%", "涓€娆℃€т簨椤?, "鏈懆闇€瑙ｉ噴", "閲嶇偣椤圭洰楠屾敹闆嗕腑鍦ㄦ湰鏈堢‘璁ゃ€?],
-      ["娴嬭瘯璁よ瘉璐?, "210", "+118", "+42.6%", "+49.0%", "鑺傚鍓嶇疆", "鎸佺画璺熻釜", "澶氭満鍨嬭璇佹帹杩涙彁鍓嶃€?],
-      ["浜哄伐鎴愭湰", "860", "+82", "+5.4%", "+11.9%", "鎸佺画鎬у闀?, "鍙帴鍙?, "鐮斿彂缂栧埗鎵╁厖鍚庣ǔ姝ユ姮鍗囥€?],
+      ["澶栧寘寮€鍙戣垂", "520 涓囧厓", "+165 涓囧厓", "+31.2%", "+38.4%", "涓€娆℃€т簨椤?, "鏈懆闇€瑙ｉ噴", "閲嶇偣椤圭洰楠屾敹闆嗕腑鍦ㄦ湰鏈堢‘璁ゃ€?],
+      ["娴嬭瘯璁よ瘉璐?, "210 涓囧厓", "+118 涓囧厓", "+42.6%", "+49.0%", "鑺傚鍓嶇疆", "鎸佺画璺熻釜", "澶氭満鍨嬭璇佹帹杩涙彁鍓嶃€?],
+      ["浜哄伐鎴愭湰", "860 涓囧厓", "+82 涓囧厓", "+5.4%", "+11.9%", "鎸佺画鎬у闀?, "鍙帴鍙?, "鐮斿彂缂栧埗鎵╁厖鍚庣ǔ姝ユ姮鍗囥€?],
     ],
   },
   {
@@ -993,11 +989,11 @@ const blocks = [
     momRate: "+6%",
     yoyRate: "+9%",
     budgetExecDiff: "+11%",
-    summary: "閮ㄥ垎鍖哄煙璐圭敤澧為暱蹇簬婊炲悗鏀跺叆鏀瑰杽銆?,
+    summary: "閮ㄥ垎鍖哄煙缁忚惀鍨嬭垂鐢ㄥ閫熷揩浜庢敹鍏ユ敼鍠勶紝闇€瑕佷粠鍖哄煙鏁堢巼瑙掑害閲嶇偣澶嶇洏銆?,
     items: [
-      ["甯傚満鎺ㄥ箍璐?, "190", "+86", "+24.3%", "+31.5%", "缁忚惀鎶曞叆", "閲嶇偣澶嶇洏", "鏂板搧鎺ㄥ箍鍜岀粓绔椿鍔ㄩ泦涓姇鏀俱€?],
-      ["娓犻亾婵€鍔辫垂", "145", "+58", "+18.7%", "+25.4%", "缁忚惀鎶曞叆", "鎸佺画璺熻釜", "杩斿埄鍓嶇疆甯﹀姩娓犻亾鎶曞叆澧炲姞銆?],
-      ["宸梾涓庢嫇灞曡垂", "88", "+27", "+11.2%", "+16.8%", "缁忚惀鎶曞叆", "鍙帴鍙?, "鍖哄煙鎷撳簵鍜屽鎴锋嫓璁垮鍔犮€?],
+      ["甯傚満鎺ㄥ箍璐?, "190 涓囧厓", "+86 涓囧厓", "+24.3%", "+31.5%", "缁忚惀鎶曞叆", "鏈懆闇€瑙ｉ噴", "鏂板搧鎺ㄥ箍涓庤矾婕旀椿鍔ㄩ泦涓姇鏀俱€?],
+      ["娓犻亾婵€鍔辫垂", "145 涓囧厓", "+58 涓囧厓", "+18.7%", "+25.4%", "缁忚惀鎶曞叆", "鎸佺画璺熻釜", "杩斿埄鍓嶇疆甯﹀姩娓犻亾鎶曞叆澧炲姞銆?],
+      ["宸梾涓庢嫇灞曡垂", "88 涓囧厓", "+27 涓囧厓", "+11.2%", "+16.8%", "缁忚惀鎶曞叆", "鍙帴鍙?, "鍖哄煙鎷撳簵鍜屽鎴锋嫓璁垮鍔犮€?],
     ],
   },
   {
@@ -1009,11 +1005,11 @@ const blocks = [
     momRate: "+5%",
     yoyRate: "-3%",
     budgetExecDiff: "+2%",
-    summary: "鍏变韩鏈嶅姟涓庡挩璇㈢被璐圭敤鎶崌銆?,
+    summary: "鎬婚儴绠＄悊涓庡叡浜湇鍔＄浉鍏宠垂鐢ㄥ皬骞呮姮鍗囷紝缁濆棰濅笉楂橈紝浣嗛渶瑕佺‘璁ゅ闀垮師鍥犮€?,
     items: [
-      ["鍜ㄨ鏈嶅姟璐?, "180", "+63", "+28.4%", "+41.3%", "涓撻」鎶曞叆", "鏈懆闇€瑙ｉ噴", "娴佺▼浼樺寲涓撻」鍚姩瀵艰嚧椤鹃棶璐瑰鍔犮€?],
-      ["鍏变韩鏈嶅姟璐?, "135", "+28", "+7.0%", "+10.5%", "鑺傚鍓嶇疆", "鎸佺画璺熻釜", "閮ㄥ垎鏈嶅姟鍚堝悓鎻愬墠缁撶畻銆?],
-      ["琛屾斂璐圭敤", "210", "+34", "+6.3%", "+8.1%", "姝ｅ父娉㈠姩", "鍙帴鍙?, "鍔炲叕涓庡樊鏃呮敮鍑哄皬骞呭闀裤€?],
+      ["鍜ㄨ鏈嶅姟璐?, "180 涓囧厓", "+63 涓囧厓", "+28.4%", "+41.3%", "涓撻」鎶曞叆", "鏈懆闇€瑙ｉ噴", "娴佺▼浼樺寲椤圭洰鍚姩瀵艰嚧椤鹃棶璐圭敤澧炲姞銆?],
+      ["鍏变韩鏈嶅姟璐?, "135 涓囧厓", "+28 涓囧厓", "+7.0%", "+10.5%", "鑺傚鍓嶇疆", "鎸佺画璺熻釜", "閮ㄥ垎鏈嶅姟鍚堝悓鎻愬墠缁撶畻銆?],
+      ["琛屾斂璐圭敤", "210 涓囧厓", "+34 涓囧厓", "+6.3%", "+8.1%", "姝ｅ父娉㈠姩", "鍙帴鍙?, "鍔炲叕涓庡樊鏃呮敮鍑哄皬骞呭闀裤€?],
     ],
   },
   {
@@ -1025,11 +1021,11 @@ const blocks = [
     momRate: "+2%",
     yoyRate: "+6%",
     budgetExecDiff: "+4%",
-    summary: "鍩硅涓庢敮鎸佺被璐圭敤娓╁拰澧為暱銆?,
+    summary: "鍩硅涓庢敮鎸佺被璐圭敤娓╁拰澧為暱锛屾暣浣撳彲鎺с€?,
     items: [
-      ["鍩硅璐?, "42", "+11", "+12.8%", "+16.2%", "姝ｅ父娉㈠姩", "鍙帴鍙?, "瀛ｅ害鍩硅璁″垝闆嗕腑钀藉湴銆?],
-      ["鍔炲叕淇濋殰璐?, "96", "+21", "+4.1%", "+5.7%", "姝ｅ父娉㈠姩", "鍙帴鍙?, "璁惧鍜岀郴缁熸姌鏃у甫鏉ユ尝鍔ㄣ€?],
-      ["琛屾斂娌荤悊椤圭洰", "68", "+18", "+7.8%", "+9.4%", "鑺傚姝ｅ父", "鎸佺画璺熻釜", "缁勭粐浼樺寲閰嶅椤圭洰鎺ㄨ繘銆?],
+      ["鍩硅璐?, "42 涓囧厓", "+11 涓囧厓", "+12.8%", "+16.2%", "姝ｅ父娉㈠姩", "鍙帴鍙?, "瀛ｅ害鍩硅璁″垝闆嗕腑钀藉湴銆?],
+      ["鍔炲叕淇濋殰璐?, "96 涓囧厓", "+21 涓囧厓", "+4.1%", "+5.7%", "姝ｅ父娉㈠姩", "鍙帴鍙?, "璁惧鍜岀郴缁熸姌鏃у甫鏉ユ尝鍔ㄣ€?],
+      ["琛屾斂娌荤悊椤圭洰", "68 涓囧厓", "+18 涓囧厓", "+7.8%", "+9.4%", "鑺傚姝ｅ父", "鎸佺画璺熻釜", "缁勭粐浼樺寲閰嶅椤圭洰鎺ㄨ繘銆?],
     ],
   },
   {
@@ -1041,66 +1037,102 @@ const blocks = [
     momRate: "+7%",
     yoyRate: "+11%",
     budgetExecDiff: "+8%",
-    summary: "璺ㄦ湡璋冩暣鍜岄噸鍒嗙被褰㈡垚瀵瑰啿銆?,
+    summary: "璺ㄦ湡璋冩暣鍜岄噸鍒嗙被褰㈡垚瀵瑰啿锛屽睘浜庝細璁＄‘璁ゅ眰闈㈢殑姝ｅ父鍥炴憜銆?,
     items: [
-      ["璺ㄦ湡璋冩暣", "-90", "-90", "-", "-", "缁撶畻璋冩暣", "鍙帴鍙?, "鍓嶆湡澶氳璐圭敤鍦ㄦ湰鏈堝洖鍐层€?],
-      ["璐圭敤閲嶅垎绫?, "-42", "-42", "-", "-", "鍙ｅ緞淇", "鍙帴鍙?, "閮ㄥ垎璐圭敤閲嶅垎绫昏嚦鍏朵粬椤圭洰銆?],
-      ["椤圭洰瀵瑰啿", "-28", "-28", "-", "-", "闃舵鍥炴憜", "鍙帴鍙?, "璁℃彁鍥炲啿褰卞搷鏈夐檺銆?],
+      ["璺ㄦ湡璋冩暣", "-90 涓囧厓", "-90 涓囧厓", "-", "-", "缁撶畻璋冩暣", "鍙帴鍙?, "鍓嶆湡澶氳璐圭敤鍦ㄦ湰鏈堝洖鍐层€?],
+      ["璐圭敤閲嶅垎绫?, "-42 涓囧厓", "-42 涓囧厓", "-", "-", "鍙ｅ緞淇", "鍙帴鍙?, "閮ㄥ垎璐圭敤閲嶅垎绫昏嚦鍏朵粬椤圭洰銆?],
+      ["椤圭洰瀵瑰啿", "-28 涓囧厓", "-28 涓囧厓", "-", "-", "闃舵鍥炴憜", "鍙帴鍙?, "璁℃彁鍥炲啿褰卞搷鏈夐檺銆?],
     ],
   },
 ];
 
-const focuses = [
+const focusCards = [
   ["01", "P1 鏈懆瑙ｉ噴", "閲嶇偣瑙ｉ噴閮ㄩ棬", "鐮斿彂涓績", "鐮斿彂璐圭敤杈冮绠楀鍔?420 涓囧厓锛屼富瑕佺敱澶栧寘寮€鍙戝拰娴嬭瘯璁よ瘉璐圭敤鍓嶇疆纭甯﹀姩锛岄渶瑕佽鏄庡悗缁槸鍚﹀洖钀姐€?],
   ["02", "P1 閲嶇偣澶嶇洏", "閲嶇偣澶嶇洏鍖哄煙", "涓滈潪", "鍖哄煙缁忚惀璐圭敤澧為暱 15%锛屼絾婊炲悗鏀跺叆涓嬮檷 4%锛屽缓璁笓椤瑰鐩樻姇鏀炬晥鐜囥€?],
-  ["03", "P3 鎸佺画璺熻釜", "閲嶇偣璺熻釜绉戠洰", "鍜ㄨ鏈嶅姟璐?, "鍜ㄨ鏈嶅姟璐硅繛缁袱鏈堥珮澧為暱锛岄渶鏍稿疄棰勭畻澶栦笓椤硅寖鍥翠笌鍚庣画鑺傚銆?],
+  ["03", "P3 鎸佺画璺熻釜", "閲嶇偣璺熻釜绉戠洰", "鍜ㄨ鏈嶅姟璐?, "鍜ㄨ鏈嶅姟璐硅繛缁袱鏈堥珮澧為暱锛岄渶鏍稿疄棰勭畻澶栦笓椤硅寖鍥淬€佸悎鍚屽懆鏈熶互鍙婂悗缁垂鐢ㄨ妭濂忋€?],
 ];
 
-const tree = [
+const regionTree = [
   {
     key: "tecno",
     level: "bu",
     name: "TECNO",
     status: "鎶曞叆寰呭鐩?,
-    r: "+6%",
-    s: "+11%",
-    d: "+5pct",
-    e: "0.55",
+    revenueRate: "+6%",
+    spendRate: "+11%",
+    deviation: "+5pct",
+    elasticity: "0.55",
     summary: "鏁翠綋鎶曞叆浠嶅湪澧為暱锛屼絾鍖哄煙鍥炴姤鍒嗗寲鏄庢樉銆?,
     spend: [3, 4, 6, 8, 9, 10],
     revenue: [1, 2, 3, 4, 5, 5],
     children: [
       {
-        key: "tecno-east",
+        key: "tecno-east-africa",
         level: "region",
         name: "涓滈潪",
         status: "閲嶇偣寮傚父",
-        r: "-4%",
-        s: "+15%",
-        d: "+19pct",
-        e: "-0.27",
-        summary: "缁忚惀鍨嬭垂鐢ㄦ槑鏄惧鍔狅紝浣嗘粸鍚庢敹鍏ヤ笅婊戙€?,
+        revenueRate: "-4%",
+        spendRate: "+15%",
+        deviation: "+19pct",
+        elasticity: "-0.27",
+        summary: "缁忚惀鍨嬭垂鐢ㄦ槑鏄惧鍔狅紝浣嗘粸鍚庢敹鍏ヤ笅婊戯紝鎶曞叆涓庨攢鍞粨鏋滆儗绂汇€?,
         spend: [4, 7, 9, 11, 13, 15],
         revenue: [6, 3, 1, -2, -3, -4],
         children: [
-          { key: "ke", level: "country", name: "鑲凹浜?, status: "閲嶇偣寮傚父", r: "-6%", s: "+18%", d: "+24pct", e: "-0.33", summary: "鎶曞叆澧炲姞浣嗘敹鍏ュ厬鐜板亸鎱€?, spend: [5, 7, 10, 12, 15, 18], revenue: [4, 2, 0, -2, -4, -6] },
-          { key: "tz", level: "country", name: "鍧︽灏间簹", status: "鎶曞叆寰呭鐩?, r: "+1%", s: "+8%", d: "+7pct", e: "0.13", summary: "鏀跺叆鏀瑰杽涓嶈冻锛屽缓璁鐩樻笭閬撴縺鍔便€?, spend: [1, 3, 4, 6, 7, 8], revenue: [0, 0, 1, 1, 1, 1] },
+          {
+            key: "kenya",
+            level: "country",
+            name: "鑲凹浜?,
+            status: "閲嶇偣寮傚父",
+            revenueRate: "-6%",
+            spendRate: "+18%",
+            deviation: "+24pct",
+            elasticity: "-0.33",
+            summary: "娓犻亾鎶曟斁澧炲姞鍚庨攢閲忔湭瑙佹敼鍠勶紝闇€瑕佷紭鍏堝鐩樸€?,
+            spend: [6, 9, 12, 15, 17, 18],
+            revenue: [5, 2, 1, -3, -4, -6],
+          },
+          {
+            key: "ethiopia",
+            level: "country",
+            name: "鍩冨淇勬瘮浜?,
+            status: "鎶曞叆寰呭鐩?,
+            revenueRate: "+2%",
+            spendRate: "+9%",
+            deviation: "+7pct",
+            elasticity: "0.22",
+            summary: "鎶曞叆寮哄害涓婂崌锛屼絾鍥炴姤閲婃斁鍋忔參銆?,
+            spend: [2, 3, 5, 6, 8, 9],
+            revenue: [0, 1, 1, 2, 2, 2],
+          },
         ],
       },
       {
-        key: "tecno-sea",
+        key: "tecno-west-africa",
         level: "region",
-        name: "涓滃崡浜?,
+        name: "瑗块潪",
         status: "鎶曞叆鏈夋晥",
-        r: "+10%",
-        s: "+12%",
-        d: "+2pct",
-        e: "0.83",
-        summary: "鎶曞叆澧為暱鍚庢敹鍏ュ悓姝ユ敼鍠勩€?,
-        spend: [2, 4, 6, 8, 10, 12],
-        revenue: [1, 3, 5, 7, 9, 10],
+        revenueRate: "+8%",
+        spendRate: "-6%",
+        deviation: "-14pct",
+        elasticity: "-1.33",
+        summary: "璐圭敤鏀剁缉鍚庢敹鍏ヤ粛淇濇寔澧為暱锛岃垂鐢ㄦ晥鐜囨敼鍠勩€?,
+        spend: [3, 1, -1, -2, -4, -6],
+        revenue: [2, 3, 5, 6, 7, 8],
         children: [
-          { key: "id", level: "country", name: "鍗板凹", status: "鎶曞叆鏈夋晥", r: "+12%", s: "+13%", d: "+1pct", e: "0.92", summary: "缁堢娲诲姩涓庢敹鍏ュ闀垮悓姝ャ€?, spend: [2, 4, 6, 8, 10, 13], revenue: [1, 3, 5, 7, 9, 12] },
+          {
+            key: "ghana",
+            level: "country",
+            name: "鍔犵撼",
+            status: "鎶曞叆鏈夋晥",
+            revenueRate: "+9%",
+            spendRate: "-5%",
+            deviation: "-14pct",
+            elasticity: "-1.80",
+            summary: "淇冮攢鏀剁缉鍚庝粛瀹炵幇鏀跺叆澧為暱锛屾姇鍏ユ晥鐜囦紭銆?,
+            spend: [1, 0, -1, -2, -3, -5],
+            revenue: [3, 4, 5, 7, 8, 9],
+          },
         ],
       },
     ],
@@ -1110,28 +1142,40 @@ const tree = [
     level: "bu",
     name: "Infinix",
     status: "鎶曞叆鏈夋晥",
-    r: "+9%",
-    s: "+3%",
-    d: "-6pct",
-    e: "3.00",
-    summary: "鎶曞叆澧為暱杈冩俯鍜岋紝浣嗛噸鐐瑰尯鍩熸敹鍏ユ敼鍠勬槑鏄俱€?,
-    spend: [1, 2, 3, 3, 4, 4],
-    revenue: [2, 3, 4, 5, 6, 7],
+    revenueRate: "+9%",
+    spendRate: "+3%",
+    deviation: "-6pct",
+    elasticity: "3.00",
+    summary: "鎶曞叆澧為暱杈冩俯鍜岋紝浣嗛噸鐐瑰尯鍩熸敹鍏ユ敼鍠勬槑鏄撅紝鏁翠綋鏁堢巼杈冧紭銆?,
+    spend: [1, 2, 2, 3, 3, 3],
+    revenue: [2, 3, 4, 5, 6, 6],
     children: [
       {
-        key: "infinix-me",
+        key: "infinix-sea",
         level: "region",
-        name: "涓笢",
+        name: "涓滃崡浜?,
         status: "鎶曞叆鏈夋晥",
-        r: "+12%",
-        s: "+2%",
-        d: "-10pct",
-        e: "6.00",
-        summary: "璐圭敤绋冲畾鎯呭喌涓嬫敹鍏ユ槑鏄惧闀裤€?,
-        spend: [0, 1, 1, 2, 2, 2],
-        revenue: [2, 4, 6, 8, 10, 12],
+        revenueRate: "+10%",
+        spendRate: "+12%",
+        deviation: "+2pct",
+        elasticity: "0.83",
+        summary: "缁忚惀鍨嬭垂鐢ㄥ鍔犲悗锛屾粸鍚庢敹鍏ュ悓姝ュ闀匡紝鏁翠綋鍩烘湰鍖归厤銆?,
+        spend: [2, 4, 6, 8, 10, 12],
+        revenue: [1, 3, 5, 7, 9, 10],
         children: [
-          { key: "sa", level: "country", name: "娌欑壒", status: "鎶曞叆鏈夋晥", r: "+11%", s: "+1%", d: "-10pct", e: "11.00", summary: "鍝佺墝鍔涘拰缁堢鏁堢巼鍚屾鏀瑰杽銆?, spend: [0, 0, 1, 1, 1, 1], revenue: [2, 3, 5, 7, 9, 11] },
+          {
+            key: "indonesia",
+            level: "country",
+            name: "鍗板凹",
+            status: "鎶曞叆鏈夋晥",
+            revenueRate: "+11%",
+            spendRate: "+10%",
+            deviation: "-1pct",
+            elasticity: "1.10",
+            summary: "鏂板搧鎶曟斁涓庢敹鍏ュ闀胯緝鍖归厤銆?,
+            spend: [2, 3, 4, 6, 8, 10],
+            revenue: [3, 4, 5, 7, 9, 11],
+          },
         ],
       },
     ],
@@ -1141,28 +1185,40 @@ const tree = [
     level: "bu",
     name: "itel",
     status: "鎶曞叆鏈夋晥",
-    r: "+7%",
-    s: "+5%",
-    d: "-2pct",
-    e: "1.40",
-    summary: "澶氫釜甯傚満璐圭敤鍙帶锛屾敹鍏ユ敼鍠勫钩绋炽€?,
-    spend: [1, 2, 2, 3, 4, 5],
+    revenueRate: "+7%",
+    spendRate: "+5%",
+    deviation: "-2pct",
+    elasticity: "1.40",
+    summary: "澶氫釜甯傚満璐圭敤鍙帶锛屾敹鍏ユ敼鍠勫钩绋筹紝鏁翠綋澶勪簬鍋ュ悍鐘舵€併€?,
+    spend: [1, 1, 2, 3, 4, 5],
     revenue: [1, 2, 3, 4, 5, 7],
     children: [
       {
-        key: "itel-africa",
+        key: "itel-middle-east",
         level: "region",
-        name: "闈炴床鍏朵粬鍖哄煙",
+        name: "涓笢",
         status: "鎶曞叆鏈夋晥",
-        r: "+8%",
-        s: "+5%",
-        d: "-3pct",
-        e: "1.60",
-        summary: "鎶曞叆澧為暱涓庢敹鍏ユ敼鍠勫熀鏈悓姝ャ€?,
-        spend: [1, 2, 2, 3, 4, 5],
-        revenue: [1, 2, 3, 4, 5, 8],
+        revenueRate: "+12%",
+        spendRate: "+2%",
+        deviation: "-10pct",
+        elasticity: "6.00",
+        summary: "璐圭敤鍩烘湰绋冲畾鐨勬儏鍐典笅鏀跺叆鏄庢樉澧為暱锛岃垂鐢ㄦ晥鐜囨彁鍗囥€?,
+        spend: [0, 1, 1, 2, 2, 2],
+        revenue: [2, 4, 6, 8, 10, 12],
         children: [
-          { key: "ug", level: "country", name: "涔屽共杈?, status: "鎶曞叆鏈夋晥", r: "+9%", s: "+4%", d: "-5pct", e: "2.25", summary: "缁堢杩愯惀鏁堢巼鎻愬崌銆?, spend: [1, 1, 2, 2, 3, 4], revenue: [1, 2, 3, 4, 6, 9] },
+          {
+            key: "saudi",
+            level: "country",
+            name: "娌欑壒",
+            status: "鎶曞叆鏈夋晥",
+            revenueRate: "+13%",
+            spendRate: "+1%",
+            deviation: "-12pct",
+            elasticity: "13.00",
+            summary: "鎶曟斁淇濇寔骞崇ǔ锛屾敹鍏ユ寔缁闀裤€?,
+            spend: [0, 0, 1, 1, 1, 1],
+            revenue: [3, 5, 7, 9, 11, 13],
+          },
         ],
       },
     ],
@@ -1172,165 +1228,358 @@ const tree = [
     level: "bu",
     name: "Philips",
     status: "鎶曞叆寰呭鐩?,
-    r: "-1%",
-    s: "+1%",
-    d: "+2pct",
-    e: "-1.00",
-    summary: "璐圭敤绋冲畾浣嗘敹鍏ョ鍔ㄨ兘涓嶈冻銆?,
-    spend: [0, 1, 1, 1, 1, 1],
-    revenue: [2, 2, 1, 1, 0, -1],
+    revenueRate: "-1%",
+    spendRate: "+1%",
+    deviation: "+2pct",
+    elasticity: "-1.00",
+    summary: "鏁翠綋璐圭敤绋冲畾锛屼絾鏀跺叆绔姩鑳戒笉瓒筹紝闇€瑕佸叧娉ㄩ噸鐐瑰浗瀹朵慨澶嶆儏鍐点€?,
+    spend: [1, 1, 1, 1, 1, 1],
+    revenue: [2, 1, 1, 0, -1, -1],
     children: [
       {
-        key: "philips-eu",
+        key: "philips-latam",
         level: "region",
-        name: "娆ф床",
+        name: "鎷夌編",
         status: "鎶曞叆寰呭鐩?,
-        r: "0%",
-        s: "+2%",
-        d: "+2pct",
-        e: "0.00",
-        summary: "璐圭敤鐣ュ崌浣嗘敹鍏ユ湭鏄庢樉鏀瑰杽銆?,
-        spend: [0, 1, 1, 1, 2, 2],
-        revenue: [1, 1, 1, 0, 0, 0],
+        revenueRate: "-9%",
+        spendRate: "-7%",
+        deviation: "+2pct",
+        elasticity: "1.29",
+        summary: "璐圭敤鏀剁缉鍚庢敹鍏ュ悓姝ヨ蛋寮憋紝闇€瑕佸叧娉ㄦ槸鍚﹀瓨鍦ㄦ姇鍏ヤ笉瓒炽€?,
+        spend: [-1, -2, -3, -4, -5, -7],
+        revenue: [-2, -3, -4, -6, -7, -9],
         children: [
-          { key: "de", level: "country", name: "寰峰浗", status: "鎶曞叆寰呭鐩?, r: "0%", s: "+3%", d: "+3pct", e: "0.00", summary: "淇冮攢鎶曞叆鐣ュ锛屼絾鏀跺叆鏀瑰杽鏆備笉鏄庢樉銆?, spend: [0, 1, 1, 2, 2, 3], revenue: [1, 1, 1, 1, 0, 0] },
+          {
+            key: "mexico",
+            level: "country",
+            name: "澧ㄨタ鍝?,
+            status: "鎶曞叆寰呭鐩?,
+            revenueRate: "-8%",
+            spendRate: "-5%",
+            deviation: "+3pct",
+            elasticity: "1.60",
+            summary: "鎶曟斁鏀剁缉涓庢敹鍏ヨ蛋寮卞悓姝ュ嚭鐜帮紝闇€鍒ゆ柇鏄惁鍘嬬缉杩囧害銆?,
+            spend: [-1, -1, -2, -3, -4, -5],
+            revenue: [-1, -2, -3, -5, -6, -8],
+          },
         ],
       },
     ],
   },
 ];
 
-const help = {
-  r: "婊炲悗1涓湀鐨勮繎3涓湀鏀跺叆鍧囧€硷紝鐩稿鍓?涓湀鍧囧€肩殑鍙樺寲鐜囥€?,
-  s: "杩?涓湀缁忚惀鍨嬪彉鍔ㄨ垂鐢ㄥ潎鍊硷紝鐩稿鍓?涓湀鍧囧€肩殑鍙樺寲鐜囥€?,
-  d: "璐圭敤鍙樺寲鐜囧噺鍘绘粸鍚庢敹鍏ュ彉鍖栫巼锛涜秺鎺ヨ繎0閫氬父璇存槑瓒婂尮閰嶃€?,
-  e: "婊炲悗鏀跺叆鍙樺寲鐜囬櫎浠ヨ垂鐢ㄥ彉鍖栫巼锛岀敤浜庤　閲忔敹鍏ュ鎶曞叆鍙樺寲鐨勫搷搴斿己寮便€?,
-};
-
 const matrixHelp = {
-  effective: "鎶曞叆鏈夋晥锛氳垂鐢ㄦ姇鍏ュ悗锛屾敹鍏ュ悓姝ユ敼鍠勶紝鎴栧湪璐圭敤鏀剁缉鎯呭喌涓嬫敹鍏ヤ粛淇濇寔澧為暱銆?,
-  review: "鎶曞叆寰呭鐩橈細璐圭敤鍙樺寲鍚庯紝鏀跺叆鏀瑰杽涓嶆槑鏄撅紝鎴栬垂鐢ㄦ敹缂╁悗鏀跺叆鍚屾璧板急锛岄渶瑕佸鐩樻姇鍏ヨ妭濂忓拰鏂瑰悜銆?,
-  abnormal: "閲嶇偣寮傚父锛氳垂鐢ㄥ鍔犵殑鍚屾椂鏀跺叆涓嬫粦锛屾姇鍏ヤ笌閿€鍞粨鏋滄槑鏄捐儗绂伙紝闇€瑕佷紭鍏堝叧娉ㄣ€?,
+  "鎶曞叆鏈夋晥": "璐圭敤鎶曞叆鍚庯紝鏀跺叆鍚屾鏀瑰杽锛屾垨鍦ㄨ垂鐢ㄦ敹缂╂儏鍐典笅鏀跺叆浠嶄繚鎸佸闀裤€?,
+  "鎶曞叆寰呭鐩?: "璐圭敤鍙樺寲鍚庯紝鏀跺叆鏀瑰杽涓嶆槑鏄撅紝鎴栬垂鐢ㄦ敹缂╁悗鏀跺叆鍚屾璧板急锛岄渶瑕佺户缁鐩樸€?,
+  "閲嶇偣寮傚父": "璐圭敤澧炲姞鐨勫悓鏃舵敹鍏ヤ笅婊戯紝鎶曞叆涓庨攢鍞粨鏋滄槑鏄捐儗绂伙紝闇€瑕佷紭鍏堝叧娉ㄣ€?,
 };
 
-const state = { block: "rd", level: "bu", bu: "tecno", region: "tecno-east", node: "tecno" };
+const calcHelp = {
+  "鏀跺叆鍙樺姩鐜?: "婊炲悗1涓湀鐨勮繎3涓湀鏀跺叆鍧囧€硷紝鐩稿鍓?涓湀鍧囧€肩殑鍙樺寲鐜囥€?,
+  "璐圭敤鍙樺姩鐜?: "杩?涓湀缁忚惀鍨嬪彉鍔ㄨ垂鐢ㄥ潎鍊硷紝鐩稿鍓?涓湀鍧囧€肩殑鍙樺寲鐜囥€?,
+  "鍋忕搴?: "璐圭敤鍙樺寲鐜囧噺鍘绘粸鍚庢敹鍏ュ彉鍖栫巼锛涜秺鎺ヨ繎0閫氬父璇存槑瓒婂尮閰嶃€?,
+  "寮规€?: "婊炲悗鏀跺叆鍙樺寲鐜囬櫎浠ヨ垂鐢ㄥ彉鍖栫巼锛岀敤浜庤　閲忔敹鍏ュ鎶曞叆鍙樺寲鐨勫搷搴斿己寮便€?,
+};
 
-const esc = (v) => String(v).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
-const tone = (s) => (s === "鎶曞叆鏈夋晥" ? "tone-emerald" : s === "鎶曞叆寰呭鐩? ? "tone-amber" : "tone-rose");
-const totalDiff = () => blocks.reduce((n, b) => n + b.diff, 0);
-const currentBlock = () => blocks.find((b) => b.id === state.block) || blocks[0];
-const currentBu = () => tree.find((b) => b.key === state.bu) || tree[0];
-const currentRegion = () => currentBu().children.find((r) => r.key === state.region) || currentBu().children[0];
-const currentNode = () => (state.level === "bu" ? currentBu() : state.level === "region" ? currentRegion() : currentRegion().children.find((c) => c.key === state.node) || currentRegion().children[0]);
-const rows = () => (state.level === "bu" ? tree : state.level === "region" ? currentBu().children : currentRegion().children);
+const statusTone = {
+  "鎶曞叆鏈夋晥": "tone-emerald",
+  "鎶曞叆寰呭鐩?: "tone-amber",
+  "閲嶇偣寮傚父": "tone-rose",
+};
 
-function setLevel(level, opts = {}) {
-  state.level = level;
-  if (level === "bu") {
-    state.bu = opts.bu || state.bu;
-    state.region = currentBu().children[0].key;
-    state.node = state.bu;
-  } else if (level === "region") {
-    state.bu = opts.bu || state.bu;
-    state.region = opts.region || currentBu().children[0].key;
-    state.node = state.region;
-  } else {
-    state.bu = opts.bu || state.bu;
-    state.region = opts.region || state.region;
-    state.node = opts.country || currentRegion().children[0].key;
+const state = {
+  selectedBlockId: "rd",
+  selectedNodeKey: "tecno",
+  currentLevel: "bu",
+  trail: [],
+};
+
+function levelLabel(level) {
+  return { bu: "浜嬩笟閮˙U", region: "鍖哄煙", country: "鍥藉" }[level] || "灞傜骇";
+}
+
+function infoDot(text) {
+  return `<span class="info-dot" data-tip="${text.replace(/"/g, "&quot;")}">?</span>`;
+}
+
+function getBlock(id) {
+  return waterfallBlocks.find((item) => item.id === id) || waterfallBlocks[0];
+}
+
+function flattenNodes(nodes, parentTrail = []) {
+  const all = [];
+  nodes.forEach((node) => {
+    const trail = [...parentTrail, { key: node.key, name: node.name, level: node.level }];
+    all.push({ ...node, trail });
+    if (node.children) {
+      all.push(...flattenNodes(node.children, trail));
+    }
+  });
+  return all;
+}
+
+const allRegionNodes = flattenNodes(regionTree);
+
+function getNode(key) {
+  return allRegionNodes.find((node) => node.key === key) || allRegionNodes[0];
+}
+
+function getLevelRows() {
+  if (state.currentLevel === "bu") {
+    return regionTree;
+  }
+  const parent = getNode(state.trail[state.trail.length - 1]?.key || state.selectedNodeKey);
+  return parent.children || [];
+}
+
+function buildPath() {
+  const path = [];
+  if (state.currentLevel === "bu") {
+    return [{ key: "root", name: "浜嬩笟閮˙U", level: "root" }];
+  }
+  path.push({ key: "root", name: "浜嬩笟閮˙U", level: "root" });
+  state.trail.forEach((item) => path.push(item));
+  return path;
+}
+
+function selectNode(node) {
+  state.selectedNodeKey = node.key;
+  if (node.level === "bu") {
+    state.currentLevel = "bu";
+    state.trail = [];
+    return;
+  }
+  if (node.level === "region") {
+    const parent = allRegionNodes.find((item) => (item.children || []).some((child) => child.key === node.key));
+    state.currentLevel = "region";
+    state.trail = parent ? [{ key: parent.key, name: parent.name, level: parent.level }] : [];
+    return;
+  }
+  const regionParent = allRegionNodes.find((item) => (item.children || []).some((child) => child.key === node.key));
+  const buParent = allRegionNodes.find((item) => (item.children || []).some((child) => child.key === regionParent?.key));
+  state.currentLevel = "country";
+  state.trail = [];
+  if (buParent) {
+    state.trail.push({ key: buParent.key, name: buParent.name, level: buParent.level });
+  }
+  if (regionParent) {
+    state.trail.push({ key: regionParent.key, name: regionParent.name, level: regionParent.level });
   }
 }
 
-function line(vs, w, h, px, py, min, max) {
-  const step = (w - px * 2) / (vs.length - 1);
-  return vs.map((v, i) => `${px + step * i},${h - py - ((v - min) / (max - min || 1)) * (h - py * 2)}`).join(" ");
+function drillNode(node) {
+  state.selectedNodeKey = node.key;
+  if (node.level === "bu" && node.children?.length) {
+    state.currentLevel = "region";
+    state.trail = [{ key: node.key, name: node.name, level: node.level }];
+    return;
+  }
+  if (node.level === "region" && node.children?.length) {
+    const buParent = allRegionNodes.find((item) => (item.children || []).some((child) => child.key === node.key));
+    state.currentLevel = "country";
+    state.trail = [];
+    if (buParent) {
+      state.trail.push({ key: buParent.key, name: buParent.name, level: buParent.level });
+    }
+    state.trail.push({ key: node.key, name: node.name, level: node.level });
+  }
 }
 
-function metricPanel(block) {
+function jumpPath(item) {
+  if (item.key === "root") {
+    state.currentLevel = "bu";
+    state.selectedNodeKey = regionTree[0].key;
+    state.trail = [];
+    return;
+  }
+  const node = getNode(item.key);
+  selectNode(node);
+}
+
+function buildChart(seriesA, seriesB) {
+  const width = 420;
+  const height = 220;
+  const paddingX = 28;
+  const paddingTop = 20;
+  const paddingBottom = 34;
+  const maxValue = Math.max(...seriesA, ...seriesB, 0) + 2;
+  const minValue = Math.min(...seriesA, ...seriesB, 0) - 2;
+  const xStep = (width - paddingX * 2) / (seriesA.length - 1);
+  const yScale = (height - paddingTop - paddingBottom) / (maxValue - minValue || 1);
+  const x = (index) => paddingX + index * xStep;
+  const y = (value) => paddingTop + (maxValue - value) * yScale;
+  const path = (series) => series.map((value, index) => `${index === 0 ? "M" : "L"} ${x(index)} ${y(value)}`).join(" ");
+  const zeroY = y(0);
+  const months = ["1鏈?, "2鏈?, "3鏈?, "4鏈?, "5鏈?, "6鏈?];
+
   return `
-    <div class="waterfall-metric-panel ${state.block === block.id ? "active" : ""}">
-      <div class="waterfall-mini-card">
-        <div class="waterfall-mini-row"><span>璐圭敤鐜?/span><strong>${block.feeRate}</strong></div>
-        <div class="waterfall-mini-row"><span>鐜瘮</span><strong>${block.momRate}</strong></div>
-        <div class="waterfall-mini-row"><span>鍚屾瘮</span><strong>${block.yoyRate}</strong></div>
-        <div class="waterfall-mini-row"><span>棰勭畻鎵ц宸紓</span><strong>${block.budgetExecDiff}</strong></div>
-      </div>
-    </div>
+    <svg viewBox="0 0 ${width} ${height}" width="100%" height="260" aria-label="瓒嬪娍鍥?>
+      ${months
+        .map(
+          (_, index) =>
+            `<line x1="${x(index)}" y1="${paddingTop}" x2="${x(index)}" y2="${height - paddingBottom}" stroke="rgba(59,130,246,0.08)" stroke-width="1" />`,
+        )
+        .join("")}
+      <line x1="${paddingX}" y1="${zeroY}" x2="${width - paddingX}" y2="${zeroY}" stroke="rgba(100,116,139,0.28)" stroke-dasharray="6 6" />
+      <path d="${path(seriesA)}" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="${path(seriesB)}" fill="none" stroke="#34d399" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+      ${seriesA
+        .map((value, index) => `<circle cx="${x(index)}" cy="${y(value)}" r="4.5" fill="#38bdf8" />`)
+        .join("")}
+      ${seriesB
+        .map((value, index) => `<circle cx="${x(index)}" cy="${y(value)}" r="4.5" fill="#34d399" />`)
+        .join("")}
+      ${months
+        .map(
+          (month, index) =>
+            `<text x="${x(index)}" y="${height - 10}" text-anchor="middle" fill="#6b85a3" font-size="12">${month}</text>`,
+        )
+        .join("")}
+    </svg>
   `;
 }
 
-function waterfallHtml() {
-  const max = Math.max(0, ...blocks.map((b) => b.diff));
-  const min = Math.min(0, ...blocks.map((b) => b.diff));
-  const range = Math.max(1, max - min);
+function renderWaterfall() {
+  const maxValue = Math.max(...waterfallBlocks.map((block) => Math.abs(block.diff)));
   return `
-    <div class="waterfall">
-      <div class="waterfall-grid">
-        ${blocks
-          .map((b) => {
-            const h = Math.max((Math.abs(b.diff) / range) * 78, 14);
-            const bottom = b.diff >= 0 ? ((0 - min) / range) * 82 : ((b.diff - min) / range) * 82;
-            return `
-              <button class="waterfall-card ${state.block === b.id ? "active" : ""}" data-waterfall="${b.id}">
-                <div class="waterfall-stage">
-                  <div class="zero-line" style="bottom:${((0 - min) / range) * 82 + 9}%"></div>
-                  <div class="waterfall-value">${b.diff > 0 ? "+" : ""}${b.diff}</div>
-                  <div class="waterfall-bar ${b.diff >= 0 ? "bar-positive" : "bar-negative"}" style="height:${h}%;bottom:${bottom + 9}%"></div>
+    <div class="linked-block">
+      <div class="linked-header">
+        <div class="section-title">鎬诲樊寮傛媶瑙ｅ浘</div>
+      </div>
+      <div class="waterfall">
+        <div class="waterfall-grid">
+          ${waterfallBlocks
+            .map((block) => {
+              const isActive = block.id === state.selectedBlockId;
+              const barHeight = Math.max(42, (Math.abs(block.diff) / maxValue) * 170);
+              const isPositive = block.diff >= 0;
+              const zeroTop = 200;
+              const style = isPositive
+                ? `top:${zeroTop - barHeight}px;height:${barHeight}px;`
+                : `top:${zeroTop}px;height:${barHeight}px;`;
+              return `
+                <div class="waterfall-card ${isActive ? "active" : ""}" data-select-block="${block.id}">
+                  <div class="waterfall-stage">
+                    <div class="zero-line" style="top:${zeroTop}px"></div>
+                    <div class="waterfall-value">${block.diff > 0 ? "+" : ""}${block.diff}</div>
+                    <div class="waterfall-bar ${isPositive ? "bar-positive" : "bar-negative"}" style="${style}"></div>
+                  </div>
+                  <div class="waterfall-label">
+                    <div class="waterfall-name">${block.name}</div>
+                    <div class="waterfall-subtitle">${block.subtitle}</div>
+                  </div>
                 </div>
-                <div class="waterfall-label">
-                  <div class="waterfall-name">${esc(b.name)}</div>
-                  <div class="waterfall-subtitle">${esc(b.subtitle)}</div>
+              `;
+            })
+            .join("")}
+        </div>
+        <div class="waterfall-top-metrics waterfall-bottom-metrics">
+          ${waterfallBlocks
+            .map(
+              (block) => `
+                <div class="waterfall-metric-panel ${block.id === state.selectedBlockId ? "active" : ""}">
+                  <div class="waterfall-mini-card">
+                    <div class="waterfall-mini-row"><span>璐圭敤鐜?/span><strong>${block.feeRate}</strong></div>
+                    <div class="waterfall-mini-row"><span>鐜瘮</span><strong>${block.momRate}</strong></div>
+                    <div class="waterfall-mini-row"><span>鍚屾瘮</span><strong>${block.yoyRate}</strong></div>
+                    <div class="waterfall-mini-row"><span>棰勭畻鎵ц宸紓</span><strong>${block.budgetExecDiff}</strong></div>
+                  </div>
                 </div>
-              </button>
-            `;
-          })
-          .join("")}
+              `,
+            )
+            .join("")}
+        </div>
+        <div class="waterfall-total">
+          <span>鎬婚儴鎬诲樊寮傛眹鎬?/span>
+          <strong style="font-size:18px;color:#35506b;">+840 涓囧厓</strong>
+        </div>
       </div>
-      <div class="waterfall-top-metrics waterfall-bottom-metrics">
-        ${blocks.map((b) => metricPanel(b)).join("")}
-      </div>
-      <div class="waterfall-total"><span>鎬婚儴鎬诲樊寮傛眹鎬?/span><strong>${totalDiff() > 0 ? "+" : ""}${totalDiff()} 涓囧厓</strong></div>
     </div>
   `;
 }
 
-function explainHtml() {
-  const b = currentBlock();
+function renderTable() {
+  const block = getBlock(state.selectedBlockId);
   return `
-    <div class="current-summary"><strong>褰撳墠閫変腑锛?/strong>${esc(b.name)}<span class="subline" style="display:block;margin-top:6px;">${esc(b.summary)}</span></div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>璐圭敤椤?/th><th>瀹為檯閲戦</th><th>杈冮绠?/th><th>鐜瘮</th><th>鍚屾瘮</th><th>鏍囩</th><th>瑙ｉ噴鍒ゆ柇</th><th>鍘熷洜璇存槑</th></tr></thead>
-        <tbody>${b.items.map((i) => `<tr><td>${esc(i[0])}</td><td>${i[1]} 涓囧厓</td><td>${i[2]} 涓囧厓</td><td>${i[3]}</td><td>${i[4]}</td><td><span class="small-tag">${esc(i[5])}</span></td><td><span class="judge-tag">${esc(i[6])}</span></td><td>${esc(i[7])}</td></tr>`).join("")}</tbody>
-      </table>
+    <div class="linked-block">
+      <div class="linked-header">
+        <div class="section-title">璐圭敤瑙ｉ噴鏄庣粏琛?/div>
+      </div>
+      <div class="current-summary">
+        <strong>褰撳墠閫変腑锛?/strong>${block.name}
+        <div class="subline">${block.summary}</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>璐圭敤椤?/th>
+              <th>瀹為檯閲戦</th>
+              <th>杈冮绠?/th>
+              <th>鐜瘮</th>
+              <th>鍚屾瘮</th>
+              <th>鏍囩</th>
+              <th>瑙ｉ噴鍒ゆ柇</th>
+              <th>鍘熷洜璇存槑</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${block.items
+              .map(
+                (item) => `
+                  <tr>
+                    <td>${item[0]}</td>
+                    <td>${item[1]}</td>
+                    <td>${item[2]}</td>
+                    <td>${item[3]}</td>
+                    <td>${item[4]}</td>
+                    <td><span class="small-tag">${item[5]}</span></td>
+                    <td><span class="judge-tag">${item[6]}</span></td>
+                    <td>${item[7]}</td>
+                  </tr>
+                `,
+              )
+              .join("")}
+          </tbody>
+        </table>
+      </div>
     </div>
   `;
 }
 
-function matrixPath() {
-  const parts = [`<button class="path-chip ${state.level === "bu" ? "active" : ""}" data-path="bu">浜嬩笟閮˙U</button>`];
-  if (state.level !== "bu") parts.push(`<span class="path-sep">/</span><button class="path-chip ${state.level === "region" ? "active" : ""}" data-path="region">${esc(currentBu().name)}</button>`);
-  if (state.level === "country") parts.push(`<span class="path-sep">/</span><button class="path-chip active" data-path="country">${esc(currentRegion().name)}</button>`);
-  return `<div class="matrix-path">${parts.join("")}</div>`;
-}
-
-function matrixRows() {
-  return rows()
-    .map((n) => {
-      const active = state.node === n.key;
-      const link = n.children?.length ? (n.level === "bu" ? "鏌ョ湅鍖哄煙 禄" : "鏌ョ湅鍥藉 禄") : "";
+function renderMatrixRows() {
+  return getLevelRows()
+    .map((node) => {
+      const selected = state.selectedNodeKey === node.key;
       const cells = ["鎶曞叆鏈夋晥", "鎶曞叆寰呭鐩?, "閲嶇偣寮傚父"]
-        .map((s) => (n.status === s ? `<td><button class="matrix-cell ${tone(s)} ${active ? "active" : ""}" data-node="${n.key}"></button></td>` : `<td><div class="matrix-cell empty-cell"></div></td>`))
+        .map((status) => {
+          const active = node.status === status;
+          const cls = active ? `${statusTone[status]} active` : "empty-cell";
+          return `<button class="matrix-cell ${cls}" ${active ? `data-select-node="${node.key}"` : ""}></button>`;
+        })
         .join("");
+
+      const drill = node.children?.length
+        ? `<button class="drill-link" data-drill-node="${node.key}">鏌ョ湅${node.level === "bu" ? "鍖哄煙" : "鍥藉"} 禄</button>`
+        : "";
+
       return `
-        <tr class="${active ? "matrix-row-active" : ""}">
-          <td><div class="matrix-level-cell"><button class="matrix-level-name" data-node="${n.key}">${esc(n.name)}</button>${link ? `<button class="drill-link" data-drill="${n.key}">${link}</button>` : ""}</div></td>
-          <td>${esc(n.summary)}<div class="matrix-meta">
-            <div class="subline"><strong>鏀跺叆鍙樺姩鐜?</strong> <span>${n.r}</span></div>
-            <div class="subline"><strong>璐圭敤鍙樺姩鐜?</strong> <span>${n.s}</span></div>
-            <div class="subline"><strong>鍋忕搴?</strong> <span>${n.d}</span></div>
-            <div class="subline"><strong>寮规€?</strong> <span>${n.e}</span></div>
-          </div></td>
+        <tr class="${selected ? "matrix-row-active" : ""}">
+          <td>
+            <div class="matrix-level-cell">
+              <button class="matrix-level-name" data-select-node="${node.key}">${node.name}</button>
+              ${drill || `<span class="matrix-leaf-tag">${levelLabel(node.level)}</span>`}
+            </div>
+          </td>
+          <td>
+            ${node.summary}
+            <div class="matrix-meta">
+              <div class="subline"><strong>鏀跺叆鍙樺姩鐜囷細</strong><span>${node.revenueRate}</span></div>
+              <div class="subline"><strong>璐圭敤鍙樺姩鐜囷細</strong><span>${node.spendRate}</span></div>
+              <div class="subline"><strong>鍋忕搴︼細</strong><span>${node.deviation}</span></div>
+              <div class="subline"><strong>寮规€э細</strong><span>${node.elasticity}</span></div>
+            </div>
+          </td>
           ${cells}
         </tr>
       `;
@@ -1338,152 +1587,184 @@ function matrixRows() {
     .join("");
 }
 
-function chartHtml() {
-  const n = currentNode();
-  const labels = ["1鏈?, "2鏈?, "3鏈?, "4鏈?, "5鏈?, "6鏈?];
-  const w = 360;
-  const h = 220;
-  const px = 30;
-  const py = 24;
-  const values = [...n.spend, ...n.revenue];
-  const min = Math.min(...values, 0);
-  const max = Math.max(...values, 0);
-  const spendLine = line(n.spend, w, h, px, py, min, max);
-  const revenueLine = line(n.revenue, w, h, px, py, min, max);
-  const step = (w - px * 2) / (labels.length - 1);
-  const zeroY = h - py - ((0 - min) / (max - min || 1)) * (h - py * 2);
-
+function renderMatrix() {
+  const path = buildPath();
   return `
-    <div class="chart-wrap">
-      <svg viewBox="0 0 ${w} ${h}" width="100%" height="250" aria-label="鍖哄煙瓒嬪娍鍥?>
-        <line x1="${px}" y1="${zeroY}" x2="${w - px}" y2="${zeroY}" stroke="rgba(107,133,163,0.28)" stroke-dasharray="6 6"></line>
-        ${labels.map((_, i) => `<line x1="${px + step * i}" y1="${py}" x2="${px + step * i}" y2="${h - py}" stroke="rgba(47,111,228,0.10)"></line>`).join("")}
-        <polyline fill="none" stroke="#38bdf8" stroke-width="4" points="${spendLine}" stroke-linecap="round" stroke-linejoin="round"></polyline>
-        <polyline fill="none" stroke="#34d399" stroke-width="4" points="${revenueLine}" stroke-linecap="round" stroke-linejoin="round"></polyline>
-        ${n.spend.map((v, i) => `<circle cx="${px + step * i}" cy="${h - py - ((v - min) / (max - min || 1)) * (h - py * 2)}" r="4.5" fill="#38bdf8"></circle>`).join("")}
-        ${n.revenue.map((v, i) => `<circle cx="${px + step * i}" cy="${h - py - ((v - min) / (max - min || 1)) * (h - py * 2)}" r="4.5" fill="#34d399"></circle>`).join("")}
-        ${labels.map((l, i) => `<text x="${px + step * i}" y="${h - 6}" text-anchor="middle" fill="#6b85a3" font-size="12">${l}</text>`).join("")}
-      </svg>
-      <div class="chart-legend"><span><span class="legend-dot" style="background:#38bdf8"></span>璐圭敤鍙樺姩鐜?/span><span><span class="legend-dot" style="background:#34d399"></span>鏀跺叆鍙樺姩鐜?/span></div>
-    </div>
-  `;
-}
-
-function dashboard() {
-  const n = currentNode();
-  const subtitle =
-    state.level === "bu"
-      ? "鏌ョ湅鎵€閫変簨涓氶儴鐨勬湀搴﹁垂鐢ㄥ彉鍔ㄧ巼涓庢粸鍚庢敹鍏ュ彉鍔ㄧ巼瓒嬪娍銆?
-      : state.level === "region"
-      ? "鏌ョ湅鎵€閫夊尯鍩熺殑鏈堝害璐圭敤鍙樺姩鐜囦笌婊炲悗鏀跺叆鍙樺姩鐜囪秼鍔裤€?
-      : "鏌ョ湅鎵€閫夊浗瀹剁殑鏈堝害璐圭敤鍙樺姩鐜囦笌婊炲悗鏀跺叆鍙樺姩鐜囪秼鍔裤€?;
-
-  return `
-    <div class="page-shell">
-      <div class="dashboard">
-        <section class="panel">
-          <div class="panel-header"><div class="module-tag">妯″潡 1</div><div><div class="panel-title">鎬讳綋鍒ゆ柇</div><div class="panel-subtitle">浠庢€婚儴瑙嗚蹇€熷垽鏂湰鏈熻垂鐢ㄧ姸鎬併€佷富瑕侀┍鍔ㄤ笌浼樺厛璺熻繘浜嬮」銆?/div></div></div>
-          <div class="judgement">${overview.summary}</div>
-          <div class="panel-header" style="margin-top:22px;margin-bottom:14px;"><div class="module-tag">閲嶇偣鍏虫敞</div><div><div class="panel-title" style="font-size:20px;">閲嶇偣鍏虫敞瀵硅薄</div><div class="panel-subtitle">鎶婃湰鍛ㄩ渶瑕佽В閲娿€侀噸鐐瑰鐩樺拰鎸佺画璺熻釜鐨勫璞℃敹杩涙€讳綋鍒ゆ柇锛屾柟渚跨鐞嗗眰鍦ㄩ椤电洿鎺ユ姄閲嶇偣銆?/div></div></div>
-          <div class="focus-grid">${focuses.map((f) => `<article class="focus-card"><div class="focus-top"><div class="focus-icon">${f[0]}</div><div><div class="focus-priority">${esc(f[1])}</div><div class="focus-category">${esc(f[2])}</div><div class="focus-owner">${esc(f[3])}</div></div></div><div class="focus-text">${esc(f[4])}</div></article>`).join("")}</div>
-        </section>
-
-        <section class="panel linked-panel">
-          <div class="panel-header"><div class="module-tag">妯″潡 2-3</div><div><div class="panel-title">宸紓鎷嗚В涓庤垂鐢ㄨВ閲婅仈鍔ㄥ垎鏋?/div></div></div>
-          <div class="linked-block">
-            <div class="linked-header">
-              <div>
-                <div class="section-title">鎬诲樊寮傛媶瑙ｅ浘</div>
-              </div>
-            </div>
-            ${waterfallHtml()}
-          </div>
-          <div class="linked-divider"></div>
-          <div class="linked-block">
-            <div class="linked-header">
-              <div>
-                <div class="section-title">璐圭敤瑙ｉ噴鏄庣粏琛?/div>
-              </div>
-            </div>
-            ${explainHtml()}
-          </div>
-        </section>
-
-        <section class="panel">
-          <div class="panel-header"><div class="module-tag">妯″潡 4</div><div><div class="panel-title">鍖哄煙鍙樺姩璐圭敤鏁堟灉鍒嗘瀽</div><div class="panel-subtitle">浠庡尯鍩熺淮搴﹀垽鏂姇鍏ユ槸鍚︽湁鏁堬紝骞惰仈鍔ㄦ煡鐪嬭垂鐢ㄤ笌婊炲悗鏀跺叆鐨勬湀搴﹁秼鍔裤€?/div></div></div>
-          <div class="region-tip">鍏堢湅宸︿晶鍖哄煙缁撴灉鐭╅樀锛屽啀鐐瑰嚮鑹插潡鑱斿姩鍙充晶瓒嬪娍鍥俱€傝繖涓ā鍧楅€傚悎鎬婚儴鐪嬪尯鍩熸晥鐜囷紝鑰屼笉鏄彧鐪嬭垂鐢ㄧ粷瀵瑰€笺€?/div>
-          <div class="region-grid">
-            <div class="matrix-wrap">
-              <div class="matrix-head"><div><div class="section-title">鍖哄煙缁撴灉鐭╅樀</div><div class="section-sub">榛樿灞曠ず浜嬩笟閮紝鐐瑰嚮钃濊壊鍏ュ彛鍙笅閽诲埌鍖哄煙涓庡浗瀹讹紝骞惰仈鍔ㄥ彸渚ц秼鍔垮浘銆?/div></div><div class="hint">鐐瑰嚮鑹插潡鑱斿姩瓒嬪娍</div></div>
-              ${matrixPath()}
-              <div class="table-wrap"><table><thead><tr><th>灞曠ず灞傜骇</th><th>璇存槑</th><th>鎶曞叆鏈夋晥<span class="info-dot" data-tip="${esc(matrixHelp.effective)}">?</span></th><th>鎶曞叆寰呭鐩?span class="info-dot" data-tip="${esc(matrixHelp.review)}">?</span></th><th>閲嶇偣寮傚父<span class="info-dot" data-tip="${esc(matrixHelp.abnormal)}">?</span></th></tr></thead><tbody>${matrixRows()}</tbody></table></div>
-            </div>
-            <div class="trend-wrap">
-              <div class="trend-head"><div><div class="section-title">鍖哄煙瓒嬪娍鑱斿姩</div><div class="section-sub">${subtitle}</div></div><div class="region-badge">${esc(n.name)}</div></div>
-              <div class="trend-metrics"><div class="trend-metrics-grid">
-                <div><strong>鏀跺叆鍙樺姩鐜?/strong><span class="info-dot" data-tip="${esc(help.r)}">?</span>锛?${n.r}</div>
-                <div><strong>璐圭敤鍙樺姩鐜?/strong><span class="info-dot" data-tip="${esc(help.s)}">?</span>锛?${n.s}</div>
-                <div><strong>鍋忕搴?/strong><span class="info-dot" data-tip="${esc(help.d)}">?</span>锛?${n.d}</div>
-                <div><strong>寮规€?/strong><span class="info-dot" data-tip="${esc(help.e)}">?</span>锛?${n.e}</div>
-              </div><div class="trend-summary"><strong>鎬荤粨锛?/strong>${esc(n.summary)}</div></div>
-              ${chartHtml()}
-            </div>
-          </div>
-        </section>
-
-        <div class="footer-note">鏈〉涓烘仮澶嶅悗鐨勬€婚儴璐圭敤鐪嬫澘闈欐€佷氦浜掔増锛屾敮鎸佹ā鍧楄仈鍔ㄤ笌鍖哄煙涓嬮捇灞曠ず銆?/div>
+    <div class="matrix-wrap">
+      <div class="matrix-head">
+        <div>
+          <div class="section-title">鍖哄煙缁撴灉鐭╅樀</div>
+          <div class="section-sub">榛樿灞曠ず浜嬩笟閮紝鐐瑰嚮钃濊壊鍏ュ彛鍙笅閽诲埌鍖哄煙涓庡浗瀹讹紝骞惰仈鍔ㄥ彸渚ц秼鍔垮浘銆?/div>
+        </div>
+        <div class="hint">鐐瑰嚮鑹插潡鑱斿姩瓒嬪娍</div>
+      </div>
+      <div class="matrix-path">
+        ${path
+          .map(
+            (item, index) => `
+              <button class="path-chip ${index === path.length - 1 ? "active" : ""}" data-jump-path="${item.key}">${item.name}</button>
+              ${index === path.length - 1 ? "" : '<span class="path-sep">/</span>'}
+            `,
+          )
+          .join("")}
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>灞曠ず灞傜骇</th>
+              <th>璇存槑</th>
+              <th>鎶曞叆鏈夋晥${infoDot(matrixHelp["鎶曞叆鏈夋晥"])}</th>
+              <th>鎶曞叆寰呭鐩?{infoDot(matrixHelp["鎶曞叆寰呭鐩?])}</th>
+              <th>閲嶇偣寮傚父${infoDot(matrixHelp["閲嶇偣寮傚父"])}</th>
+            </tr>
+          </thead>
+          <tbody>${renderMatrixRows()}</tbody>
+        </table>
       </div>
     </div>
   `;
 }
 
-function bind(root) {
-  root.querySelectorAll("[data-waterfall]").forEach((el) => el.addEventListener("click", () => {
-    state.block = el.dataset.waterfall;
-    render();
-  }));
-
-  root.querySelectorAll("[data-node]").forEach((el) => el.addEventListener("click", () => {
-    state.node = el.dataset.node;
-    if (state.level === "bu") {
-      state.bu = state.node;
-      state.region = currentBu().children[0].key;
-    }
-    if (state.level === "region") {
-      state.region = state.node;
-    }
-    render();
-  }));
-
-  root.querySelectorAll("[data-drill]").forEach((el) => el.addEventListener("click", () => {
-    const key = el.dataset.drill;
-    if (state.level === "bu") {
-      const bu = tree.find((b) => b.key === key);
-      setLevel("region", { bu: bu.key, region: bu.children[0].key });
-    } else if (state.level === "region") {
-      const region = currentBu().children.find((r) => r.key === key);
-      setLevel("country", { bu: state.bu, region: region.key, country: region.children[0].key });
-    }
-    render();
-  }));
-
-  root.querySelectorAll("[data-path]").forEach((el) => el.addEventListener("click", () => {
-    if (el.dataset.path === "bu") setLevel("bu", { bu: state.bu });
-    if (el.dataset.path === "region") setLevel("region", { bu: state.bu, region: state.region });
-    render();
-  }));
+function renderTrend() {
+  const node = getNode(state.selectedNodeKey);
+  return `
+    <div class="trend-wrap">
+      <div class="trend-head">
+        <div>
+          <div class="section-title">鍖哄煙瓒嬪娍鑱斿姩</div>
+          <div class="section-sub">鏌ョ湅鎵€閫?{levelLabel(node.level)}鐨勬湀搴﹁垂鐢ㄥ彉鍔ㄧ巼涓庢粸鍚庢敹鍏ュ彉鍔ㄧ巼瓒嬪娍銆?/div>
+        </div>
+        <div class="region-badge">${node.name}</div>
+      </div>
+      <div class="trend-metrics">
+        <div class="trend-metrics-grid">
+          <div><strong>鏀跺叆鍙樺姩鐜?/strong>${infoDot(calcHelp["鏀跺叆鍙樺姩鐜?])}锛?${node.revenueRate}</div>
+          <div><strong>璐圭敤鍙樺姩鐜?/strong>${infoDot(calcHelp["璐圭敤鍙樺姩鐜?])}锛?${node.spendRate}</div>
+          <div><strong>鍋忕搴?/strong>${infoDot(calcHelp["鍋忕搴?])}锛?${node.deviation}</div>
+          <div><strong>寮规€?/strong>${infoDot(calcHelp["寮规€?])}锛?${node.elasticity}</div>
+        </div>
+        <div class="trend-summary"><strong>鎬荤粨锛?/strong>${node.summary}</div>
+      </div>
+      <div class="chart-wrap">
+        ${buildChart(node.spend, node.revenue)}
+        <div class="chart-legend">
+          <span><span class="legend-dot" style="background:#38bdf8"></span>璐圭敤鍙樺姩鐜?/span>
+          <span><span class="legend-dot" style="background:#34d399"></span>鏀跺叆鍙樺姩鐜?/span>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
-function render() {
-  const root = document.getElementById("app");
-  root.innerHTML = dashboard();
-  root.innerHTML = root.innerHTML.replace('閹舵洖鍙嗗鍛槻閻?span class="info-dot"', '閹舵洖鍙嗗鍛槻閻?<span class="info-dot"');
-  bind(root);
+function renderApp() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div class="page-shell">
+      <div class="dashboard">
+        <section class="panel">
+          <div class="panel-header">
+            <span class="module-tag">妯″潡 1</span>
+            <div>
+              <div class="panel-title">鎬讳綋鍒ゆ柇</div>
+              <div class="panel-subtitle">浠庢€婚儴瑙嗚蹇€熷垽鏂湰鏈熻垂鐢ㄧ姸鎬併€佷富瑕侀┍鍔ㄤ笌浼樺厛璺熻繘浜嬮」銆?/div>
+            </div>
+          </div>
+          <div class="judgement">${overview.summary}</div>
+          <div style="margin-top:24px;">
+            <div class="panel-header" style="margin-bottom:14px;">
+              <span class="module-tag">閲嶇偣鍏虫敞</span>
+              <div>
+                <div class="panel-title">閲嶇偣鍏虫敞瀵硅薄</div>
+                <div class="panel-subtitle">鎶婃湰鍛ㄩ渶瑕佽В閲娿€侀噸鐐瑰鐩樺拰鎸佺画璺熻釜鐨勫璞℃敹杩涙€讳綋鍒ゆ柇锛屾柟渚跨鐞嗗眰鍦ㄩ椤电洿鎺ユ姄閲嶇偣銆?/div>
+              </div>
+            </div>
+            <div class="focus-grid">
+              ${focusCards
+                .map(
+                  (item) => `
+                    <div class="focus-card">
+                      <div class="focus-top">
+                        <div class="focus-icon">${item[0]}</div>
+                        <div>
+                          <div class="focus-priority">${item[1]}</div>
+                          <div class="focus-category">${item[2]}</div>
+                          <div class="focus-owner">${item[3]}</div>
+                        </div>
+                      </div>
+                      <div class="focus-text">${item[4]}</div>
+                    </div>
+                  `,
+                )
+                .join("")}
+            </div>
+          </div>
+        </section>
+
+        <section class="panel linked-panel">
+          <div class="panel-header">
+            <span class="module-tag">妯″潡 2-3</span>
+            <div>
+              <div class="panel-title">宸紓鎷嗚В涓庤垂鐢ㄨВ閲婅仈鍔ㄥ垎鏋?/div>
+            </div>
+          </div>
+          ${renderWaterfall()}
+          ${renderTable()}
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <span class="module-tag">妯″潡 4</span>
+            <div>
+              <div class="panel-title">鍖哄煙鍙樺姩璐圭敤鏁堟灉鍒嗘瀽</div>
+              <div class="panel-subtitle">浠庡尯鍩熺淮搴﹀垽鏂姇鍏ユ槸鍚︽湁鏁堬紝骞惰仈鍔ㄦ煡鐪嬭垂鐢ㄤ笌婊炲悗鏀跺叆鐨勬湀搴﹁秼鍔裤€?/div>
+            </div>
+          </div>
+          <div class="region-tip">鍏堢湅宸︿晶鍖哄煙缁撴灉鐭╅樀锛屽啀鐐瑰嚮鑹插潡鑱斿姩鍙充晶瓒嬪娍鍥俱€傝繖涓ā鍧楅€傚悎鎬婚儴鐪嬪尯鍩熸晥鐜囷紝鑰屼笉鏄彧鐪嬭垂鐢ㄧ粷瀵瑰€笺€?/div>
+          <div class="region-grid">
+            ${renderMatrix()}
+            ${renderTrend()}
+          </div>
+        </section>
+      </div>
+    </div>
+  `;
+
+  bindEvents();
 }
 
-setLevel("bu", { bu: "tecno" });
-render();
+function bindEvents() {
+  document.querySelectorAll("[data-select-block]").forEach((node) => {
+    node.addEventListener("click", () => {
+      state.selectedBlockId = node.dataset.selectBlock;
+      renderApp();
+    });
+  });
 
-  </script>
+  document.querySelectorAll("[data-select-node]").forEach((node) => {
+    node.addEventListener("click", () => {
+      selectNode(getNode(node.dataset.selectNode));
+      renderApp();
+    });
+  });
+
+  document.querySelectorAll("[data-drill-node]").forEach((node) => {
+    node.addEventListener("click", () => {
+      drillNode(getNode(node.dataset.drillNode));
+      renderApp();
+    });
+  });
+
+  document.querySelectorAll("[data-jump-path]").forEach((node) => {
+    node.addEventListener("click", () => {
+      jumpPath({ key: node.dataset.jumpPath });
+      renderApp();
+    });
+  });
+}
+
+renderApp();
+
+</script>
 </body>
 </html>
