@@ -1,0 +1,418 @@
+import React, { useMemo, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Building2, MapPinned, Target, Sparkles, Info } from "lucide-react";
+
+export default function HQExpenseDashboardPrototype() {
+  const palette = {
+    bg: "bg-slate-950",
+    panel: "bg-slate-900/70",
+    border: "border-sky-500/20",
+    line: "border-sky-400/15",
+    text: "text-slate-100",
+    sub: "text-slate-400",
+    accent: "text-sky-300",
+    accentBg: "bg-sky-500/10",
+    accentBorder: "border-sky-400/20",
+  };
+
+  const blocks = [
+    {
+      id: "bu_hq",
+      name: "事业部总部费用",
+      diff: 180,
+      type: "hq",
+      summary: "较预算+180万元，主要由人工成本与咨询服务费增加带动，属于持续性增长与专项投入并存。",
+      items: [
+        { board: "事业部总部费用", name: "人工成本", actual: 620, budgetDiff: 72, mom: "+9.2%", yoy: "+14.8%", tag: "持续性增长", reason: "新增编制落地，月度人力成本持续上升。", judgment: "持续跟踪" },
+        { board: "事业部总部费用", name: "咨询服务费", actual: 180, budgetDiff: 63, mom: "+28.4%", yoy: "+41.3%", tag: "预算外投入", reason: "专项流程优化项目启动，顾问服务集中确认。", judgment: "需解释" },
+        { board: "事业部总部费用", name: "折旧与摊销", actual: 96, budgetDiff: 21, mom: "+4.1%", yoy: "+5.7%", tag: "正常波动", reason: "新增设备与系统资产投入后折摊略有上升。", judgment: "可接受" },
+      ],
+    },
+    {
+      id: "function",
+      name: "职能费用",
+      diff: 90,
+      type: "hq",
+      summary: "较预算+90万元，整体可控，主要为行政支持与共享服务小幅上升。",
+      items: [
+        { board: "职能费用", name: "行政费用", actual: 210, budgetDiff: 34, mom: "+6.3%", yoy: "+8.1%", tag: "正常波动", reason: "办公与差旅支出随组织规模增长小幅抬升。", judgment: "可接受" },
+        { board: "职能费用", name: "共享服务费", actual: 135, budgetDiff: 28, mom: "+7.0%", yoy: "+10.5%", tag: "节奏前置", reason: "部分服务合同提前结算，费用确认略前置。", judgment: "持续跟踪" },
+        { board: "职能费用", name: "培训费", actual: 42, budgetDiff: 11, mom: "+12.8%", yoy: "+16.2%", tag: "正常波动", reason: "季度培训计划集中落地。", judgment: "可接受" },
+      ],
+    },
+    {
+      id: "rd",
+      name: "研发费用",
+      diff: 420,
+      type: "hq",
+      summary: "较预算+420万元，为本月最大异常块，主要因项目集中验收导致费用确认前移，偏一次性。",
+      items: [
+        { board: "研发费用", name: "外包开发费", actual: 520, budgetDiff: 165, mom: "+31.2%", yoy: "+38.4%", tag: "一次性事项", reason: "重点项目阶段性交付验收，外包费用集中确认。", judgment: "需解释" },
+        { board: "研发费用", name: "测试认证费", actual: 210, budgetDiff: 118, mom: "+42.6%", yoy: "+49.0%", tag: "节奏前置", reason: "多机型测试进度提前，认证费用前移。", judgment: "持续跟踪" },
+        { board: "研发费用", name: "人工成本", actual: 860, budgetDiff: 82, mom: "+5.4%", yoy: "+11.9%", tag: "持续性增长", reason: "研发项目扩编后人工成本稳步抬升。", judgment: "持续跟踪" },
+      ],
+    },
+    {
+      id: "region",
+      name: "区域费用",
+      diff: 310,
+      type: "region",
+      summary: "较预算+310万元，主要由东非与东南亚经营型费用增加带动，需重点关注投入效率。",
+      items: [
+        { name: "东非", spendRate: "+15%", revenueLag: "-4%", deviation: "+19pct", elasticity: "-0.27", status: "重点异常", reason: "经营型费用明显增加，但滞后收入下滑，投入与销售结果背离。", monthlySpend: [4, 7, 9, 11, 13, 15], monthlyRevenue: [6, 3, 1, -2, -3, -4] },
+        { name: "东南亚", spendRate: "+12%", revenueLag: "+10%", deviation: "+2pct", elasticity: "0.83", status: "投入有效", reason: "经营型费用增加后，滞后收入同步增长，整体基本匹配。", monthlySpend: [2, 4, 6, 8, 10, 12], monthlyRevenue: [1, 3, 5, 7, 9, 10] },
+        { name: "西非", spendRate: "-6%", revenueLag: "+8%", deviation: "-14pct", elasticity: "-1.33", status: "投入有效", reason: "费用收缩后收入仍保持增长，费用效率改善。", monthlySpend: [3, 1, -1, -2, -4, -6], monthlyRevenue: [2, 3, 5, 6, 7, 8] },
+        { name: "拉美", spendRate: "-7%", revenueLag: "-9%", deviation: "+2pct", elasticity: "1.29", status: "投入待复盘", reason: "费用收缩后收入同步走弱，需关注是否存在投入不足。", monthlySpend: [-1, -2, -3, -4, -5, -7], monthlyRevenue: [-2, -3, -4, -6, -7, -9] },
+        { name: "中东", spendRate: "+2%", revenueLag: "+12%", deviation: "-10pct", elasticity: "6.00", status: "投入有效", reason: "费用基本稳定的情况下收入明显增长，费用效率提升。", monthlySpend: [0, 1, 1, 2, 2, 2], monthlyRevenue: [2, 4, 6, 8, 10, 12] },
+      ],
+      detailItems: [
+        { board: "区域费用", region: "东非", name: "市场推广费", actual: 190, budgetDiff: 86, mom: "+24.3%", yoy: "+31.5%", tag: "经营投入", reason: "新品推广与路演活动集中投放。", judgment: "需解释" },
+        { board: "区域费用", region: "东非", name: "渠道激励费", actual: 145, budgetDiff: 58, mom: "+18.7%", yoy: "+25.4%", tag: "经营投入", reason: "重点客户返利前置，渠道冲量投入增加。", judgment: "持续跟踪" },
+        { board: "区域费用", region: "东非", name: "差旅与拓展费", actual: 88, budgetDiff: 27, mom: "+11.2%", yoy: "+16.8%", tag: "经营投入", reason: "区域拓店与客户拜访频次提升。", judgment: "可接受" },
+      ],
+    },
+    {
+      id: "other",
+      name: "其他调整",
+      diff: -160,
+      type: "hq",
+      summary: "较预算-160万元，对整体超支形成部分对冲，主要来自跨期调整回冲。",
+      items: [
+        { board: "其他调整", name: "跨期调整", actual: -90, budgetDiff: -90, mom: "-", yoy: "-", tag: "决算调整", reason: "前期多计费用于本月回冲。", judgment: "可接受" },
+        { board: "其他调整", name: "费用重分类", actual: -42, budgetDiff: -42, mom: "-", yoy: "-", tag: "决算调整", reason: "部分费用重分类至其他项目，形成对冲。", judgment: "可接受" },
+      ],
+    },
+  ];
+
+  const [selected, setSelected] = useState("rd");
+  const [selectedRegion, setSelectedRegion] = useState("东非");
+  const current = useMemo(() => blocks.find((b) => b.id === selected) ?? blocks[0], [selected]);
+  const regionBlock = useMemo(() => blocks.find((b) => b.id === "region") ?? blocks[0], []);
+  const regionItems = regionBlock.items ?? [];
+  const currentRegion = useMemo(() => regionItems.find((r) => r.name === selectedRegion) ?? regionItems[0], [regionItems, selectedRegion]);
+
+  const focusList = [
+    { priority: "P1 本周解释", category: "需解释部门", owner: "研发中心", text: "项目集中验收导致费用确认前移，需说明后续是否回落。", icon: Building2 },
+    { priority: "P1 本周解释", category: "需复盘区域", owner: "东非", text: "经营型费用增长15%，滞后收入下降4%，投入与销售结果背离。", icon: MapPinned },
+    { priority: "P3 持续跟踪", category: "需持续跟踪主题", owner: "咨询服务费", text: "连续两月高增长，需核查预算外专项事项背景及后续节奏。", icon: Target },
+  ];
+
+  const regionRules = [
+    {
+      title: "投入有效",
+      desc: "费用投入后，收入同步改善，或在费用收缩情况下收入仍保持增长。",
+      bullets: ["包含：匹配较好、效率改善", "管理含义：可延续，关注可复制区域"],
+      tone: "emerald",
+    },
+    {
+      title: "投入待复盘",
+      desc: "费用变化后，收入改善不明显，或费用收缩后收入同步走弱。",
+      bullets: ["包含：助销偏弱、疑似投入不足", "管理含义：复盘投放节奏、投向和收缩策略"],
+      tone: "amber",
+    },
+    {
+      title: "重点异常",
+      desc: "费用增加的同时收入下滑，投入与销售结果明显背离。",
+      bullets: ["对应：明显异常", "管理含义：优先纳入总部跟进清单"],
+      tone: "rose",
+    },
+  ];
+
+  const totalActual = 8520;
+  const totalDiff = blocks.reduce((sum, b) => sum + b.diff, 0);
+
+  const waterfallSeries = useMemo(() => {
+    let running = 0;
+    const series = blocks.map((block) => {
+      const start = running;
+      const end = running + block.diff;
+      running = end;
+      return { ...block, start, end, base: Math.min(start, end), value: Math.abs(block.diff) };
+    });
+    return { series, finalTotal: running };
+  }, [blocks]);
+
+  const waterfallMax = Math.max(0, ...waterfallSeries.series.map((item) => Math.max(item.start, item.end)), waterfallSeries.finalTotal);
+  const waterfallMin = Math.min(0, ...waterfallSeries.series.map((item) => Math.min(item.start, item.end)), waterfallSeries.finalTotal);
+  const waterfallRange = Math.max(1, waterfallMax - waterfallMin);
+
+  const ruleTone = (tone: string) => {
+    if (tone === "emerald") return "border-emerald-400/20 bg-emerald-500/8 text-emerald-200";
+    if (tone === "amber") return "border-amber-400/20 bg-amber-500/8 text-amber-200";
+    if (tone === "rose") return "border-rose-400/20 bg-rose-500/8 text-rose-200";
+    return "border-slate-500/20 bg-slate-500/8 text-slate-200";
+  };
+
+  const HelpDot = ({ text }: { text: string }) => (
+    <span className="group relative ml-1 inline-flex align-middle">
+      <button type="button" className="inline-flex h-4 w-4 items-center justify-center rounded-full border border-sky-400/25 bg-sky-500/10 text-[10px] font-bold leading-none text-sky-200 hover:bg-sky-500/15">
+        ?
+      </button>
+      <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-2 hidden w-56 -translate-x-1/2 rounded-xl border border-sky-400/20 bg-slate-800/95 px-3 py-2 text-left text-[11px] font-normal leading-5 text-slate-100 shadow-xl shadow-sky-950/20 group-hover:block">
+        {text}
+      </span>
+    </span>
+  );
+
+  const labels = ["1月", "2月", "3月", "4月", "5月", "6月"];
+  const values = currentRegion ? [...currentRegion.monthlySpend, ...currentRegion.monthlyRevenue] : [0];
+  const max = Math.max(...values, 0);
+  const min = Math.min(...values, 0);
+  const range = Math.max(1, max - min);
+  const toY = (v: number) => 160 - ((v - min) / range) * 130;
+  const spendPoints = currentRegion ? currentRegion.monthlySpend.map((v, i) => `${30 + i * 48},${toY(v)}`).join(" ") : "";
+  const revenuePoints = currentRegion ? currentRegion.monthlyRevenue.map((v, i) => `${30 + i * 48},${toY(v)}`).join(" ") : "";
+  const zeroY = toY(0);
+
+  return (
+    <div className={`min-h-screen ${palette.bg} ${palette.text} p-6`}>
+      <div className="mx-auto max-w-[1500px] space-y-6">
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className={`rounded-[28px] ${palette.panel} p-6 shadow-2xl shadow-sky-950/20 ring-1 ${palette.border}`}>
+          <div className="mb-3 flex items-center gap-3">
+            <div className={`rounded-2xl border ${palette.accentBorder} ${palette.accentBg} px-3 py-1 text-sm font-semibold ${palette.accent}`}>模块1</div>
+            <div className="text-xl font-semibold tracking-wide">总体判断</div>
+          </div>
+          <div className={`rounded-[24px] border ${palette.line} bg-slate-900/60 p-5 leading-8 text-slate-200`}>
+            <span className="font-semibold text-white">本期实际费用{totalActual.toLocaleString()}万元，环比增加6.3%，同比增加12.4%，较预算超支5.1%。</span>
+            <span className="ml-1">整体看，本月费用属于</span>
+            <span className="mx-1 rounded-md border border-amber-400/20 bg-amber-500/10 px-2 py-1 font-semibold text-amber-200">局部异常</span>
+            <span>，主因是</span>
+            <span className="mx-1 font-semibold text-sky-300">研发费用一次性前移</span>
+            <span>和</span>
+            <span className="mx-1 font-semibold text-sky-300">区域经营投入增加</span>
+            <span>；其中</span>
+            <span className="mx-1 font-semibold text-white">区域费用效率问题优先级更高</span>
+            <span>。</span>
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className={`rounded-[28px] ${palette.panel} p-6 shadow-2xl shadow-sky-950/20 ring-1 ${palette.border}`}>
+          <div className="mb-4 flex items-center gap-3">
+            <div className={`rounded-2xl border ${palette.accentBorder} ${palette.accentBg} px-3 py-1 text-sm font-semibold ${palette.accent}`}>模块2</div>
+            <div>
+              <div className="text-xl font-semibold tracking-wide">总差异拆解图</div>
+              <div className={`text-sm ${palette.sub}`}>瀑布图展示预算差异由哪些费用块形成，点击柱体联动下方费用解释</div>
+            </div>
+          </div>
+          <div className={`rounded-[24px] border ${palette.line} bg-slate-900/60 p-5`}>
+            <div className="grid h-[300px] grid-cols-5 items-end gap-4 xl:grid-cols-6">
+              {waterfallSeries.series.map((block) => {
+                const active = selected === block.id;
+                const positive = block.diff >= 0;
+                const bottom = ((block.base - waterfallMin) / waterfallRange) * 100;
+                const height = (block.value / waterfallRange) * 100;
+                return (
+                  <button key={block.id} onClick={() => setSelected(block.id)} className="flex h-full flex-col justify-end text-center">
+                    <div className="relative flex-1 rounded-[22px] border border-sky-400/10 bg-slate-950/40 px-2 py-3 backdrop-blur-sm">
+                      <div className="absolute left-2 right-2 border-t border-dashed border-sky-400/10" style={{ bottom: `${((0 - waterfallMin) / waterfallRange) * 100}%` }} />
+                      <motion.div
+                        layout
+                        whileHover={{ scale: 1.02 }}
+                        className={`absolute left-2 right-2 rounded-2xl ${positive ? "bg-gradient-to-b from-sky-300 to-sky-500" : "bg-gradient-to-b from-slate-400 to-slate-600"} ${active ? "ring-2 ring-sky-300 shadow-[0_0_30px_rgba(56,189,248,0.25)]" : "ring-1 ring-white/5"}`}
+                        style={{ bottom: `${bottom}%`, height: `${Math.max(height, 8)}%` }}
+                      />
+                      <div className="absolute left-1/2 top-3 -translate-x-1/2 text-xs font-semibold text-slate-300">
+                        {positive ? `+${block.diff}` : block.diff}
+                      </div>
+                    </div>
+                    <div className={`mt-3 rounded-2xl border px-2 py-2 text-xs font-medium leading-5 transition ${active ? "border-sky-300/30 bg-sky-500/15 text-sky-100" : "border-slate-700 bg-slate-900/40 text-slate-300"}`}>
+                      {block.name}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            <div className="mt-4 flex items-center justify-between rounded-[20px] border border-dashed border-sky-400/15 bg-slate-950/40 px-4 py-3 text-sm text-slate-300">
+              <span>总费用预算差异</span>
+              <span className={`font-semibold ${totalDiff >= 0 ? "text-sky-300" : "text-slate-200"}`}>{totalDiff >= 0 ? `+${totalDiff}` : totalDiff}万元</span>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className={`rounded-[28px] ${palette.panel} p-6 shadow-2xl shadow-sky-950/20 ring-1 ${palette.border}`}>
+          <div className="mb-4 flex items-center gap-3">
+            <div className={`rounded-2xl border ${palette.accentBorder} ${palette.accentBg} px-3 py-1 text-sm font-semibold ${palette.accent}`}>模块3</div>
+            <div>
+              <div className="text-xl font-semibold tracking-wide">费用解释</div>
+              <div className={`text-sm ${palette.sub}`}>与瀑布图联动；点总部费用看报表项+一级科目，点区域费用看报表项+二级科目</div>
+            </div>
+          </div>
+
+          <div className={`mb-4 rounded-[24px] border ${palette.line} bg-slate-900/50 px-5 py-4 text-sm ${palette.sub}`}>
+            与瀑布图联动；点总部费用看报表项+一级科目，点区域费用看报表项+二级科目。
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div key={current.id} initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.22 }} className="space-y-4">
+              <div className={`rounded-[22px] border ${palette.line} bg-slate-900/60 p-4 text-sm leading-7 text-slate-300`}>
+                <span className="font-semibold text-slate-100">当前选中：</span>
+                <span className="ml-1 text-sky-300">{current.name}</span>
+                <span className="ml-3"><span className="font-semibold text-slate-100">摘要：</span>{current.summary}</span>
+              </div>
+
+              <div className={`overflow-hidden rounded-[24px] border ${palette.line} bg-slate-950/35`}>
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-900/80 text-slate-300">
+                    <tr>
+                      <th className="px-4 py-3 font-medium">费用板块</th>
+                      <th className="px-4 py-3 font-medium">实际金额</th>
+                      <th className="px-4 py-3 font-medium">较预算</th>
+                      <th className="px-4 py-3 font-medium">环比</th>
+                      <th className="px-4 py-3 font-medium">同比</th>
+                      <th className="px-4 py-3 font-medium">原因标签</th>
+                      <th className="px-4 py-3 font-medium">一句话原因说明</th>
+                      <th className="px-4 py-3 font-medium">管理判断</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {(current.type === "hq" ? current.items : current.detailItems).map((item: any, idx: number) => (
+                      <motion.tr key={item.name} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="border-t border-sky-400/10 align-top text-slate-200">
+                        <td className="px-4 py-3">
+                          <div className="font-medium">{item.board}</div>
+                          <div className={`text-xs ${palette.sub}`}>{current.type === "hq" ? `→ ${item.name}` : `${item.region} → ${item.name}`}</div>
+                        </td>
+                        <td className="px-4 py-3">{item.actual}万元</td>
+                        <td className="px-4 py-3 text-sky-300">{item.budgetDiff > 0 ? `+${item.budgetDiff}` : item.budgetDiff}万元</td>
+                        <td className="px-4 py-3">{item.mom}</td>
+                        <td className="px-4 py-3">{item.yoy}</td>
+                        <td className="px-4 py-3"><span className="rounded-full border border-sky-400/15 bg-sky-500/8 px-2.5 py-1 text-xs font-medium text-sky-100">{item.tag}</span></td>
+                        <td className={`px-4 py-3 ${palette.sub}`}>{item.reason}</td>
+                        <td className="px-4 py-3"><span className="rounded-full border border-slate-600 bg-slate-900/60 px-2.5 py-1 text-xs font-medium text-slate-200">{item.judgment}</span></td>
+                      </motion.tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.13 }} className={`rounded-[28px] ${palette.panel} p-6 shadow-2xl shadow-sky-950/20 ring-1 ${palette.border}`}>
+          <div className="mb-4 flex items-center gap-3">
+            <div className={`rounded-2xl border ${palette.accentBorder} ${palette.accentBg} px-3 py-1 text-sm font-semibold ${palette.accent}`}>模块4</div>
+            <div>
+              <div className="text-xl font-semibold tracking-wide">区域变动费用助销能力图</div>
+              <div className={`text-sm ${palette.sub}`}>单独展示区域变动费用与滞后收入关系，这是总部看区域效率的亮点模块</div>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className={`rounded-[20px] border ${palette.line} bg-slate-900/35 px-4 py-3 text-sm ${palette.sub}`}>
+              先看左侧区域结果矩阵；点击色块后，右侧联动查看该区域每月收入变动率与费用变动率趋势。
+            </div>
+
+            <div className="grid gap-4 xl:grid-cols-[1.9fr_1fr]">
+              <div className={`overflow-hidden rounded-[24px] border ${palette.line} bg-slate-950/35`}>
+                <div className="flex items-center justify-between border-b border-sky-400/10 px-4 py-3">
+                  <div>
+                    <div className="text-sm font-semibold text-slate-200">区域结果矩阵</div>
+                    <div className={`text-xs ${palette.sub}`}>按区域查看投入有效、投入待复盘、重点异常分布</div>
+                  </div>
+                  <div className={`text-xs ${palette.sub}`}>点击色块联动右侧趋势</div>
+                </div>
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-900/80 text-slate-300">
+                    <tr>
+                      <th className="px-4 py-3 font-medium">区域</th>
+                      <th className="px-4 py-3 font-medium">说明</th>
+                      <th className="px-4 py-3 font-medium">投入有效<HelpDot text="费用投入后，收入同步改善，或在费用收缩情况下收入仍保持增长。" /></th>
+                      <th className="px-4 py-3 font-medium">投入待复盘<HelpDot text="费用变化后，收入改善不明显，或费用收缩后收入同步走弱，需要复盘投放或收缩策略。" /></th>
+                      <th className="px-4 py-3 font-medium">重点异常<HelpDot text="费用增加的同时收入下滑，投入与销售结果明显背离，需优先关注。" /></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {regionItems.map((item, idx) => {
+                      const active = selectedRegion === item.name;
+                      return (
+                        <motion.tr key={item.name} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className={`border-t border-sky-400/10 text-slate-200 ${active ? "bg-sky-500/5" : ""}`}>
+                          <td className="px-4 py-4 font-medium">{item.name}</td>
+                          <td className={`px-4 py-4 text-xs leading-6 ${palette.sub}`}>
+                            <div>{item.reason}</div>
+                            <div className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-[11px]">
+                              <span>收入变动率<HelpDot text="滞后1个月的近3个月收入均值，相对前3个月均值的变化率。" />：<span className="text-slate-200">{item.revenueLag}</span></span>
+                              <span>费用变动率<HelpDot text="近3个月经营型变动费用均值，相对前3个月均值的变化率。" />：<span className="text-slate-200">{item.spendRate}</span></span>
+                              <span>偏离度<HelpDot text="费用变化率减去滞后收入变化率；越接近0通常说明越匹配。" />：<span className="text-slate-200">{item.deviation}</span></span>
+                              <span>弹性<HelpDot text="滞后收入变化率除以费用变化率，用于衡量收入对投入变化的响应强弱。" />：<span className="text-slate-200">{item.elasticity}</span></span>
+                            </div>
+                          </td>
+                          <td className="px-4 py-4">{item.status === "投入有效" ? <button onClick={() => setSelectedRegion(item.name)} className={`h-14 w-full rounded-2xl border transition ${active ? "border-emerald-300/40 bg-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.22)]" : "border-emerald-400/20 bg-emerald-500/15 hover:bg-emerald-500/22"}`} /> : null}</td>
+                          <td className="px-4 py-4">{item.status === "投入待复盘" ? <button onClick={() => setSelectedRegion(item.name)} className={`h-14 w-full rounded-2xl border transition ${active ? "border-amber-300/40 bg-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.22)]" : "border-amber-400/20 bg-amber-500/15 hover:bg-amber-500/22"}`} /> : null}</td>
+                          <td className="px-4 py-4">{item.status === "重点异常" ? <button onClick={() => setSelectedRegion(item.name)} className={`h-14 w-full rounded-2xl border transition ${active ? "border-rose-300/40 bg-rose-500/30 shadow-[0_0_20px_rgba(244,63,94,0.22)]" : "border-rose-400/20 bg-rose-500/15 hover:bg-rose-500/22"}`} /> : null}</td>
+                        </motion.tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className={`rounded-[24px] border ${palette.line} bg-slate-950/35 p-5`}>
+                  <div className="mb-3 flex items-center justify-between">
+                    <div>
+                      <div className="text-sm font-semibold text-slate-200">区域趋势联动</div>
+                      <div className={`text-xs ${palette.sub}`}>点击左侧色块，查看该区域每月收入变动率与费用变动率趋势</div>
+                    </div>
+                    <div className="rounded-full border border-sky-400/20 bg-sky-500/10 px-3 py-1 text-sm font-medium text-sky-200">{currentRegion?.name}</div>
+                  </div>
+
+                  <div className={`mb-4 rounded-[20px] border ${palette.line} bg-slate-900/50 p-4 text-sm ${palette.sub}`}>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>收入变动率<HelpDot text="滞后1个月的近3个月收入均值，相对前3个月均值的变化率。" />：<span className="text-slate-100">{currentRegion?.revenueLag}</span></div>
+                      <div>费用变动率<HelpDot text="近3个月经营型变动费用均值，相对前3个月均值的变化率。" />：<span className="text-slate-100">{currentRegion?.spendRate}</span></div>
+                      <div>偏离度<HelpDot text="费用变化率减去滞后收入变化率；越接近0通常说明越匹配。" />：<span className="text-slate-100">{currentRegion?.deviation}</span></div>
+                      <div>弹性<HelpDot text="滞后收入变化率除以费用变化率，用于衡量收入对投入变化的响应强弱。" />：<span className="text-slate-100">{currentRegion?.elasticity}</span></div>
+                    </div>
+                    <div className="mt-3 text-xs leading-6">总结：{currentRegion?.reason}</div>
+                  </div>
+
+                  <div className={`rounded-[20px] border ${palette.line} bg-slate-900/40 p-4`}>
+                    <svg viewBox="0 0 300 180" className="w-full overflow-visible">
+                      <line x1="24" y1={zeroY} x2="276" y2={zeroY} stroke="rgba(148,163,184,0.25)" strokeDasharray="4 4" />
+                      {labels.map((lab, i) => (
+                        <g key={lab}>
+                          <line x1={30 + i * 48} y1="24" x2={30 + i * 48} y2="166" stroke="rgba(56,189,248,0.08)" />
+                          <text x={30 + i * 48} y="176" textAnchor="middle" fill="rgba(148,163,184,0.8)" fontSize="10">{lab}</text>
+                        </g>
+                      ))}
+                      <polyline fill="none" stroke="rgba(56,189,248,1)" strokeWidth="3" points={spendPoints} />
+                      <polyline fill="none" stroke="rgba(34,197,94,1)" strokeWidth="3" points={revenuePoints} />
+                      {currentRegion?.monthlySpend.map((v, i) => <circle key={`s-${i}`} cx={30 + i * 48} cy={toY(v)} r="3.5" fill="rgba(56,189,248,1)" />)}
+                      {currentRegion?.monthlyRevenue.map((v, i) => <circle key={`r-${i}`} cx={30 + i * 48} cy={toY(v)} r="3.5" fill="rgba(34,197,94,1)" />)}
+                    </svg>
+                    <div className="mt-3 flex items-center gap-4 text-xs text-slate-300">
+                      <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-sky-400" />费用变动率</div>
+                      <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />收入变动率</div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.17 }} className={`rounded-[28px] ${palette.panel} p-6 shadow-2xl shadow-sky-950/20 ring-1 ${palette.border}`}>
+          <div className="mb-4 flex items-center gap-3">
+            <div className={`rounded-2xl border ${palette.accentBorder} ${palette.accentBg} px-3 py-1 text-sm font-semibold ${palette.accent}`}>模块5</div>
+            <div className="text-xl font-semibold tracking-wide">重点关注对象</div>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            {focusList.map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <motion.div key={item.owner} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 + idx * 0.05 }} className={`rounded-[24px] border ${palette.line} bg-slate-900/55 p-5`}>
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className={`rounded-2xl border ${palette.accentBorder} ${palette.accentBg} p-2`}><Icon className="h-5 w-5 text-sky-300" /></div>
+                    <div>
+                      <div className="mb-1 inline-flex rounded-full border border-sky-400/20 bg-sky-500/10 px-2.5 py-1 text-xs font-semibold text-sky-200">{item.priority}</div>
+                      <div className={`text-sm ${palette.sub}`}>{item.category}</div>
+                      <div className="font-semibold text-slate-100">{item.owner}</div>
+                    </div>
+                  </div>
+                  <div className={`text-sm leading-7 ${palette.sub}`}>{item.text}</div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
