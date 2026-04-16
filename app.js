@@ -327,6 +327,24 @@ const statusTone = {
   "重点异常": "tone-rose",
 };
 
+const matrixRateMetrics = {
+  tecno: { feeRate: "2.9%", feeRateMom: "+10%", feeRateYoy: "+20%" },
+  "tecno-east-africa": { feeRate: "3.3%", feeRateMom: "+12%", feeRateYoy: "+18%" },
+  kenya: { feeRate: "3.8%", feeRateMom: "+14%", feeRateYoy: "+19%" },
+  ethiopia: { feeRate: "2.7%", feeRateMom: "+7%", feeRateYoy: "+11%" },
+  "tecno-west-africa": { feeRate: "1.9%", feeRateMom: "-3%", feeRateYoy: "+4%" },
+  ghana: { feeRate: "1.7%", feeRateMom: "-4%", feeRateYoy: "+5%" },
+  infinix: { feeRate: "2.7%", feeRateMom: "+6%", feeRateYoy: "+9%" },
+  "infinix-sea": { feeRate: "2.8%", feeRateMom: "+8%", feeRateYoy: "+11%" },
+  indonesia: { feeRate: "2.6%", feeRateMom: "+7%", feeRateYoy: "+10%" },
+  itel: { feeRate: "2.1%", feeRateMom: "+4%", feeRateYoy: "+8%" },
+  "itel-middle-east": { feeRate: "2.0%", feeRateMom: "+3%", feeRateYoy: "+7%" },
+  saudi: { feeRate: "1.8%", feeRateMom: "+2%", feeRateYoy: "+6%" },
+  philips: { feeRate: "1.6%", feeRateMom: "-1%", feeRateYoy: "+2%" },
+  "philips-latam": { feeRate: "1.5%", feeRateMom: "-2%", feeRateYoy: "+1%" },
+  mexico: { feeRate: "1.4%", feeRateMom: "-3%", feeRateYoy: "0%" },
+};
+
 const state = {
   selectedBlockId: "rd",
   selectedNodeKey: "tecno",
@@ -362,6 +380,16 @@ const allRegionNodes = flattenNodes(regionTree);
 
 function getNode(key) {
   return allRegionNodes.find((node) => node.key === key) || allRegionNodes[0];
+}
+
+function getMatrixRateMetrics(node) {
+  return (
+    matrixRateMetrics[node.key] || {
+      feeRate: "--",
+      feeRateMom: "--",
+      feeRateYoy: "--",
+    }
+  );
 }
 
 function getLevelRows() {
@@ -591,6 +619,7 @@ function renderMatrixRows() {
   return getLevelRows()
     .map((node) => {
       const selected = state.selectedNodeKey === node.key;
+      const rateMetrics = getMatrixRateMetrics(node);
       const cells = ["投入有效", "投入待复盘", "重点异常"]
         .map((status) => {
           const active = node.status === status;
@@ -615,16 +644,13 @@ function renderMatrixRows() {
               ${drill || `<span class="matrix-leaf-tag">${levelLabel(node.level)}</span>`}
             </div>
           </td>
+          <td class="matrix-kpi-cell"><strong>${rateMetrics.feeRate}</strong></td>
+          <td class="matrix-kpi-cell"><strong>${rateMetrics.feeRateMom}</strong></td>
+          <td class="matrix-kpi-cell"><strong>${rateMetrics.feeRateYoy}</strong></td>
+          ${cells}
           <td>
             ${node.summary}
-            <div class="matrix-meta">
-              <div class="subline"><strong>收入变动率：</strong><span>${node.revenueRate}</span></div>
-              <div class="subline"><strong>费用变动率：</strong><span>${node.spendRate}</span></div>
-              <div class="subline"><strong>偏离度：</strong><span>${node.deviation}</span></div>
-              <div class="subline"><strong>弹性：</strong><span>${node.elasticity}</span></div>
-            </div>
           </td>
-          ${cells}
         </tr>
       `;
     })
@@ -657,10 +683,13 @@ function renderMatrix() {
           <thead>
             <tr>
               <th>展示层级</th>
-              <th>说明</th>
+              <th>费率</th>
+              <th>费率环比</th>
+              <th>费率同比</th>
               <th>投入有效${infoDot(matrixHelp["投入有效"])}</th>
               <th>投入待复盘${infoDot(matrixHelp["投入待复盘"])}</th>
               <th>重点异常${infoDot(matrixHelp["重点异常"])}</th>
+              <th>说明</th>
             </tr>
           </thead>
           <tbody>${renderMatrixRows()}</tbody>
