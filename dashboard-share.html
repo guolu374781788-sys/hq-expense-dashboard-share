@@ -1555,7 +1555,11 @@ function renderMatrixRows() {
         .map((status) => {
           const active = node.status === status;
           const cls = active ? `${statusTone[status]} active` : "empty-cell";
-          return `<button class="matrix-cell ${cls}" ${active ? `data-select-node="${node.key}"` : ""}></button>`;
+          return `
+            <td>
+              <button class="matrix-cell ${cls}" ${active ? `data-select-node="${node.key}"` : ""}></button>
+            </td>
+          `;
         })
         .join("");
 
