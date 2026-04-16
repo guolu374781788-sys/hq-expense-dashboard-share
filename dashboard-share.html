@@ -1,1774 +1,1498 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>璐圭敤鐪嬫澘</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>区域费用分析看板</title>
   <style>
-:root {
-  --bg: #edf4fb;
-  --panel: rgba(245, 249, 255, 0.9);
-  --panel-strong: rgba(255, 255, 255, 0.96);
-  --line: rgba(59, 130, 246, 0.14);
-  --line-strong: rgba(59, 130, 246, 0.22);
-  --text: #16324f;
-  --sub: #6b85a3;
-  --accent: #2f6fe4;
-  --accent-soft: rgba(47, 111, 228, 0.1);
-  --positive: #38bdf8;
-  --negative: #94a3b8;
-  --emerald: #34d399;
-  --amber: #fbbf24;
-  --rose: #fb7185;
-  --shadow: 0 20px 48px rgba(120, 149, 184, 0.18);
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  min-height: 100%;
-  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-  background:
-    radial-gradient(circle at top left, rgba(191, 219, 254, 0.45), transparent 30%),
-    radial-gradient(circle at top right, rgba(219, 234, 254, 0.55), transparent 24%),
-    linear-gradient(180deg, #f4f8fd 0%, #eaf2fb 100%);
-  color: var(--text);
-}
-
-body {
-  min-height: 100vh;
-}
-
-.page-shell {
-  padding: 28px 18px 40px;
-}
-
-.dashboard {
-  width: min(1480px, 100%);
-  margin: 0 auto;
-  display: grid;
-  gap: 24px;
-}
-
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--line-strong);
-  border-radius: 28px;
-  padding: 24px;
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(14px);
-}
-
-.panel-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.linked-panel {
-  padding-bottom: 20px;
-}
-
-.linked-block {
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.56);
-  padding: 18px;
-}
-
-.linked-block + .linked-block {
-  margin-top: 14px;
-}
-
-.linked-header {
-  margin-bottom: 14px;
-}
-
-.linked-divider {
-  display: none;
-}
-
-.module-tag {
-  flex: none;
-  padding: 7px 12px;
-  border-radius: 16px;
-  border: 1px solid rgba(125, 211, 252, 0.22);
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.panel-title {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.panel-subtitle {
-  color: var(--sub);
-  font-size: 14px;
-  line-height: 1.6;
-  margin-top: 4px;
-}
-
-.judgement {
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  padding: 18px 20px;
-  background: rgba(255, 255, 255, 0.72);
-  line-height: 1.9;
-  color: #33506d;
-  font-size: 15px;
-}
-
-.judgement strong {
-  color: #102a43;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 3px 10px;
-  border-radius: 999px;
-  font-weight: 700;
-}
-
-.pill-amber {
-  background: rgba(251, 191, 36, 0.12);
-  border: 1px solid rgba(251, 191, 36, 0.22);
-  color: #fde68a;
-}
-
-.pill-sky {
-  color: var(--accent);
-}
-
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 14px;
-  margin-top: 18px;
-}
-
-.metric-card {
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.68);
-  border-radius: 20px;
-  padding: 16px;
-}
-
-.metric-label {
-  color: var(--sub);
-  font-size: 13px;
-}
-
-.metric-value {
-  margin-top: 8px;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-.metric-note {
-  margin-top: 6px;
-  color: #5f7a96;
-  font-size: 13px;
-}
-
-.waterfall {
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  padding: 18px;
-  background: rgba(255, 255, 255, 0.72);
-}
-
-.waterfall-top-metrics {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 14px;
-  padding: 0;
-  border-radius: 20px;
-  background: transparent;
-  box-shadow: none;
-}
-
-.waterfall-metric-panel {
-  min-width: 0;
-}
-
-.waterfall-mini-card {
-  height: 100%;
-  border-radius: 18px;
-  padding: 14px 18px;
-  border: 1px solid rgba(59, 130, 246, 0.14);
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
-}
-
-.waterfall-metric-panel.active .waterfall-mini-card {
-  border-color: rgba(47, 111, 228, 0.28);
-  background: rgba(225, 239, 255, 0.95);
-  box-shadow: 0 10px 24px rgba(120, 149, 184, 0.12);
-}
-
-.waterfall-mini-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: center;
-  color: #486581;
-  font-size: 14px;
-}
-
-.waterfall-mini-row + .waterfall-mini-row {
-  margin-top: 10px;
-}
-
-.waterfall-mini-row strong {
-  color: #1d4ed8;
-  font-size: 15px;
-}
-
-.waterfall-bottom-metrics {
-  margin-bottom: 12px;
-}
-
-.waterfall-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 14px;
-  align-items: stretch;
-  min-height: 320px;
-}
-
-.waterfall-card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  cursor: pointer;
-}
-
-.waterfall-stage {
-  position: relative;
-  flex: 1;
-  min-height: 250px;
-  border-radius: 22px;
-  border: 1px solid rgba(56, 189, 248, 0.08);
-  background: rgba(233, 241, 251, 0.8);
-  padding: 10px;
-}
-
-.zero-line {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  border-top: 1px dashed rgba(56, 189, 248, 0.18);
-}
-
-.waterfall-bar {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  border-radius: 18px;
-  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
-}
-
-.waterfall-card:hover .waterfall-bar,
-.waterfall-card.active .waterfall-bar {
-  transform: scale(1.02);
-  box-shadow: 0 0 28px rgba(56, 189, 248, 0.22);
-}
-
-.bar-positive {
-  background: linear-gradient(180deg, #7dd3fc, #0ea5e9);
-}
-
-.bar-negative {
-  background: linear-gradient(180deg, #94a3b8, #475569);
-}
-
-.waterfall-value {
-  position: absolute;
-  left: 50%;
-  top: 10px;
-  transform: translateX(-50%);
-  font-size: 13px;
-  font-weight: 700;
-  color: #486581;
-}
-
-.waterfall-label {
-  min-height: 82px;
-  border: 1px solid rgba(100, 116, 139, 0.35);
-  background: rgba(255, 255, 255, 0.74);
-  border-radius: 18px;
-  padding: 12px;
-  text-align: center;
-  color: #486581;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.waterfall-name {
-  color: #102a43;
-  font-size: 16px;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.waterfall-subtitle {
-  color: #486581;
-  font-size: 13px;
-}
-
-.waterfall-card.active .waterfall-label {
-  border-color: rgba(125, 211, 252, 0.35);
-  background: rgba(47, 111, 228, 0.12);
-  color: #102a43;
-}
-
-.waterfall-total {
-  margin-top: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  border: 1px dashed var(--line);
-  border-radius: 18px;
-  padding: 12px 16px;
-  color: #486581;
-}
-
-.explanation-tip,
-.region-tip {
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.62);
-  color: var(--sub);
-  font-size: 14px;
-  line-height: 1.7;
-  margin-bottom: 16px;
-}
-
-.current-summary {
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  padding: 16px 18px;
-  background: rgba(255, 255, 255, 0.7);
-  color: #486581;
-  line-height: 1.8;
-  margin-bottom: 16px;
-}
-
-.current-summary strong {
-  color: #102a43;
-}
-
-.table-wrap {
-  overflow-x: auto;
-  border: 1px solid var(--line);
-  border-radius: 24px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 980px;
-  background: rgba(255, 255, 255, 0.66);
-}
-
-thead {
-  background: rgba(231, 240, 250, 0.95);
-}
-
-th,
-td {
-  padding: 14px 16px;
-  text-align: left;
-  vertical-align: top;
-  border-top: 1px solid rgba(56, 189, 248, 0.08);
-  font-size: 14px;
-}
-
-th {
-  color: #35506b;
-  font-weight: 600;
-}
-
-tbody td {
-  color: #16324f;
-}
-
-.subline {
-  margin-top: 6px;
-  color: var(--sub);
-  font-size: 12px;
-}
-
-.matrix-meta {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px 24px;
-  margin-top: 10px;
-}
-
-.small-tag,
-.judge-tag {
-  display: inline-flex;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.small-tag {
-  border: 1px solid rgba(56, 189, 248, 0.16);
-  background: rgba(47, 111, 228, 0.08);
-  color: #1d4ed8;
-}
-
-.judge-tag {
-  border: 1px solid rgba(100, 116, 139, 0.42);
-  background: rgba(255, 255, 255, 0.82);
-  color: #35506b;
-}
-
-.region-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(340px, 0.95fr);
-  gap: 18px;
-}
-
-.matrix-wrap,
-.trend-wrap {
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.62);
-  overflow: hidden;
-}
-
-.matrix-wrap .table-wrap {
-  overflow-x: hidden;
-}
-
-.matrix-wrap table {
-  min-width: 0;
-  table-layout: fixed;
-}
-
-.matrix-wrap th,
-.matrix-wrap td {
-  padding: 12px 10px;
-}
-
-.matrix-wrap thead th:nth-child(1),
-.matrix-wrap tbody td:nth-child(1) {
-  width: 110px;
-}
-
-.matrix-wrap thead th:nth-child(2),
-.matrix-wrap tbody td:nth-child(2) {
-  width: 44%;
-}
-
-.matrix-wrap thead th:nth-child(3),
-.matrix-wrap thead th:nth-child(4),
-.matrix-wrap thead th:nth-child(5),
-.matrix-wrap tbody td:nth-child(3),
-.matrix-wrap tbody td:nth-child(4),
-.matrix-wrap tbody td:nth-child(5) {
-  width: 150px;
-}
-
-.matrix-wrap .subline {
-  font-size: 11px;
-  line-height: 1.6;
-}
-
-.matrix-path {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 18px 0;
-  flex-wrap: wrap;
-}
-
-.path-chip {
-  border: 1px solid rgba(47, 111, 228, 0.28);
-  background: rgba(47, 111, 228, 0.14);
-  color: #2759b8;
-  border-radius: 999px;
-  padding: 5px 12px;
-  font-size: 12px;
-  cursor: pointer;
-  font-weight: 700;
-}
-
-.path-chip.active {
-  background: rgba(47, 111, 228, 0.2);
-  color: #163d84;
-}
-
-.path-sep {
-  color: var(--sub);
-  font-size: 12px;
-}
-
-.matrix-head,
-.trend-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: flex-start;
-  padding: 16px 18px;
-  border-bottom: 1px solid rgba(56, 189, 248, 0.1);
-}
-
-.section-title {
-  font-size: 15px;
-  font-weight: 700;
-}
-
-.section-sub {
-  margin-top: 4px;
-  font-size: 12px;
-  color: var(--sub);
-  line-height: 1.6;
-}
-
-.hint {
-  font-size: 12px;
-  color: var(--sub);
-}
-
-.matrix-wrap .section-sub,
-.matrix-wrap .hint,
-.matrix-wrap th {
-  font-size: 12px;
-}
-
-.info-dot {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  margin-left: 6px;
-  border-radius: 999px;
-  border: 1px solid rgba(125, 211, 252, 0.3);
-  background: rgba(14, 165, 233, 0.12);
-  color: var(--accent);
-  font-size: 10px;
-  font-weight: 700;
-  cursor: help;
-}
-
-.info-dot:hover::after {
-  content: attr(data-tip);
-  position: absolute;
-  left: 50%;
-  top: calc(100% + 8px);
-  transform: translateX(-50%);
-  width: 220px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  border: 1px solid rgba(125, 211, 252, 0.18);
-  background: rgba(15, 23, 42, 0.96);
-  color: #f8fafc;
-  font-size: 12px;
-  line-height: 1.6;
-  z-index: 8;
-  box-shadow: 0 14px 40px rgba(2, 6, 23, 0.4);
-}
-
-.matrix-cell {
-  width: 100%;
-  height: 46px;
-  border-radius: 16px;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
-}
-
-.matrix-row-active td {
-  background: rgba(47, 111, 228, 0.08);
-}
-
-.matrix-level-cell {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-}
-
-.matrix-level-name,
-.drill-link {
-  border: 0;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  text-align: left;
-}
-
-.matrix-level-name {
-  color: #16324f;
-  font-size: 16px;
-  font-weight: 700;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
-}
-
-.drill-link {
-  color: #2f6fe4;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.drill-link:hover,
-.matrix-level-name:hover {
-  opacity: 0.86;
-}
-
-.matrix-leaf-tag {
-  color: var(--sub);
-  font-size: 12px;
-}
-
-.matrix-wrap tbody td:nth-child(1) {
-  color: #16324f;
-}
-
-.matrix-wrap tbody td:nth-child(2) {
-  color: #6b85a3;
-}
-
-.matrix-wrap tbody td:nth-child(2) .subline {
-  color: #486581;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.matrix-wrap tbody td:nth-child(2) .subline strong,
-.matrix-wrap tbody td:nth-child(2) .subline span:last-child,
-.matrix-wrap tbody td:nth-child(2) .subline {
-  color: #35506b;
-}
-
-.matrix-wrap tbody td:nth-child(2) .subline strong {
-  color: #16324f !important;
-  font-weight: 800;
-  opacity: 1 !important;
-  text-shadow: none;
-}
-
-.matrix-wrap tbody td:nth-child(2) .subline span {
-  color: #2b4b68 !important;
-  font-weight: 700;
-  opacity: 1 !important;
-}
-
-.matrix-wrap tbody td:nth-child(2) .info-dot {
-  display: none;
-}
-
-.matrix-cell:hover {
-  transform: translateY(-1px);
-}
-
-.matrix-cell.active {
-  box-shadow: 0 0 22px rgba(255, 255, 255, 0.14);
-}
-
-.tone-emerald {
-  background: rgba(16, 185, 129, 0.18);
-  border-color: rgba(52, 211, 153, 0.28);
-}
-
-.tone-emerald.active {
-  background: rgba(16, 185, 129, 0.32);
-}
-
-.tone-amber {
-  background: rgba(245, 158, 11, 0.18);
-  border-color: rgba(251, 191, 36, 0.26);
-}
-
-.tone-amber.active {
-  background: rgba(245, 158, 11, 0.34);
-}
-
-.tone-rose {
-  background: rgba(244, 63, 94, 0.18);
-  border-color: rgba(251, 113, 133, 0.28);
-}
-
-.tone-rose.active {
-  background: rgba(244, 63, 94, 0.34);
-}
-
-.empty-cell {
-  background: transparent;
-  border: 1px dashed rgba(100, 116, 139, 0.18);
-  cursor: default;
-}
-
-.trend-wrap {
-  padding-bottom: 18px;
-}
-
-.region-badge {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid rgba(125, 211, 252, 0.22);
-  background: rgba(14, 165, 233, 0.12);
-  border-radius: 999px;
-  color: #1f4ea8;
-  padding: 6px 12px;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.trend-metrics {
-  margin: 0 18px 14px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
-  padding: 14px;
-}
-
-.trend-metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px 16px;
-  color: #35506b;
-  font-size: 14px;
-}
-
-.trend-summary {
-  margin-top: 12px;
-  color: var(--sub);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.chart-wrap {
-  margin: 0 18px;
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  background: rgba(248, 251, 255, 0.85);
-  padding: 12px 14px 16px;
-}
-
-.chart-legend {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  margin-top: 10px;
-  color: #486581;
-  font-size: 12px;
-}
-
-.legend-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  margin-right: 8px;
-}
-
-.rule-list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.rule-card {
-  border-radius: 20px;
-  padding: 16px;
-  border: 1px solid rgba(100, 116, 139, 0.22);
-  background: rgba(15, 23, 42, 0.58);
-}
-
-.rule-card h4 {
-  margin: 0 0 8px;
-  font-size: 15px;
-}
-
-.rule-card p {
-  margin: 0;
-  color: var(--sub);
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.rule-card ul {
-  margin: 10px 0 0;
-  padding-left: 18px;
-  color: #cbd5e1;
-  font-size: 13px;
-  line-height: 1.7;
-}
-
-.rule-card.emerald {
-  border-color: rgba(52, 211, 153, 0.2);
-  background: rgba(16, 185, 129, 0.08);
-}
-
-.rule-card.amber {
-  border-color: rgba(251, 191, 36, 0.2);
-  background: rgba(245, 158, 11, 0.08);
-}
-
-.rule-card.rose {
-  border-color: rgba(251, 113, 133, 0.22);
-  background: rgba(244, 63, 94, 0.08);
-}
-
-.focus-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.focus-card {
-  border: 1px solid var(--line);
-  border-radius: 24px;
-  padding: 18px;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.focus-top {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  margin-bottom: 12px;
-}
-
-.focus-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 16px;
-  border: 1px solid rgba(125, 211, 252, 0.22);
-  background: rgba(47, 111, 228, 0.14);
-  color: #2f6fe4;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-}
-
-.focus-priority {
-  display: inline-flex;
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(47, 111, 228, 0.22);
-  background: rgba(47, 111, 228, 0.12);
-  color: #2b5fbf;
-  font-size: 12px;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.focus-category {
-  color: var(--sub);
-  font-size: 13px;
-}
-
-.focus-owner {
-  margin-top: 2px;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.focus-text {
-  color: #486581;
-  font-size: 14px;
-  line-height: 1.8;
-}
-
-.footer-note {
-  color: var(--sub);
-  text-align: center;
-  font-size: 12px;
-}
-
-@media (max-width: 1180px) {
-  .metrics,
-  .rule-list,
-  .focus-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .waterfall-top-metrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .region-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 760px) {
-  .page-shell {
-    padding: 16px 10px 28px;
-  }
-
-  .panel {
-    padding: 18px;
-    border-radius: 22px;
-  }
-
-  .panel-header {
-    flex-direction: column;
-  }
-
-  .panel-title {
-    font-size: 20px;
-  }
-
-  .metrics,
-  .rule-list,
-  .focus-grid,
-  .trend-metrics-grid,
-  .matrix-meta {
-    grid-template-columns: 1fr;
-  }
-
-  .waterfall-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .waterfall-top-metrics {
-    grid-template-columns: 1fr;
-  }
-}
-
-</style>
+    :root {
+      --bg: #020a1c;
+      --panel: #06142c;
+      --panel-2: #031128;
+      --line: rgba(255, 255, 255, 0.1);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(197, 226, 255, 0.68);
+      --cyan: #67d7ff;
+      --cyan-2: #2ea8ff;
+      --amber: #ffcc67;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(20, 77, 173, 0.32), transparent 32%),
+        linear-gradient(180deg, #020914 0%, #041126 100%);
+    }
+
+    .page {
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1480px;
+      margin: 0 auto;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 28px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top, #0b244f 0%, #04102a 45%, #030818 100%);
+      box-shadow: 0 0 80px rgba(26,143,255,0.08);
+    }
+
+    .header {
+      padding: 24px 32px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title { font-size: 30px; font-weight: 700; }
+    .subtitle { margin-top: 8px; color: var(--muted); font-size: 14px; }
+
+    .pills { display: flex; gap: 12px; flex-wrap: wrap; }
+    .pill {
+      border: 1px solid rgba(103,215,255,0.22);
+      background: rgba(103,215,255,0.08);
+      color: #e8f9ff;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+
+    .content { padding: 24px 32px 32px; display: grid; gap: 24px; }
+
+    .section {
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 30px;
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(7,19,46,0.9), rgba(4,11,29,0.92));
+    }
+
+    .section-head {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .section-tag {
+      margin-top: 4px;
+      border-radius: 999px;
+      padding: 6px 12px;
+      border: 1px solid rgba(103,215,255,0.2);
+      background: rgba(103,215,255,0.08);
+      color: #bff2ff;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .section-title { font-size: 34px; font-weight: 700; }
+    .section-sub { margin-top: 6px; color: rgba(191,242,255,0.62); font-size: 14px; }
+
+    .judge-box {
+      border: 1px solid rgba(103,215,255,0.1);
+      border-radius: 24px;
+      background: rgba(7,22,47,0.8);
+      padding: 24px;
+      line-height: 1.8;
+      font-size: 22px;
+    }
+
+    .cyan { color: var(--cyan); font-weight: 700; }
+    .amber { color: var(--amber); font-weight: 700; }
+
+    .label-chip {
+      display: inline-block;
+      margin: 0 4px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: rgba(255, 204, 103, 0.14);
+      color: var(--amber);
+      font-size: 18px;
+    }
+
+    .grid-3, .grid-4, .grid-6 {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .grid-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+
+    .action-card, .metric-card, .panel {
+      border-radius: 24px;
+      border: 1px solid rgba(103,215,255,0.1);
+      background: rgba(6,20,44,0.85);
+      padding: 20px;
+    }
+
+    .focus-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .focus-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      margin-top: 18px;
+      margin-bottom: 8px;
+    }
+
+    .focus-badge {
+      border-radius: 999px;
+      padding: 10px 18px;
+      border: 1px solid rgba(103,215,255,0.18);
+      background: rgba(103,215,255,0.1);
+      color: #7fc8ff;
+      font-size: 15px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    .focus-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.95);
+      line-height: 1.2;
+    }
+
+    .focus-subtitle {
+      margin-top: 8px;
+      color: rgba(191,242,255,0.62);
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .action-card {
+      min-height: 312px;
+      padding: 24px 26px;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at top left, rgba(15, 42, 86, 0.28), transparent 42%),
+        linear-gradient(180deg, rgba(5, 20, 46, 0.98), rgba(4, 16, 38, 0.98));
+      display: flex;
+      flex-direction: column;
+    }
+
+    .action-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      color: rgba(255,255,255,0.96);
+    }
+
+    .action-list {
+      display: grid;
+      gap: 14px;
+      flex: 1;
+    }
+
+    .action-item {
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background:
+        linear-gradient(180deg, rgba(5, 22, 50, 0.92), rgba(4, 17, 39, 0.96));
+      padding: 18px 18px;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.75;
+      font-size: 14px;
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tab {
+      border-radius: 999px;
+      padding: 10px 16px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.72);
+      cursor: pointer;
+    }
+    .tab.active {
+      background: var(--cyan);
+      color: #041126;
+      border-color: transparent;
+      font-weight: 700;
+    }
+
+    .panel { padding: 20px 24px; }
+
+    .metric-card {
+      cursor: pointer;
+      transition: 0.2s ease;
+      background: #031128;
+    }
+
+    .metric-card.active {
+      border-color: rgba(103,215,255,0.45);
+      background: rgba(103,215,255,0.08);
+      box-shadow: 0 0 24px rgba(56,189,248,0.18);
+    }
+
+    .metric-top {
+      text-align: center;
+      font-size: 30px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.9);
+    }
+
+    .bar-wrap {
+      margin-top: 16px;
+      height: 150px;
+      border-radius: 20px;
+      background: #021028;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 24px 16px 16px;
+    }
+
+    .bar {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(191,242,255,0.18);
+      background: linear-gradient(180deg, #7dd3fc, #0ea5e9);
+    }
+
+    .metric-name {
+      margin-top: 16px;
+      padding: 12px 16px;
+      border-radius: 999px;
+      text-align: center;
+      border: 1px solid rgba(103,215,255,0.15);
+      background: rgba(103,215,255,0.06);
+      color: rgba(232,249,255,0.92);
+    }
+
+    .metric-list {
+      margin-top: 16px;
+      display: grid;
+      gap: 10px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-top: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(103,215,255,0.1);
+      background: #031128;
+      padding: 16px 20px;
+      font-size: 18px;
+    }
+
+    .summary strong { color: var(--cyan); }
+
+    .status-bar {
+      border-radius: 999px;
+      border: 1px solid rgba(103,215,255,0.2);
+      background: rgba(103,215,255,0.1);
+      color: #d4f7ff;
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #03142f;
+    }
+
+    th, td {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th {
+      background: #08224a;
+      color: rgba(226, 240, 255, 0.92);
+      font-size: 15px;
+    }
+
+    td { color: rgba(255,255,255,0.86); }
+    td.muted { color: rgba(255,255,255,0.7); }
+    td.strong, .strong { color: var(--cyan); font-weight: 700; }
+
+    .trace-link { color: #7db7ff; text-decoration: underline; }
+
+    .module4-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .crumbs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .crumb {
+      border-radius: 999px;
+      padding: 8px 14px;
+      border: 1px solid rgba(103,215,255,0.16);
+      background: rgba(103,215,255,0.08);
+      color: #d8f7ff;
+      font-size: 14px;
+    }
+
+    .crumb.dim {
+      color: rgba(216,247,255,0.72);
+      background: rgba(255,255,255,0.04);
+      border-color: rgba(255,255,255,0.08);
+      cursor: pointer;
+    }
+
+    .hint-text {
+      color: rgba(191,242,255,0.6);
+      font-size: 14px;
+    }
+
+    .country-table td:first-child strong,
+    .detail-table td:first-child strong {
+      color: #eaf8ff;
+    }
+
+    .country-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #eef8ff;
+      margin-bottom: 2px;
+      line-height: 1.25;
+    }
+
+    .country-level {
+      color: rgba(191,242,255,0.58);
+      font-size: 12px;
+      line-height: 1.2;
+    }
+
+    .rate-big {
+      color: #79d3ff;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .status-cell {
+      min-width: 160px;
+    }
+
+    .status-pill {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 18px;
+      border: 1px dashed rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 14px;
+      color: rgba(255,255,255,0.3);
+      font-size: 13px;
+    }
+
+    .status-pill.active {
+      border-style: solid;
+      color: #081523;
+      font-weight: 700;
+    }
+
+    .status-pill.good { background: rgba(52, 211, 153, 0.9); border-color: rgba(52, 211, 153, 0.9); }
+    .status-pill.review { background: rgba(255, 211, 128, 0.95); border-color: rgba(255, 211, 128, 0.95); }
+    .status-pill.bad { background: rgba(255, 168, 186, 0.95); border-color: rgba(255, 168, 186, 0.95); }
+
+    .drill-btn, .back-btn {
+      border-radius: 999px;
+      padding: 10px 16px;
+      border: 1px solid rgba(103,215,255,0.18);
+      background: rgba(103,215,255,0.08);
+      color: #d8f7ff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .drill-btn:hover, .back-btn:hover, .crumb.dim:hover {
+      border-color: rgba(103,215,255,0.3);
+      background: rgba(103,215,255,0.12);
+    }
+
+    .detail-summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .detail-card {
+      border-radius: 22px;
+      border: 1px solid rgba(103,215,255,0.1);
+      background: linear-gradient(180deg, rgba(5, 20, 46, 0.98), rgba(4, 16, 38, 0.98));
+      padding: 16px 18px;
+    }
+
+    .detail-label {
+      color: rgba(191,242,255,0.58);
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .detail-value {
+      color: #eef9ff;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .detail-note {
+      margin-top: 16px;
+      margin-bottom: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(103,215,255,0.1);
+      background: rgba(5, 20, 46, 0.74);
+      padding: 18px 20px;
+      color: rgba(255,255,255,0.76);
+      line-height: 1.8;
+    }
+
+    .effect-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(320px, 0.9fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .trend-side {
+      border-radius: 26px;
+      border: 1px solid rgba(103,215,255,0.1);
+      background: linear-gradient(180deg, rgba(5, 20, 46, 0.98), rgba(4, 16, 38, 0.98));
+      padding: 18px;
+    }
+
+    .trend-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 14px;
+      border: 1px solid rgba(103,215,255,0.16);
+      background: rgba(103,215,255,0.08);
+      color: #d8f7ff;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .metric-pairs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px 20px;
+      margin-bottom: 16px;
+    }
+
+    .metric-pair {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(191,242,255,0.7);
+      font-size: 14px;
+    }
+
+    .metric-pair strong {
+      color: #eaf8ff;
+      font-size: 15px;
+    }
+
+    .metric-pair span:last-child {
+      color: #79d3ff;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .tip-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(103,215,255,0.14);
+      color: #7dd3fc;
+      font-size: 12px;
+      border: 1px solid rgba(103,215,255,0.16);
+    }
+
+    .trend-summary {
+      margin-bottom: 18px;
+      color: rgba(255,255,255,0.76);
+      line-height: 1.8;
+    }
+
+    .trend-summary strong {
+      color: #eaf8ff;
+    }
+
+    .chart-card {
+      border-radius: 22px;
+      border: 1px solid rgba(103,215,255,0.08);
+      background: rgba(255,255,255,0.03);
+      padding: 14px 12px 10px;
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      color: rgba(191,242,255,0.68);
+      font-size: 13px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-line {
+      width: 16px;
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    .drill-link-inline {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #7db7ff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .merged-product {
+      font-size: 15px;
+      font-weight: 700;
+      color: #eef8ff;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 1200px) {
+      .grid-6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .focus-grid { grid-template-columns: 1fr; }
+      .detail-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .effect-layout { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 900px) {
+      .grid-3, .grid-4, .grid-6 { grid-template-columns: 1fr; }
+      .page { padding: 14px; }
+      .header, .content { padding-left: 16px; padding-right: 16px; }
+      .section-title { font-size: 26px; }
+      .judge-box { font-size: 18px; }
+      .table-wrap { overflow-x: auto; }
+      table { min-width: 980px; }
+      .detail-summary { grid-template-columns: 1fr; }
+      .metric-pairs { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
+  <div class="page">
+    <div class="container">
+      <div class="header">
+        <div>
+          <div class="title">区域费用分析看板</div>
+          <div class="subtitle">参照总部风格，区域视角按预算差异拆解费用异常并解释原因</div>
+        </div>
+        <div class="pills">
+          <div class="pill">区域：西非一区</div>
+          <div class="pill">利润中心：Nigeria-TECNO</div>
+          <div class="pill">期间：2026-03</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <section class="section">
+          <div class="section-head">
+            <div class="section-tag">模块1</div>
+            <div>
+              <div class="section-title">区域判断</div>
+            </div>
+          </div>
+          <div class="judge-box">
+            本期实际费用 <span class="cyan">8,520万元</span>，环比 <span class="cyan">+6.3%</span>，同比
+            <span class="cyan">+12.4%</span>，较预算超支 <span class="amber">+5.1%</span>。整体看，本月费用属于
+            <span class="label-chip">局部异常</span>，主因来自 <span class="cyan">平台职能分摊增加</span>，
+            需优先解释承接变化并同步补充本地市场投入动作。
+          </div>
+          <div class="focus-header">
+            <div class="focus-badge">重点关注</div>
+            <div>
+              <div class="focus-title">重点关注对象</div>
+              <div class="focus-subtitle">把本周需要解释、重点复盘和持续跟踪的对象收进总体判断，方便管理层在首页直接抓重点。</div>
+            </div>
+          </div>
+
+          <div class="focus-grid">
+            <div class="action-card">
+              <div class="action-title">优先处理</div>
+              <div class="action-list">
+                <div class="action-item">平台职能分摊增加是本期主因，先向总部确认分摊范围及基数变化。</div>
+                <div class="action-item">市场费用和其他变动费用超预算，需要同步补充对应业务动作说明。</div>
+              </div>
+            </div>
+            <div class="action-card">
+              <div class="action-title">需要解释</div>
+              <div class="action-list">
+                <div class="action-item">售后费用增幅高于预算节奏，需要确认是否存在一次性项目。</div>
+                <div class="action-item">区域汇兑波动对整体影响有限，但需说明是否为阶段性影响。</div>
+              </div>
+            </div>
+            <div class="action-card">
+              <div class="action-title">持续跟踪</div>
+              <div class="action-list">
+                <div class="action-item">人工成本和其他固定费用整体稳定，观察后续是否持续抬升。</div>
+                <div class="action-item">总部调整项保持关注，避免下月再次集中确认。</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <div class="section-tag">模块2-3</div>
+            <div>
+              <div class="section-title">总差异拆解与费用解释</div>
+              <div class="section-sub">模块3是对模块2的明细解释，两者联动展示在同一个分析模块中</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="tabs" id="diffTabs"></div>
+            <div id="metricCards" style="margin-top:16px"></div>
+            <div class="summary">
+              <span>区域费用总预算差异</span>
+              <strong>+630万元</strong>
+            </div>
+
+            <div style="height:20px"></div>
+
+            <div class="toolbar">
+              <div class="tabs" id="viewTabs"></div>
+              <div class="status-bar" id="statusBar"></div>
+            </div>
+            <div class="table-wrap" id="tableWrap"></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head">
+            <div class="section-tag">模块4</div>
+            <div>
+              <div class="section-title">区域变动费用效果分析</div>
+              <div class="section-sub">区域变动费用包含市场费用、区域汇兑、其他变动费用</div>
+            </div>
+          </div>
+          <div class="panel" id="effectAnalysisWrap"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
   <script>
-const overview = {
-  summary:
-    '鏈湡瀹為檯璐圭敤 8,520 涓囧厓锛岀幆姣?+8.3%锛屽悓姣?+12.4%锛岃緝棰勭畻瓒呮敮 5.1%銆傛暣浣撶湅锛屾湰鏈堣垂鐢ㄥ睘浜?<span class="pill pill-amber">灞€閮ㄥ紓甯?/span>锛屼富鍥犳槸 <span class="pill pill-sky">鐮斿彂璐圭敤涓€娆℃€у墠缃?/span> 鍜?<span class="pill pill-sky">鍖哄煙缁忚惀鎶曞叆澧炲姞</span>锛涘叾涓?<strong>鍖哄煙璐圭敤鏁堢巼闂浼樺厛绾ф洿楂?/strong>銆?,
-};
+    const state = {
+      diffView: "project",
+      activeProject: "市场费用",
+      activeSource: "platform",
+      viewMode: "view1",
+      effectView: "country",
+      effectCountry: "kenya",
+      effectProduct: "kenya-camon-50"
+    };
 
-const waterfallBlocks = [
-  {
-    id: "rd",
-    name: "鐮斿彂璐圭敤",
-    subtitle: "鐮斿彂璐圭敤涓€娆℃€у墠缃?,
-    diff: 420,
-    feeRate: "2.9%",
-    momRate: "+10%",
-    yoyRate: "+20%",
-    budgetExecDiff: "+16%",
-    summary: "椤圭洰闆嗕腑楠屾敹瀵艰嚧璐圭敤鍓嶇疆纭锛屾槸鏈湀鏈€澶х殑鍗曢」宸紓鏉ユ簮銆?,
-    items: [
-      ["澶栧寘寮€鍙戣垂", "520 涓囧厓", "+165 涓囧厓", "+31.2%", "+38.4%", "涓€娆℃€т簨椤?, "鏈懆闇€瑙ｉ噴", "閲嶇偣椤圭洰楠屾敹闆嗕腑鍦ㄦ湰鏈堢‘璁ゃ€?],
-      ["娴嬭瘯璁よ瘉璐?, "210 涓囧厓", "+118 涓囧厓", "+42.6%", "+49.0%", "鑺傚鍓嶇疆", "鎸佺画璺熻釜", "澶氭満鍨嬭璇佹帹杩涙彁鍓嶃€?],
-      ["浜哄伐鎴愭湰", "860 涓囧厓", "+82 涓囧厓", "+5.4%", "+11.9%", "鎸佺画鎬у闀?, "鍙帴鍙?, "鐮斿彂缂栧埗鎵╁厖鍚庣ǔ姝ユ姮鍗囥€?],
-    ],
-  },
-  {
-    id: "region",
-    name: "鍖哄煙璐圭敤",
-    subtitle: "鍖哄煙缁忚惀鎶曞叆澧炲姞",
-    diff: 310,
-    feeRate: "2.7%",
-    momRate: "+6%",
-    yoyRate: "+9%",
-    budgetExecDiff: "+11%",
-    summary: "閮ㄥ垎鍖哄煙缁忚惀鍨嬭垂鐢ㄥ閫熷揩浜庢敹鍏ユ敼鍠勶紝闇€瑕佷粠鍖哄煙鏁堢巼瑙掑害閲嶇偣澶嶇洏銆?,
-    items: [
-      ["甯傚満鎺ㄥ箍璐?, "190 涓囧厓", "+86 涓囧厓", "+24.3%", "+31.5%", "缁忚惀鎶曞叆", "鏈懆闇€瑙ｉ噴", "鏂板搧鎺ㄥ箍涓庤矾婕旀椿鍔ㄩ泦涓姇鏀俱€?],
-      ["娓犻亾婵€鍔辫垂", "145 涓囧厓", "+58 涓囧厓", "+18.7%", "+25.4%", "缁忚惀鎶曞叆", "鎸佺画璺熻釜", "杩斿埄鍓嶇疆甯﹀姩娓犻亾鎶曞叆澧炲姞銆?],
-      ["宸梾涓庢嫇灞曡垂", "88 涓囧厓", "+27 涓囧厓", "+11.2%", "+16.8%", "缁忚惀鎶曞叆", "鍙帴鍙?, "鍖哄煙鎷撳簵鍜屽鎴锋嫓璁垮鍔犮€?],
-    ],
-  },
-  {
-    id: "hq",
-    name: "浜嬩笟閮ㄦ€婚儴璐圭敤",
-    subtitle: "鎬婚儴鑱岃兘璐圭敤澧為暱",
-    diff: 180,
-    feeRate: "0.4%",
-    momRate: "+5%",
-    yoyRate: "-3%",
-    budgetExecDiff: "+2%",
-    summary: "鎬婚儴绠＄悊涓庡叡浜湇鍔＄浉鍏宠垂鐢ㄥ皬骞呮姮鍗囷紝缁濆棰濅笉楂橈紝浣嗛渶瑕佺‘璁ゅ闀垮師鍥犮€?,
-    items: [
-      ["鍜ㄨ鏈嶅姟璐?, "180 涓囧厓", "+63 涓囧厓", "+28.4%", "+41.3%", "涓撻」鎶曞叆", "鏈懆闇€瑙ｉ噴", "娴佺▼浼樺寲椤圭洰鍚姩瀵艰嚧椤鹃棶璐圭敤澧炲姞銆?],
-      ["鍏变韩鏈嶅姟璐?, "135 涓囧厓", "+28 涓囧厓", "+7.0%", "+10.5%", "鑺傚鍓嶇疆", "鎸佺画璺熻釜", "閮ㄥ垎鏈嶅姟鍚堝悓鎻愬墠缁撶畻銆?],
-      ["琛屾斂璐圭敤", "210 涓囧厓", "+34 涓囧厓", "+6.3%", "+8.1%", "姝ｅ父娉㈠姩", "鍙帴鍙?, "鍔炲叕涓庡樊鏃呮敮鍑哄皬骞呭闀裤€?],
-    ],
-  },
-  {
-    id: "function",
-    name: "鑱岃兘璐圭敤",
-    subtitle: "鑱岃兘鏀寔璐圭敤鎶崌",
-    diff: 90,
-    feeRate: "2.1%",
-    momRate: "+2%",
-    yoyRate: "+6%",
-    budgetExecDiff: "+4%",
-    summary: "鍩硅涓庢敮鎸佺被璐圭敤娓╁拰澧為暱锛屾暣浣撳彲鎺с€?,
-    items: [
-      ["鍩硅璐?, "42 涓囧厓", "+11 涓囧厓", "+12.8%", "+16.2%", "姝ｅ父娉㈠姩", "鍙帴鍙?, "瀛ｅ害鍩硅璁″垝闆嗕腑钀藉湴銆?],
-      ["鍔炲叕淇濋殰璐?, "96 涓囧厓", "+21 涓囧厓", "+4.1%", "+5.7%", "姝ｅ父娉㈠姩", "鍙帴鍙?, "璁惧鍜岀郴缁熸姌鏃у甫鏉ユ尝鍔ㄣ€?],
-      ["琛屾斂娌荤悊椤圭洰", "68 涓囧厓", "+18 涓囧厓", "+7.8%", "+9.4%", "鑺傚姝ｅ父", "鎸佺画璺熻釜", "缁勭粐浼樺寲閰嶅椤圭洰鎺ㄨ繘銆?],
-    ],
-  },
-  {
-    id: "other",
-    name: "鍏朵粬璋冩暣鍥炲啿",
-    subtitle: "鍏朵粬璋冩暣鍥炲啿",
-    diff: -160,
-    feeRate: "1.6%",
-    momRate: "+7%",
-    yoyRate: "+11%",
-    budgetExecDiff: "+8%",
-    summary: "璺ㄦ湡璋冩暣鍜岄噸鍒嗙被褰㈡垚瀵瑰啿锛屽睘浜庝細璁＄‘璁ゅ眰闈㈢殑姝ｅ父鍥炴憜銆?,
-    items: [
-      ["璺ㄦ湡璋冩暣", "-90 涓囧厓", "-90 涓囧厓", "-", "-", "缁撶畻璋冩暣", "鍙帴鍙?, "鍓嶆湡澶氳璐圭敤鍦ㄦ湰鏈堝洖鍐层€?],
-      ["璐圭敤閲嶅垎绫?, "-42 涓囧厓", "-42 涓囧厓", "-", "-", "鍙ｅ緞淇", "鍙帴鍙?, "閮ㄥ垎璐圭敤閲嶅垎绫昏嚦鍏朵粬椤圭洰銆?],
-      ["椤圭洰瀵瑰啿", "-28 涓囧厓", "-28 涓囧厓", "-", "-", "闃舵鍥炴憜", "鍙帴鍙?, "璁℃彁鍥炲啿褰卞搷鏈夐檺銆?],
-    ],
-  },
-];
+    const projectCards = [
+      { key: "variable", label: "其他变动费用", feeRate: "2.9%", yoy: "+20%", mom: "+10%", budgetDiff: "+16%", value: 210 },
+      { key: "fixed", label: "其他固定费用", feeRate: "2.7%", yoy: "+9%", mom: "+6%", budgetDiff: "+11%", value: 160 },
+      { key: "fx", label: "区域汇兑", feeRate: "0.4%", yoy: "-3%", mom: "+5%", budgetDiff: "+2%", value: 35 },
+      { key: "labor", label: "人工成本", feeRate: "2.1%", yoy: "+6%", mom: "+2%", budgetDiff: "+4%", value: 90 },
+      { key: "market", label: "市场费用", feeRate: "3.8%", yoy: "+24%", mom: "+13%", budgetDiff: "+19%", value: 280 },
+      { key: "after_sales", label: "售后费用", feeRate: "1.6%", yoy: "+11%", mom: "+7%", budgetDiff: "+8%", value: 120 }
+    ];
 
-const focusCards = [
-  ["01", "P1 鏈懆瑙ｉ噴", "閲嶇偣瑙ｉ噴閮ㄩ棬", "鐮斿彂涓績", "鐮斿彂璐圭敤杈冮绠楀鍔?420 涓囧厓锛屼富瑕佺敱澶栧寘寮€鍙戝拰娴嬭瘯璁よ瘉璐圭敤鍓嶇疆纭甯﹀姩锛岄渶瑕佽鏄庡悗缁槸鍚﹀洖钀姐€?],
-  ["02", "P1 閲嶇偣澶嶇洏", "閲嶇偣澶嶇洏鍖哄煙", "涓滈潪", "鍖哄煙缁忚惀璐圭敤澧為暱 15%锛屼絾婊炲悗鏀跺叆涓嬮檷 4%锛屽缓璁笓椤瑰鐩樻姇鏀炬晥鐜囥€?],
-  ["03", "P3 鎸佺画璺熻釜", "閲嶇偣璺熻釜绉戠洰", "鍜ㄨ鏈嶅姟璐?, "鍜ㄨ鏈嶅姟璐硅繛缁袱鏈堥珮澧為暱锛岄渶鏍稿疄棰勭畻澶栦笓椤硅寖鍥淬€佸悎鍚屽懆鏈熶互鍙婂悗缁垂鐢ㄨ妭濂忋€?],
-];
+    const sourceCards = [
+      { key: "self", label: "自己发生", value: 180, share: "42%", yoy: "+8.6%", mom: "+4.1%", budgetDiff: "+12%" },
+      { key: "bu", label: "事业部职能分摊", value: 260, share: "21%", yoy: "+15.2%", mom: "+8.4%", budgetDiff: "+9%" },
+      { key: "platform", label: "平台职能分摊", value: 420, share: "28%", yoy: "+21.3%", mom: "+12.4%", budgetDiff: "+19%" },
+      { key: "hq", label: "总部调整", value: 90, share: "9%", yoy: "+9.8%", mom: "+5.2%", budgetDiff: "+7%" }
+    ];
 
-const regionTree = [
-  {
-    key: "tecno",
-    level: "bu",
-    name: "TECNO",
-    status: "鎶曞叆寰呭鐩?,
-    revenueRate: "+6%",
-    spendRate: "+11%",
-    deviation: "+5pct",
-    elasticity: "0.55",
-    summary: "鏁翠綋鎶曞叆浠嶅湪澧為暱锛屼絾鍖哄煙鍥炴姤鍒嗗寲鏄庢樉銆?,
-    spend: [3, 4, 6, 8, 9, 10],
-    revenue: [1, 2, 3, 4, 5, 5],
-    children: [
+    const marketCategoryViewRows = [
+      ["PR", "320", "9%", "+6%", "+10%", "+4%", "主要为新品传播与媒体发布会投入，预算内小幅增加。"],
+      ["传统媒介采购", "410", "12%", "+8%", "+13%", "+5%", "线下媒体投放增加，主要承接阶段性品牌曝光活动。"],
+      ["零售", "960", "28%", "+15%", "+20%", "+9%", "终端活动费、促销物料费增加，和本月终端推广节奏基本匹配。"],
+      ["内容制作", "260", "8%", "+5%", "+7%", "+3%", "新品物料与社媒内容制作增加，整体波动可控。"],
+      ["数字媒介采购", "540", "16%", "+11%", "+16%", "+6%", "社媒广告与线上投流同步加大，主要服务新品拉新。"],
+      ["数字平台建设", "180", "5%", "+3%", "+5%", "+2%", "平台维护与功能迭代投入稳定，无明显异常。"],
+      ["数字营销活动", "470", "14%", "+9%", "+12%", "+5%", "线上话题活动与直播推广投入增加，和流量目标匹配。"],
+      ["线下路演活动", "300", "8%", "+4%", "+6%", "+3%", "区域巡展与门店活动恢复，投入相对平稳。"]
+    ];
+
+    const projectSourceRows = {
+      "市场费用": [
+        ["市场费用", "自己发生", "620", "+12%", "+18%", "+9%", "市场推广费", "终端活动费 / 物料费", "凭证显示主要为终端路演与促销物料投放，结合业务动作看基本匹配。"],
+        ["市场费用", "事业部职能分摊", "760", "+9%", "+14%", "+8%", "事业部职能承接", "品牌协同 / 区域支持", "凭证显示事业部品牌协同和区域支持承接增加，需补充承接范围变化。"],
+        ["市场费用", "平台职能分摊", "980", "+19%", "+24%", "+13%", "平台市场投入", "品牌活动 / 区域推广", "凭证汇总显示主要为事业部区域平台品牌活动分摊，是本期预算差异主因。"],
+        ["市场费用", "总部调整", "290", "+7%", "+10%", "+4%", "总部专项投放", "专项活动 / 品牌投放", "凭证显示总部专项活动在本月集中确认，属于节奏性下达。"]
+      ],
+      "其他固定费用": [
+        ["其他固定费用", "自己发生", "330", "-3%", "+5%", "+2%", "办公运营费", "办公租赁 / 水电物业", "凭证集中在房租、水电及物业保障，属于日常经营保障，整体稳定。"],
+        ["其他固定费用", "事业部职能分摊", "410", "+6%", "+8%", "+4%", "事业部行政承接", "管理支持 / 办公保障", "凭证集中为事业部行政支持与办公承接，需解释服务范围变化。"],
+        ["其他固定费用", "平台职能分摊", "540", "+11%", "+9%", "+6%", "平台行政承接", "行政支持 / 办公保障", "凭证主要归集为区部平台行政与办公承接，需解释承接范围变化。"],
+        ["其他固定费用", "总部调整", "210", "+4%", "+6%", "+3%", "总部统一保障", "系统服务 / 后台支持", "凭证集中为总部统一保障类费用，整体波动较平稳。"]
+      ],
+      "区域汇兑": [
+        ["区域汇兑", "自己发生", "35", "+2%", "-3%", "+5%", "汇兑损益", "结算汇率波动", "凭证显示结算汇率波动带来阶段性影响，对整体预算差异贡献有限。"],
+        ["区域汇兑", "事业部职能分摊", "12", "+1%", "+2%", "+1%", "汇率补差", "内部结算补差", "事业部内部结算补差影响较小，属于正常波动。"],
+        ["区域汇兑", "平台职能分摊", "8", "+1%", "+1%", "+1%", "平台补差", "汇率支持分摊", "平台侧汇率补差金额较小，对整体影响有限。"],
+        ["区域汇兑", "总部调整", "5", "0%", "+1%", "0%", "总部调整", "汇率口径修正", "总部口径修正对本期影响较小。"]
+      ],
+      "人工成本": [
+        ["人工成本", "自己发生", "420", "+3%", "+5%", "+2%", "薪酬福利", "工资 / 津贴 / 奖金", "凭证显示薪酬福利平稳发生，与人员规模变化基本匹配。"],
+        ["人工成本", "事业部职能分摊", "180", "+2%", "+4%", "+2%", "共享人员支持", "后台支持 / 共享服务", "事业部共享人员支持平稳承接，无明显异常。"],
+        ["人工成本", "平台职能分摊", "220", "+4%", "+6%", "+3%", "平台支持人员", "平台后台支持", "平台支持人员承接小幅提升，整体仍属可接受范围。"],
+        ["人工成本", "总部调整", "55", "+1%", "+2%", "+1%", "总部调账", "人工成本口径修正", "总部人工成本口径修正，对整体影响较小。"]
+      ],
+      "售后费用": [
+        ["售后费用", "自己发生", "160", "+4%", "+7%", "+3%", "售后服务费", "维修 / 备件 / 补贴", "凭证显示售后服务费平稳抬升，需结合售后项目节奏说明。"],
+        ["售后费用", "事业部职能分摊", "220", "+7%", "+10%", "+5%", "事业部售后承接", "维修支持 / 服务补贴", "凭证显示售后支持项目承接增加，属节奏性抬升。"],
+        ["售后费用", "平台职能分摊", "180", "+6%", "+9%", "+4%", "平台售后支持", "区域售后协同", "平台售后协同增加，需说明服务范围及阶段性原因。"],
+        ["售后费用", "总部调整", "95", "+5%", "+8%", "+4%", "总部专项售后", "专项维修 / 售后支持", "凭证显示总部售后专项在本月集中确认。"]
+      ],
+      "其他变动费用": [
+        ["其他变动费用", "自己发生", "470", "+8%", "+11%", "+6%", "渠道支持费", "促销支持 / 渠道返投", "凭证摘要反映阶段性渠道支持增加，需结合项目节奏进一步说明。"],
+        ["其他变动费用", "事业部职能分摊", "280", "+9%", "+12%", "+7%", "事业部专项支持", "渠道激励 / 项目补贴", "事业部专项支持增加，建议结合项目节奏进一步解释。"],
+        ["其他变动费用", "平台职能分摊", "660", "+16%", "+20%", "+10%", "平台专项支持", "渠道激励 / 动销支持", "凭证显示阶段性资源倾斜带动平台专项支持抬升，建议结合平台项目节奏说明。"],
+        ["其他变动费用", "总部调整", "260", "+9%", "+12%", "+5%", "售后专项项目", "专项维修 / 售后支持", "凭证摘要显示售后专项项目下达，需补充项目背景后说明。"]
+      ]
+    };
+
+    const effectCountryRows = [
       {
-        key: "tecno-east-africa",
-        level: "region",
-        name: "涓滈潪",
-        status: "閲嶇偣寮傚父",
-        revenueRate: "-4%",
-        spendRate: "+15%",
-        deviation: "+19pct",
-        elasticity: "-0.27",
-        summary: "缁忚惀鍨嬭垂鐢ㄦ槑鏄惧鍔狅紝浣嗘粸鍚庢敹鍏ヤ笅婊戯紝鎶曞叆涓庨攢鍞粨鏋滆儗绂汇€?,
-        spend: [4, 7, 9, 11, 13, 15],
-        revenue: [6, 3, 1, -2, -3, -4],
-        children: [
-          {
-            key: "kenya",
-            level: "country",
-            name: "鑲凹浜?,
-            status: "閲嶇偣寮傚父",
-            revenueRate: "-6%",
-            spendRate: "+18%",
-            deviation: "+24pct",
-            elasticity: "-0.33",
-            summary: "娓犻亾鎶曟斁澧炲姞鍚庨攢閲忔湭瑙佹敼鍠勶紝闇€瑕佷紭鍏堝鐩樸€?,
-            spend: [6, 9, 12, 15, 17, 18],
-            revenue: [5, 2, 1, -3, -4, -6],
-          },
-          {
-            key: "ethiopia",
-            level: "country",
-            name: "鍩冨淇勬瘮浜?,
-            status: "鎶曞叆寰呭鐩?,
-            revenueRate: "+2%",
-            spendRate: "+9%",
-            deviation: "+7pct",
-            elasticity: "0.22",
-            summary: "鎶曞叆寮哄害涓婂崌锛屼絾鍥炴姤閲婃斁鍋忔參銆?,
-            spend: [2, 3, 5, 6, 8, 9],
-            revenue: [0, 1, 1, 2, 2, 2],
-          },
-        ],
+        key: "kenya",
+        name: "肯尼亚",
+        level: "国家",
+        feeRate: "3.8%",
+        mom: "+14%",
+        yoy: "+19%",
+        status: "重点异常",
+        description: "渠道投放增加后销量未见改善，需要优先复盘。",
+        revenueRate: "+6%",
+        spendRate: "+11%",
+        deviation: "+5pct",
+        elasticity: "0.55",
+        summary: "整体投入仍在增长，但区域回报分化明显。",
+        spendSeries: [2, 3, 5, 7, 8, 9],
+        revenueSeries: [1, 2, 3, 4, 4, 4]
       },
       {
-        key: "tecno-west-africa",
-        level: "region",
-        name: "瑗块潪",
-        status: "鎶曞叆鏈夋晥",
+        key: "ethiopia",
+        name: "埃塞俄比亚",
+        level: "国家",
+        feeRate: "2.7%",
+        mom: "+7%",
+        yoy: "+11%",
+        status: "投入待复盘",
+        description: "投入强度上升，但回报释放偏慢。",
+        revenueRate: "+4%",
+        spendRate: "+8%",
+        deviation: "+4pct",
+        elasticity: "0.50",
+        summary: "投入仍在增加，但收入释放速度偏慢。",
+        spendSeries: [1, 2, 3, 5, 6, 7],
+        revenueSeries: [1, 1, 2, 2, 3, 4]
+      },
+      {
+        key: "ghana",
+        name: "加纳",
+        level: "国家",
+        feeRate: "1.9%",
+        mom: "-3%",
+        yoy: "+4%",
+        status: "投入有效",
+        description: "费用收缩后收入仍保持增长，投放效率改善。",
         revenueRate: "+8%",
         spendRate: "-6%",
         deviation: "-14pct",
         elasticity: "-1.33",
-        summary: "璐圭敤鏀剁缉鍚庢敹鍏ヤ粛淇濇寔澧為暱锛岃垂鐢ㄦ晥鐜囨敼鍠勩€?,
-        spend: [3, 1, -1, -2, -4, -6],
-        revenue: [2, 3, 5, 6, 7, 8],
-        children: [
-          {
-            key: "ghana",
-            level: "country",
-            name: "鍔犵撼",
-            status: "鎶曞叆鏈夋晥",
-            revenueRate: "+9%",
-            spendRate: "-5%",
-            deviation: "-14pct",
-            elasticity: "-1.80",
-            summary: "淇冮攢鏀剁缉鍚庝粛瀹炵幇鏀跺叆澧為暱锛屾姇鍏ユ晥鐜囦紭銆?,
-            spend: [1, 0, -1, -2, -3, -5],
-            revenue: [3, 4, 5, 7, 8, 9],
-          },
+        summary: "费用收缩后收入仍保持增长，投放效率改善。",
+        spendSeries: [4, 3, 2, 1, 0, -1],
+        revenueSeries: [2, 3, 4, 6, 7, 8]
+      }
+    ];
+
+    const effectCountryDetails = {
+      kenya: {
+        country: "肯尼亚",
+        summary: [
+          ["国家费率", "3.8%"],
+          ["费率环比", "+14%"],
+          ["费率同比", "+19%"],
+          ["状态判断", "重点异常"]
         ],
-      },
-    ],
-  },
-  {
-    key: "infinix",
-    level: "bu",
-    name: "Infinix",
-    status: "鎶曞叆鏈夋晥",
-    revenueRate: "+9%",
-    spendRate: "+3%",
-    deviation: "-6pct",
-    elasticity: "3.00",
-    summary: "鎶曞叆澧為暱杈冩俯鍜岋紝浣嗛噸鐐瑰尯鍩熸敹鍏ユ敼鍠勬槑鏄撅紝鏁翠綋鏁堢巼杈冧紭銆?,
-    spend: [1, 2, 2, 3, 3, 3],
-    revenue: [2, 3, 4, 5, 6, 6],
-    children: [
-      {
-        key: "infinix-sea",
-        level: "region",
-        name: "涓滃崡浜?,
-        status: "鎶曞叆鏈夋晥",
-        revenueRate: "+10%",
-        spendRate: "+12%",
-        deviation: "+2pct",
-        elasticity: "0.83",
-        summary: "缁忚惀鍨嬭垂鐢ㄥ鍔犲悗锛屾粸鍚庢敹鍏ュ悓姝ュ闀匡紝鏁翠綋鍩烘湰鍖归厤銆?,
-        spend: [2, 4, 6, 8, 10, 12],
-        revenue: [1, 3, 5, 7, 9, 10],
-        children: [
+        trend: {
+          revenueRate: "+6%",
+          spendRate: "+11%",
+          deviation: "+5pct",
+          elasticity: "0.55",
+          summary: "整体投入仍在增长，但区域回报分化明显。",
+          spendSeries: [2, 3, 5, 7, 8, 9],
+          revenueSeries: [1, 2, 3, 4, 4, 4]
+        },
+        note: "肯尼亚本期渠道和零售投放增加较快，但销量与收入改善不明显，因此需要继续下钻到产品代，判断问题是集中在单一机型还是整体投放结构失衡。",
+        products: [
           {
-            key: "indonesia",
-            level: "country",
-            name: "鍗板凹",
-            status: "鎶曞叆鏈夋晥",
-            revenueRate: "+11%",
-            spendRate: "+10%",
-            deviation: "-1pct",
-            elasticity: "1.10",
-            summary: "鏂板搧鎶曟斁涓庢敹鍏ュ闀胯緝鍖归厤銆?,
-            spend: [2, 3, 4, 6, 8, 10],
-            revenue: [3, 4, 5, 7, 9, 11],
+            key: "kenya-camon-50",
+            country: "肯尼亚",
+            product: "CAMON 50",
+            status: "重点异常",
+            sources: [
+              ["公共费用分摊", "110", "31%"],
+              ["直接费用", "180", "42%"]
+            ],
+            trend: {
+              revenueRate: "+3%",
+              spendRate: "+17%",
+              deviation: "+14pct",
+              elasticity: "0.18",
+              summary: "CAMON 50 投入增长明显快于收入改善，是肯尼亚异常的主要集中产品代。",
+              spendSeries: [2, 4, 7, 9, 10, 11],
+              revenueSeries: [1, 1, 2, 3, 3, 3]
+            }
           },
-        ],
-      },
-    ],
-  },
-  {
-    key: "itel",
-    level: "bu",
-    name: "itel",
-    status: "鎶曞叆鏈夋晥",
-    revenueRate: "+7%",
-    spendRate: "+5%",
-    deviation: "-2pct",
-    elasticity: "1.40",
-    summary: "澶氫釜甯傚満璐圭敤鍙帶锛屾敹鍏ユ敼鍠勫钩绋筹紝鏁翠綋澶勪簬鍋ュ悍鐘舵€併€?,
-    spend: [1, 1, 2, 3, 4, 5],
-    revenue: [1, 2, 3, 4, 5, 7],
-    children: [
-      {
-        key: "itel-middle-east",
-        level: "region",
-        name: "涓笢",
-        status: "鎶曞叆鏈夋晥",
-        revenueRate: "+12%",
-        spendRate: "+2%",
-        deviation: "-10pct",
-        elasticity: "6.00",
-        summary: "璐圭敤鍩烘湰绋冲畾鐨勬儏鍐典笅鏀跺叆鏄庢樉澧為暱锛岃垂鐢ㄦ晥鐜囨彁鍗囥€?,
-        spend: [0, 1, 1, 2, 2, 2],
-        revenue: [2, 4, 6, 8, 10, 12],
-        children: [
           {
-            key: "saudi",
-            level: "country",
-            name: "娌欑壒",
-            status: "鎶曞叆鏈夋晥",
-            revenueRate: "+13%",
-            spendRate: "+1%",
-            deviation: "-12pct",
-            elasticity: "13.00",
-            summary: "鎶曟斁淇濇寔骞崇ǔ锛屾敹鍏ユ寔缁闀裤€?,
-            spend: [0, 0, 1, 1, 1, 1],
-            revenue: [3, 5, 7, 9, 11, 13],
+            key: "kenya-camon-40",
+            country: "肯尼亚",
+            product: "CAMON 40",
+            status: "投入有效",
+            sources: [
+              ["公共费用分摊", "95", "16%"]
+            ],
+            trend: {
+              revenueRate: "+8%",
+              spendRate: "+5%",
+              deviation: "-3pct",
+              elasticity: "1.60",
+              summary: "CAMON 40 投放与收入改善基本匹配，属于肯尼亚市场中相对健康的产品代。",
+              spendSeries: [1, 2, 3, 4, 4, 5],
+              revenueSeries: [1, 2, 3, 4, 5, 6]
+            }
           },
-        ],
-      },
-    ],
-  },
-  {
-    key: "philips",
-    level: "bu",
-    name: "Philips",
-    status: "鎶曞叆寰呭鐩?,
-    revenueRate: "-1%",
-    spendRate: "+1%",
-    deviation: "+2pct",
-    elasticity: "-1.00",
-    summary: "鏁翠綋璐圭敤绋冲畾锛屼絾鏀跺叆绔姩鑳戒笉瓒筹紝闇€瑕佸叧娉ㄩ噸鐐瑰浗瀹朵慨澶嶆儏鍐点€?,
-    spend: [1, 1, 1, 1, 1, 1],
-    revenue: [2, 1, 1, 0, -1, -1],
-    children: [
-      {
-        key: "philips-latam",
-        level: "region",
-        name: "鎷夌編",
-        status: "鎶曞叆寰呭鐩?,
-        revenueRate: "-9%",
-        spendRate: "-7%",
-        deviation: "+2pct",
-        elasticity: "1.29",
-        summary: "璐圭敤鏀剁缉鍚庢敹鍏ュ悓姝ヨ蛋寮憋紝闇€瑕佸叧娉ㄦ槸鍚﹀瓨鍦ㄦ姇鍏ヤ笉瓒炽€?,
-        spend: [-1, -2, -3, -4, -5, -7],
-        revenue: [-2, -3, -4, -6, -7, -9],
-        children: [
           {
-            key: "mexico",
-            level: "country",
-            name: "澧ㄨタ鍝?,
-            status: "鎶曞叆寰呭鐩?,
-            revenueRate: "-8%",
-            spendRate: "-5%",
-            deviation: "+3pct",
-            elasticity: "1.60",
-            summary: "鎶曟斁鏀剁缉涓庢敹鍏ヨ蛋寮卞悓姝ュ嚭鐜帮紝闇€鍒ゆ柇鏄惁鍘嬬缉杩囧害銆?,
-            spend: [-1, -1, -2, -3, -4, -5],
-            revenue: [-1, -2, -3, -5, -6, -8],
-          },
-        ],
+            key: "kenya-spark-30c",
+            country: "肯尼亚",
+            product: "SPARK 30C",
+            status: "投入待复盘",
+            sources: [
+              ["直接费用", "82", "11%"]
+            ],
+            trend: {
+              revenueRate: "+2%",
+              spendRate: "+7%",
+              deviation: "+5pct",
+              elasticity: "0.29",
+              summary: "SPARK 30C 当前投入增加后回报释放较慢，需要继续跟踪后续转化。",
+              spendSeries: [1, 2, 2, 3, 4, 5],
+              revenueSeries: [1, 1, 1, 2, 2, 2]
+            }
+          }
+        ]
       },
-    ],
-  },
-];
+      ethiopia: {
+        country: "埃塞俄比亚",
+        summary: [
+          ["国家费率", "2.7%"],
+          ["费率环比", "+7%"],
+          ["费率同比", "+11%"],
+          ["状态判断", "投入待复盘"]
+        ],
+        trend: {
+          revenueRate: "+4%",
+          spendRate: "+8%",
+          deviation: "+4pct",
+          elasticity: "0.50",
+          summary: "投入仍在增加，但收入释放速度偏慢。",
+          spendSeries: [1, 2, 3, 5, 6, 7],
+          revenueSeries: [1, 1, 2, 2, 3, 4]
+        },
+        note: "埃塞俄比亚整体投入节奏比收入改善更快，当前没有出现明显异常机型，但需要聚焦核心产品代看后续投放回报是否释放。",
+        products: [
+          {
+            key: "ethiopia-camon-50",
+            country: "埃塞俄比亚",
+            product: "CAMON 50",
+            status: "投入待复盘",
+            sources: [
+              ["公共费用分摊", "88", "28%"],
+              ["直接费用", "124", "34%"]
+            ],
+            trend: {
+              revenueRate: "+4%",
+              spendRate: "+10%",
+              deviation: "+6pct",
+              elasticity: "0.40",
+              summary: "CAMON 50 是埃塞俄比亚投放规模最大的产品代，但回报释放速度慢于预期。",
+              spendSeries: [1, 2, 4, 5, 6, 7],
+              revenueSeries: [1, 1, 2, 2, 3, 4]
+            }
+          },
+          {
+            key: "ethiopia-pop-8",
+            country: "埃塞俄比亚",
+            product: "POP 8",
+            status: "投入有效",
+            sources: [
+              ["公共费用分摊", "54", "18%"]
+            ],
+            trend: {
+              revenueRate: "+7%",
+              spendRate: "+5%",
+              deviation: "-2pct",
+              elasticity: "1.40",
+              summary: "POP 8 投入增加后收入同步改善，是当前表现较好的产品代。",
+              spendSeries: [1, 1, 2, 3, 4, 5],
+              revenueSeries: [1, 2, 3, 4, 5, 6]
+            }
+          },
+          {
+            key: "ethiopia-spark-go",
+            country: "埃塞俄比亚",
+            product: "SPARK Go",
+            status: "重点异常",
+            sources: [
+              ["直接费用", "67", "20%"]
+            ],
+            trend: {
+              revenueRate: "+1%",
+              spendRate: "+9%",
+              deviation: "+8pct",
+              elasticity: "0.11",
+              summary: "SPARK Go 投入增长明显，但收入改善几乎停滞，是本期需要关注的异常产品代。",
+              spendSeries: [1, 2, 3, 4, 5, 6],
+              revenueSeries: [1, 1, 1, 1, 2, 2]
+            }
+          }
+        ]
+      },
+      ghana: {
+        country: "加纳",
+        summary: [
+          ["国家费率", "1.9%"],
+          ["费率环比", "-3%"],
+          ["费率同比", "+4%"],
+          ["状态判断", "投入有效"]
+        ],
+        trend: {
+          revenueRate: "+8%",
+          spendRate: "-6%",
+          deviation: "-14pct",
+          elasticity: "-1.33",
+          summary: "费用控制后收入仍改善，说明高效率投放可以继续复用。",
+          spendSeries: [4, 3, 2, 1, 0, -1],
+          revenueSeries: [2, 3, 4, 6, 7, 8]
+        },
+        note: "加纳本期费用控制后收入仍有改善，说明区域经营费用投放效率较高，下钻后主要用于确认高效率产品代是否可复用。",
+        products: [
+          {
+            key: "ghana-camon-40",
+            country: "加纳",
+            product: "CAMON 40",
+            status: "投入有效",
+            sources: [
+              ["公共费用分摊", "73", "29%"],
+              ["直接费用", "81", "32%"]
+            ],
+            trend: {
+              revenueRate: "+10%",
+              spendRate: "+3%",
+              deviation: "-7pct",
+              elasticity: "3.33",
+              summary: "CAMON 40 在加纳市场费用提升有限，但收入改善明显，是高效率投放的主要来源。",
+              spendSeries: [1, 1, 2, 2, 3, 3],
+              revenueSeries: [2, 3, 4, 6, 8, 10]
+            }
+          },
+          {
+            key: "ghana-spark-30c",
+            country: "加纳",
+            product: "SPARK 30C",
+            status: "投入待复盘",
+            sources: [
+              ["公共费用分摊", "42", "17%"]
+            ],
+            trend: {
+              revenueRate: "+3%",
+              spendRate: "+5%",
+              deviation: "+2pct",
+              elasticity: "0.60",
+              summary: "SPARK 30C 当前投入小幅增加，回报释放不算快，需要继续跟踪。",
+              spendSeries: [1, 1, 2, 2, 3, 4],
+              revenueSeries: [1, 1, 2, 2, 3, 3]
+            }
+          },
+          {
+            key: "ghana-pop-8",
+            country: "加纳",
+            product: "POP 8",
+            status: "投入有效",
+            sources: [
+              ["直接费用", "57", "22%"]
+            ],
+            trend: {
+              revenueRate: "+7%",
+              spendRate: "+2%",
+              deviation: "-5pct",
+              elasticity: "3.50",
+              summary: "POP 8 投入稳定，但收入改善明显，整体属于有效投放。",
+              spendSeries: [1, 1, 1, 2, 2, 2],
+              revenueSeries: [1, 2, 3, 4, 5, 7]
+            }
+          }
+        ]
+      }
+    };
 
-const matrixHelp = {
-  "鎶曞叆鏈夋晥": "璐圭敤鎶曞叆鍚庯紝鏀跺叆鍚屾鏀瑰杽锛屾垨鍦ㄨ垂鐢ㄦ敹缂╂儏鍐典笅鏀跺叆浠嶄繚鎸佸闀裤€?,
-  "鎶曞叆寰呭鐩?: "璐圭敤鍙樺寲鍚庯紝鏀跺叆鏀瑰杽涓嶆槑鏄撅紝鎴栬垂鐢ㄦ敹缂╁悗鏀跺叆鍚屾璧板急锛岄渶瑕佺户缁鐩樸€?,
-  "閲嶇偣寮傚父": "璐圭敤澧炲姞鐨勫悓鏃舵敹鍏ヤ笅婊戯紝鎶曞叆涓庨攢鍞粨鏋滄槑鏄捐儗绂伙紝闇€瑕佷紭鍏堝叧娉ㄣ€?,
-};
+    const sourceProjectRows = {
+      self: [
+        ["市场费用", "760", "+12%", "+18%", "+9%", "市场推广费", "终端活动费 / 物料费", "凭证显示主要为终端路演与促销物料投放，结合业务动作看基本匹配。", false],
+        ["其他固定费用", "330", "-3%", "+5%", "+2%", "办公运营费", "办公租赁 / 水电物业", "凭证集中在房租、水电及物业保障，属于日常经营保障，整体稳定。", false],
+        ["其他变动费用", "470", "+8%", "+11%", "+6%", "渠道支持费", "促销支持 / 渠道返投", "凭证摘要反映阶段性渠道支持增加，需结合项目节奏进一步说明。", false]
+      ],
+      bu: [
+        ["市场费用", "760", "+9%", "+14%", "+8%", "事业部职能承接", "品牌协同 / 区域支持", "凭证显示事业部品牌协同和区域支持承接增加，需补充承接范围变化。", true],
+        ["其他固定费用", "410", "+6%", "+8%", "+4%", "事业部行政承接", "管理支持 / 办公保障", "凭证集中为事业部行政支持与办公承接，需解释服务范围变化。", true],
+        ["售后费用", "220", "+7%", "+10%", "+5%", "事业部售后承接", "维修支持 / 服务补贴", "凭证显示售后支持项目承接增加，属节奏性抬升。", true]
+      ],
+      platform: [
+        ["市场费用", "980", "+19%", "+24%", "+13%", "平台市场投入", "品牌活动 / 区域推广", "凭证汇总显示主要为事业部区域平台品牌活动分摊，是本期预算差异主因。", true],
+        ["其他固定费用", "540", "+11%", "+9%", "+6%", "平台行政承接", "行政支持 / 办公保障", "凭证主要归集为区部平台行政与办公承接，需解释承接范围变化。", true],
+        ["其他变动费用", "660", "+16%", "+20%", "+10%", "平台专项支持", "渠道激励 / 动销支持", "凭证显示阶段性资源倾斜带动平台专项支持抬升，建议结合平台项目节奏说明。", true]
+      ],
+      hq: [
+        ["市场费用", "290", "+7%", "+10%", "+4%", "总部专项投放", "专项活动 / 品牌投放", "凭证显示总部专项活动在本月集中确认，属于节奏性下达。", false],
+        ["其他固定费用", "210", "+4%", "+6%", "+3%", "总部统一保障", "系统服务 / 后台支持", "凭证集中为总部统一保障类费用，整体波动较平稳。", false],
+        ["其他变动费用", "260", "+9%", "+12%", "+5%", "售后专项项目", "专项维修 / 售后支持", "凭证摘要显示售后专项项目下达，需补充项目背景后说明。", false]
+      ]
+    };
 
-const calcHelp = {
-  "鏀跺叆鍙樺姩鐜?: "婊炲悗1涓湀鐨勮繎3涓湀鏀跺叆鍧囧€硷紝鐩稿鍓?涓湀鍧囧€肩殑鍙樺寲鐜囥€?,
-  "璐圭敤鍙樺姩鐜?: "杩?涓湀缁忚惀鍨嬪彉鍔ㄨ垂鐢ㄥ潎鍊硷紝鐩稿鍓?涓湀鍧囧€肩殑鍙樺寲鐜囥€?,
-  "鍋忕搴?: "璐圭敤鍙樺寲鐜囧噺鍘绘粸鍚庢敹鍏ュ彉鍖栫巼锛涜秺鎺ヨ繎0閫氬父璇存槑瓒婂尮閰嶃€?,
-  "寮规€?: "婊炲悗鏀跺叆鍙樺寲鐜囬櫎浠ヨ垂鐢ㄥ彉鍖栫巼锛岀敤浜庤　閲忔敹鍏ュ鎶曞叆鍙樺寲鐨勫搷搴斿己寮便€?,
-};
-
-const statusTone = {
-  "鎶曞叆鏈夋晥": "tone-emerald",
-  "鎶曞叆寰呭鐩?: "tone-amber",
-  "閲嶇偣寮傚父": "tone-rose",
-};
-
-const state = {
-  selectedBlockId: "rd",
-  selectedNodeKey: "tecno",
-  currentLevel: "bu",
-  trail: [],
-};
-
-function levelLabel(level) {
-  return { bu: "浜嬩笟閮˙U", region: "鍖哄煙", country: "鍥藉" }[level] || "灞傜骇";
-}
-
-function infoDot(text) {
-  return `<span class="info-dot" data-tip="${text.replace(/"/g, "&quot;")}">?</span>`;
-}
-
-function getBlock(id) {
-  return waterfallBlocks.find((item) => item.id === id) || waterfallBlocks[0];
-}
-
-function flattenNodes(nodes, parentTrail = []) {
-  const all = [];
-  nodes.forEach((node) => {
-    const trail = [...parentTrail, { key: node.key, name: node.name, level: node.level }];
-    all.push({ ...node, trail });
-    if (node.children) {
-      all.push(...flattenNodes(node.children, trail));
+    function button(label, active, onClick) {
+      const el = document.createElement("button");
+      el.className = "tab" + (active ? " active" : "");
+      el.textContent = label;
+      el.onclick = onClick;
+      return el;
     }
-  });
-  return all;
-}
 
-const allRegionNodes = flattenNodes(regionTree);
-
-function getNode(key) {
-  return allRegionNodes.find((node) => node.key === key) || allRegionNodes[0];
-}
-
-function getLevelRows() {
-  if (state.currentLevel === "bu") {
-    return regionTree;
-  }
-  const parent = getNode(state.trail[state.trail.length - 1]?.key || state.selectedNodeKey);
-  return parent.children || [];
-}
-
-function buildPath() {
-  const path = [];
-  if (state.currentLevel === "bu") {
-    return [{ key: "root", name: "浜嬩笟閮˙U", level: "root" }];
-  }
-  path.push({ key: "root", name: "浜嬩笟閮˙U", level: "root" });
-  state.trail.forEach((item) => path.push(item));
-  return path;
-}
-
-function selectNode(node) {
-  state.selectedNodeKey = node.key;
-  if (node.level === "bu") {
-    state.currentLevel = "bu";
-    state.trail = [];
-    return;
-  }
-  if (node.level === "region") {
-    const parent = allRegionNodes.find((item) => (item.children || []).some((child) => child.key === node.key));
-    state.currentLevel = "region";
-    state.trail = parent ? [{ key: parent.key, name: parent.name, level: parent.level }] : [];
-    return;
-  }
-  const regionParent = allRegionNodes.find((item) => (item.children || []).some((child) => child.key === node.key));
-  const buParent = allRegionNodes.find((item) => (item.children || []).some((child) => child.key === regionParent?.key));
-  state.currentLevel = "country";
-  state.trail = [];
-  if (buParent) {
-    state.trail.push({ key: buParent.key, name: buParent.name, level: buParent.level });
-  }
-  if (regionParent) {
-    state.trail.push({ key: regionParent.key, name: regionParent.name, level: regionParent.level });
-  }
-}
-
-function drillNode(node) {
-  state.selectedNodeKey = node.key;
-  if (node.level === "bu" && node.children?.length) {
-    state.currentLevel = "region";
-    state.trail = [{ key: node.key, name: node.name, level: node.level }];
-    return;
-  }
-  if (node.level === "region" && node.children?.length) {
-    const buParent = allRegionNodes.find((item) => (item.children || []).some((child) => child.key === node.key));
-    state.currentLevel = "country";
-    state.trail = [];
-    if (buParent) {
-      state.trail.push({ key: buParent.key, name: buParent.name, level: buParent.level });
+    function renderDiffTabs() {
+      const wrap = document.getElementById("diffTabs");
+      wrap.innerHTML = "";
+      wrap.appendChild(button("报表项目视角", state.diffView === "project", () => {
+        state.diffView = "project";
+        state.viewMode = "view1";
+        render();
+      }));
+      wrap.appendChild(button("来源视角", state.diffView === "source", () => {
+        state.diffView = "source";
+        state.viewMode = "view2";
+        render();
+      }));
     }
-    state.trail.push({ key: node.key, name: node.name, level: node.level });
-  }
-}
 
-function jumpPath(item) {
-  if (item.key === "root") {
-    state.currentLevel = "bu";
-    state.selectedNodeKey = regionTree[0].key;
-    state.trail = [];
-    return;
-  }
-  const node = getNode(item.key);
-  selectNode(node);
-}
+    function renderMetricCards() {
+      const wrap = document.getElementById("metricCards");
+      const cards = state.diffView === "project" ? projectCards : sourceCards;
+      const isProject = state.diffView === "project";
 
-function buildChart(seriesA, seriesB) {
-  const width = 420;
-  const height = 220;
-  const paddingX = 28;
-  const paddingTop = 20;
-  const paddingBottom = 34;
-  const maxValue = Math.max(...seriesA, ...seriesB, 0) + 2;
-  const minValue = Math.min(...seriesA, ...seriesB, 0) - 2;
-  const xStep = (width - paddingX * 2) / (seriesA.length - 1);
-  const yScale = (height - paddingTop - paddingBottom) / (maxValue - minValue || 1);
-  const x = (index) => paddingX + index * xStep;
-  const y = (value) => paddingTop + (maxValue - value) * yScale;
-  const path = (series) => series.map((value, index) => `${index === 0 ? "M" : "L"} ${x(index)} ${y(value)}`).join(" ");
-  const zeroY = y(0);
-  const months = ["1鏈?, "2鏈?, "3鏈?, "4鏈?, "5鏈?, "6鏈?];
+      wrap.className = isProject ? "grid-6" : "grid-4";
+      wrap.innerHTML = "";
 
-  return `
-    <svg viewBox="0 0 ${width} ${height}" width="100%" height="260" aria-label="瓒嬪娍鍥?>
-      ${months
-        .map(
-          (_, index) =>
-            `<line x1="${x(index)}" y1="${paddingTop}" x2="${x(index)}" y2="${height - paddingBottom}" stroke="rgba(59,130,246,0.08)" stroke-width="1" />`,
-        )
-        .join("")}
-      <line x1="${paddingX}" y1="${zeroY}" x2="${width - paddingX}" y2="${zeroY}" stroke="rgba(100,116,139,0.28)" stroke-dasharray="6 6" />
-      <path d="${path(seriesA)}" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="${path(seriesB)}" fill="none" stroke="#34d399" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-      ${seriesA
-        .map((value, index) => `<circle cx="${x(index)}" cy="${y(value)}" r="4.5" fill="#38bdf8" />`)
-        .join("")}
-      ${seriesB
-        .map((value, index) => `<circle cx="${x(index)}" cy="${y(value)}" r="4.5" fill="#34d399" />`)
-        .join("")}
-      ${months
-        .map(
-          (month, index) =>
-            `<text x="${x(index)}" y="${height - 10}" text-anchor="middle" fill="#6b85a3" font-size="12">${month}</text>`,
-        )
-        .join("")}
-    </svg>
-  `;
-}
+      cards.forEach((item) => {
+        const active = isProject ? state.activeProject === item.label : state.activeSource === item.key;
+        const card = document.createElement("div");
+        card.className = "metric-card" + (active ? " active" : "");
+        card.onclick = () => {
+          if (isProject) {
+            state.activeProject = item.label;
+            state.viewMode = "view1";
+          } else {
+            state.activeSource = item.key;
+            state.viewMode = "view2";
+          }
+          render();
+        };
 
-function renderWaterfall() {
-  const maxValue = Math.max(...waterfallBlocks.map((block) => Math.abs(block.diff)));
-  return `
-    <div class="linked-block">
-      <div class="linked-header">
-        <div class="section-title">鎬诲樊寮傛媶瑙ｅ浘</div>
-      </div>
-      <div class="waterfall">
-        <div class="waterfall-grid">
-          ${waterfallBlocks
-            .map((block) => {
-              const isActive = block.id === state.selectedBlockId;
-              const barHeight = Math.max(42, (Math.abs(block.diff) / maxValue) * 170);
-              const isPositive = block.diff >= 0;
-              const zeroTop = 200;
-              const style = isPositive
-                ? `top:${zeroTop - barHeight}px;height:${barHeight}px;`
-                : `top:${zeroTop}px;height:${barHeight}px;`;
-              return `
-                <div class="waterfall-card ${isActive ? "active" : ""}" data-select-block="${block.id}">
-                  <div class="waterfall-stage">
-                    <div class="zero-line" style="top:${zeroTop}px"></div>
-                    <div class="waterfall-value">${block.diff > 0 ? "+" : ""}${block.diff}</div>
-                    <div class="waterfall-bar ${isPositive ? "bar-positive" : "bar-negative"}" style="${style}"></div>
-                  </div>
-                  <div class="waterfall-label">
-                    <div class="waterfall-name">${block.name}</div>
-                    <div class="waterfall-subtitle">${block.subtitle}</div>
-                  </div>
-                </div>
-              `;
-            })
-            .join("")}
-        </div>
-        <div class="waterfall-top-metrics waterfall-bottom-metrics">
-          ${waterfallBlocks
-            .map(
-              (block) => `
-                <div class="waterfall-metric-panel ${block.id === state.selectedBlockId ? "active" : ""}">
-                  <div class="waterfall-mini-card">
-                    <div class="waterfall-mini-row"><span>璐圭敤鐜?/span><strong>${block.feeRate}</strong></div>
-                    <div class="waterfall-mini-row"><span>鐜瘮</span><strong>${block.momRate}</strong></div>
-                    <div class="waterfall-mini-row"><span>鍚屾瘮</span><strong>${block.yoyRate}</strong></div>
-                    <div class="waterfall-mini-row"><span>棰勭畻鎵ц宸紓</span><strong>${block.budgetExecDiff}</strong></div>
-                  </div>
-                </div>
-              `,
-            )
-            .join("")}
-        </div>
-        <div class="waterfall-total">
-          <span>鎬婚儴鎬诲樊寮傛眹鎬?/span>
-          <strong style="font-size:18px;color:#35506b;">+840 涓囧厓</strong>
-        </div>
-      </div>
-    </div>
-  `;
-}
+        const diffLabel = isProject ? "费用率" : "占比";
+        const diffValue = isProject ? item.feeRate : item.share;
 
-function renderTable() {
-  const block = getBlock(state.selectedBlockId);
-  return `
-    <div class="linked-block">
-      <div class="linked-header">
-        <div class="section-title">璐圭敤瑙ｉ噴鏄庣粏琛?/div>
-      </div>
-      <div class="current-summary">
-        <strong>褰撳墠閫変腑锛?/strong>${block.name}
-        <div class="subline">${block.summary}</div>
-      </div>
-      <div class="table-wrap">
+        card.innerHTML = `
+          <div class="metric-top">${item.value > 0 ? "+" : ""}${item.value}万元</div>
+          <div class="bar-wrap"><div class="bar" style="height:${Math.max(26, item.value * 0.38)}px"></div></div>
+          <div class="metric-name">${item.label}</div>
+          <div class="metric-list">
+            <div class="metric-row"><span>${diffLabel}</span><span class="strong">${diffValue}</span></div>
+            <div class="metric-row"><span>环比</span><span>${item.mom}</span></div>
+            <div class="metric-row"><span>同比</span><span>${item.yoy}</span></div>
+            <div class="metric-row"><span>预算执行差异</span><span class="strong">${item.budgetDiff}</span></div>
+          </div>
+        `;
+        wrap.appendChild(card);
+      });
+    }
+
+    function renderViewTabs() {
+      const wrap = document.getElementById("viewTabs");
+      wrap.innerHTML = "";
+      if (state.diffView === "project") {
+        wrap.appendChild(button(state.activeProject === "市场费用" ? "市场费用汇总" : "视角1｜按报表项目汇总", true, () => {}));
+        return;
+      }
+      wrap.appendChild(button("视角2｜同一来源下看不同报表项目", true, () => {}));
+    }
+
+    function renderStatusBar() {
+      const status = document.getElementById("statusBar");
+      const sourceName = (sourceCards.find(s => s.key === state.activeSource) || {}).label || "";
+      status.textContent = state.diffView === "project"
+        ? `当前选中报表项目：${state.activeProject}`
+        : `当前选中来源：${sourceName}`;
+    }
+
+    function renderTable() {
+      const wrap = document.getElementById("tableWrap");
+      const isMarketView = state.activeProject === "市场费用";
+
+      if (state.diffView === "project" && isMarketView) {
+        wrap.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>费用大类</th><th>实际金额</th><th>占比</th><th>预算比较</th><th>同比</th><th>环比</th><th>总结分析</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${marketCategoryViewRows.map(row => `
+                <tr>
+                  <td><strong>${row[0]}</strong></td><td>${row[1]}</td><td>${row[2]}</td><td class="strong">${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td><td class="muted">${row[6]}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+        return;
+      }
+
+      if (state.diffView === "project") {
+        const rows = projectSourceRows[state.activeProject] || [];
+        wrap.innerHTML = `
+          <table>
+            <thead>
+              <tr>
+                <th>报表项目</th><th>来源</th><th>实际金额</th><th>预算比较</th><th>同比</th><th>环比</th><th>差异原因</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  <td><strong>${row[0]}</strong></td>
+                  <td>${row[1]}</td>
+                  <td>${row[2]}</td>
+                  <td class="strong">${row[3]}</td>
+                  <td>${row[4]}</td>
+                  <td>${row[5]}</td>
+                  <td class="muted">${row[6]}（二级科目）｜${row[7]}（三级科目）<br><span style="opacity:.82">${row[8]}</span></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        `;
+        return;
+      }
+
+      const rows = sourceProjectRows[state.activeSource] || [];
+      const showTraceLink = state.activeSource === "platform" || state.activeSource === "bu";
+      wrap.innerHTML = `
         <table>
           <thead>
             <tr>
-              <th>璐圭敤椤?/th>
-              <th>瀹為檯閲戦</th>
-              <th>杈冮绠?/th>
-              <th>鐜瘮</th>
-              <th>鍚屾瘮</th>
-              <th>鏍囩</th>
-              <th>瑙ｉ噴鍒ゆ柇</th>
-              <th>鍘熷洜璇存槑</th>
+              <th>报表项目</th><th>实际金额</th><th>预算比较</th><th>同比</th><th>环比</th><th>差异原因</th>${showTraceLink ? "<th>明细数据链接</th>" : ""}
             </tr>
           </thead>
           <tbody>
-            ${block.items
-              .map(
-                (item) => `
-                  <tr>
-                    <td>${item[0]}</td>
-                    <td>${item[1]}</td>
-                    <td>${item[2]}</td>
-                    <td>${item[3]}</td>
-                    <td>${item[4]}</td>
-                    <td><span class="small-tag">${item[5]}</span></td>
-                    <td><span class="judge-tag">${item[6]}</span></td>
-                    <td>${item[7]}</td>
-                  </tr>
-                `,
-              )
-              .join("")}
+            ${rows.map(row => `
+              <tr>
+                <td><strong>${row[0]}</strong></td>
+                <td>${row[1]}</td>
+                <td class="strong">${row[2]}</td>
+                <td>${row[3]}</td>
+                <td>${row[4]}</td>
+                <td class="muted">${row[5]}（二级科目）｜${row[6]}（三级科目）${row[7]}</td>
+                ${showTraceLink ? `<td>${row[8] ? "<span class='trace-link'>分摊回溯表</span>" : "-"}</td>` : ""}
+              </tr>
+            `).join("")}
           </tbody>
         </table>
-      </div>
-    </div>
-  `;
-}
+      `;
+    }
 
-function renderMatrixRows() {
-  return getLevelRows()
-    .map((node) => {
-      const selected = state.selectedNodeKey === node.key;
-      const cells = ["鎶曞叆鏈夋晥", "鎶曞叆寰呭鐩?, "閲嶇偣寮傚父"]
-        .map((status) => {
-          const active = node.status === status;
-          const cls = active ? `${statusTone[status]} active` : "empty-cell";
-          return `
-            <td>
-              <button class="matrix-cell ${cls}" ${active ? `data-select-node="${node.key}"` : ""}></button>
-            </td>
-          `;
-        })
-        .join("");
+    function statusPill(status, activeStatus) {
+      const cls =
+        activeStatus === status
+          ? `status-pill active ${status === "投入有效" ? "good" : status === "投入待复盘" ? "review" : "bad"}`
+          : "status-pill";
+      return `<div class="${cls}">${activeStatus === status ? status : ""}</div>`;
+    }
 
-      const drill = node.children?.length
-        ? `<button class="drill-link" data-drill-node="${node.key}">鏌ョ湅${node.level === "bu" ? "鍖哄煙" : "鍥藉"} 禄</button>`
-        : "";
+    function getEffectDetail() {
+      return effectCountryDetails[state.effectCountry];
+    }
+
+    function getSelectedProduct() {
+      const detail = getEffectDetail();
+      return detail.products.find((item) => item.key === state.effectProduct) || detail.products[0];
+    }
+
+    function buildLineChart(spendSeries, revenueSeries) {
+      const width = 360;
+      const height = 230;
+      const paddingX = 26;
+      const paddingTop = 16;
+      const paddingBottom = 34;
+      const maxValue = Math.max(...spendSeries, ...revenueSeries, 0) + 2;
+      const minValue = Math.min(...spendSeries, ...revenueSeries, 0) - 2;
+      const xStep = (width - paddingX * 2) / (spendSeries.length - 1);
+      const yScale = (height - paddingTop - paddingBottom) / (maxValue - minValue || 1);
+      const x = (index) => paddingX + index * xStep;
+      const y = (value) => paddingTop + (maxValue - value) * yScale;
+      const path = (series) => series.map((value, index) => `${index === 0 ? "M" : "L"} ${x(index)} ${y(value)}`).join(" ");
+      const zeroY = y(0);
+      const months = ["1月", "2月", "3月", "4月", "5月", "6月"];
 
       return `
-        <tr class="${selected ? "matrix-row-active" : ""}">
-          <td>
-            <div class="matrix-level-cell">
-              <button class="matrix-level-name" data-select-node="${node.key}">${node.name}</button>
-              ${drill || `<span class="matrix-leaf-tag">${levelLabel(node.level)}</span>`}
-            </div>
-          </td>
-          <td>
-            ${node.summary}
-            <div class="matrix-meta">
-              <div class="subline"><strong>鏀跺叆鍙樺姩鐜囷細</strong><span>${node.revenueRate}</span></div>
-              <div class="subline"><strong>璐圭敤鍙樺姩鐜囷細</strong><span>${node.spendRate}</span></div>
-              <div class="subline"><strong>鍋忕搴︼細</strong><span>${node.deviation}</span></div>
-              <div class="subline"><strong>寮规€э細</strong><span>${node.elasticity}</span></div>
-            </div>
-          </td>
-          ${cells}
-        </tr>
+        <svg viewBox="0 0 ${width} ${height}" width="100%" height="250" aria-label="趋势图">
+          ${months.map((_, index) => `<line x1="${x(index)}" y1="${paddingTop}" x2="${x(index)}" y2="${height - paddingBottom}" stroke="rgba(59,130,246,0.08)" stroke-width="1" />`).join("")}
+          <line x1="${paddingX}" y1="${zeroY}" x2="${width - paddingX}" y2="${zeroY}" stroke="rgba(148,163,184,0.28)" stroke-dasharray="5 5" />
+          <path d="${path(spendSeries)}" fill="none" stroke="#38bdf8" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="${path(revenueSeries)}" fill="none" stroke="#34d399" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          ${spendSeries.map((value, index) => `<circle cx="${x(index)}" cy="${y(value)}" r="4" fill="#38bdf8" />`).join("")}
+          ${revenueSeries.map((value, index) => `<circle cx="${x(index)}" cy="${y(value)}" r="4" fill="#34d399" />`).join("")}
+          ${months.map((month, index) => `<text x="${x(index)}" y="${height - 10}" text-anchor="middle" fill="#88a8c7" font-size="12">${month}</text>`).join("")}
+        </svg>
       `;
-    })
-    .join("");
-}
+    }
 
-function renderMatrix() {
-  const path = buildPath();
-  return `
-    <div class="matrix-wrap">
-      <div class="matrix-head">
-        <div>
-          <div class="section-title">鍖哄煙缁撴灉鐭╅樀</div>
-          <div class="section-sub">榛樿灞曠ず浜嬩笟閮紝鐐瑰嚮钃濊壊鍏ュ彛鍙笅閽诲埌鍖哄煙涓庡浗瀹讹紝骞惰仈鍔ㄥ彸渚ц秼鍔垮浘銆?/div>
-        </div>
-        <div class="hint">鐐瑰嚮鑹插潡鑱斿姩瓒嬪娍</div>
-      </div>
-      <div class="matrix-path">
-        ${path
-          .map(
-            (item, index) => `
-              <button class="path-chip ${index === path.length - 1 ? "active" : ""}" data-jump-path="${item.key}">${item.name}</button>
-              ${index === path.length - 1 ? "" : '<span class="path-sep">/</span>'}
-            `,
-          )
-          .join("")}
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>灞曠ず灞傜骇</th>
-              <th>璇存槑</th>
-              <th>鎶曞叆鏈夋晥${infoDot(matrixHelp["鎶曞叆鏈夋晥"])}</th>
-              <th>鎶曞叆寰呭鐩?{infoDot(matrixHelp["鎶曞叆寰呭鐩?])}</th>
-              <th>閲嶇偣寮傚父${infoDot(matrixHelp["閲嶇偣寮傚父"])}</th>
-            </tr>
-          </thead>
-          <tbody>${renderMatrixRows()}</tbody>
-        </table>
-      </div>
-    </div>
-  `;
-}
-
-function renderTrend() {
-  const node = getNode(state.selectedNodeKey);
-  return `
-    <div class="trend-wrap">
-      <div class="trend-head">
-        <div>
-          <div class="section-title">鍖哄煙瓒嬪娍鑱斿姩</div>
-          <div class="section-sub">鏌ョ湅鎵€閫?{levelLabel(node.level)}鐨勬湀搴﹁垂鐢ㄥ彉鍔ㄧ巼涓庢粸鍚庢敹鍏ュ彉鍔ㄧ巼瓒嬪娍銆?/div>
-        </div>
-        <div class="region-badge">${node.name}</div>
-      </div>
-      <div class="trend-metrics">
-        <div class="trend-metrics-grid">
-          <div><strong>鏀跺叆鍙樺姩鐜?/strong>${infoDot(calcHelp["鏀跺叆鍙樺姩鐜?])}锛?${node.revenueRate}</div>
-          <div><strong>璐圭敤鍙樺姩鐜?/strong>${infoDot(calcHelp["璐圭敤鍙樺姩鐜?])}锛?${node.spendRate}</div>
-          <div><strong>鍋忕搴?/strong>${infoDot(calcHelp["鍋忕搴?])}锛?${node.deviation}</div>
-          <div><strong>寮规€?/strong>${infoDot(calcHelp["寮规€?])}锛?${node.elasticity}</div>
-        </div>
-        <div class="trend-summary"><strong>鎬荤粨锛?/strong>${node.summary}</div>
-      </div>
-      <div class="chart-wrap">
-        ${buildChart(node.spend, node.revenue)}
-        <div class="chart-legend">
-          <span><span class="legend-dot" style="background:#38bdf8"></span>璐圭敤鍙樺姩鐜?/span>
-          <span><span class="legend-dot" style="background:#34d399"></span>鏀跺叆鍙樺姩鐜?/span>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-function renderApp() {
-  const app = document.getElementById("app");
-  app.innerHTML = `
-    <div class="page-shell">
-      <div class="dashboard">
-        <section class="panel">
-          <div class="panel-header">
-            <span class="module-tag">妯″潡 1</span>
-            <div>
-              <div class="panel-title">鎬讳綋鍒ゆ柇</div>
-              <div class="panel-subtitle">浠庢€婚儴瑙嗚蹇€熷垽鏂湰鏈熻垂鐢ㄧ姸鎬併€佷富瑕侀┍鍔ㄤ笌浼樺厛璺熻繘浜嬮」銆?/div>
+    function renderTrendPanel(data, label) {
+      return `
+        <div class="trend-side">
+          <div class="trend-badge">${label}</div>
+          <div class="metric-pairs">
+            <div class="metric-pair"><strong>收入变动率</strong><span class="tip-dot">?</span><span>${data.revenueRate}</span></div>
+            <div class="metric-pair"><strong>费用变动率</strong><span class="tip-dot">?</span><span>${data.spendRate}</span></div>
+            <div class="metric-pair"><strong>偏离度</strong><span class="tip-dot">?</span><span>${data.deviation}</span></div>
+            <div class="metric-pair"><strong>弹性</strong><span class="tip-dot">?</span><span>${data.elasticity}</span></div>
+          </div>
+          <div class="trend-summary"><strong>总结：</strong>${data.summary}</div>
+          <div class="chart-card">
+            ${buildLineChart(data.spendSeries, data.revenueSeries)}
+            <div class="chart-legend">
+              <span class="legend-item"><span class="legend-line" style="background:#38bdf8"></span>费用变动率</span>
+              <span class="legend-item"><span class="legend-line" style="background:#34d399"></span>收入变动率</span>
             </div>
           </div>
-          <div class="judgement">${overview.summary}</div>
-          <div style="margin-top:24px;">
-            <div class="panel-header" style="margin-bottom:14px;">
-              <span class="module-tag">閲嶇偣鍏虫敞</span>
-              <div>
-                <div class="panel-title">閲嶇偣鍏虫敞瀵硅薄</div>
-                <div class="panel-subtitle">鎶婃湰鍛ㄩ渶瑕佽В閲娿€侀噸鐐瑰鐩樺拰鎸佺画璺熻釜鐨勫璞℃敹杩涙€讳綋鍒ゆ柇锛屾柟渚跨鐞嗗眰鍦ㄩ椤电洿鎺ユ姄閲嶇偣銆?/div>
+        </div>
+      `;
+    }
+
+    function renderEffectAnalysis() {
+      const wrap = document.getElementById("effectAnalysisWrap");
+      if (state.effectView === "country") {
+        const selectedCountry = effectCountryRows.find((row) => row.key === state.effectCountry) || effectCountryRows[0];
+        wrap.innerHTML = `
+          <div class="effect-layout">
+            <div>
+              <div class="module4-head">
+                <div class="crumbs">
+                  <div class="crumb">第一层：国家</div>
+                </div>
+                <div class="hint-text">点击第一列“查看产品代”可下钻到第二层明细</div>
+              </div>
+              <div class="table-wrap">
+                <table class="country-table">
+                  <thead>
+                    <tr>
+                      <th>展示层级</th>
+                      <th>费率</th>
+                      <th>费率环比</th>
+                      <th>费率同比</th>
+                      <th>投入有效</th>
+                      <th>投入待复盘</th>
+                      <th>重点异常</th>
+                      <th>说明</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${effectCountryRows.map(row => `
+                      <tr>
+                        <td>
+                          <div class="country-name">${row.name}</div>
+                          <div class="country-level">${row.level}</div>
+                          <a class="drill-link-inline" href="javascript:void(0)" data-effect-country="${row.key}">查看产品代 »</a>
+                        </td>
+                        <td><span class="rate-big">${row.feeRate}</span></td>
+                        <td><span class="rate-big">${row.mom}</span></td>
+                        <td><span class="rate-big">${row.yoy}</span></td>
+                        <td class="status-cell">${statusPill("投入有效", row.status)}</td>
+                        <td class="status-cell">${statusPill("投入待复盘", row.status)}</td>
+                        <td class="status-cell">${statusPill("重点异常", row.status)}</td>
+                        <td class="muted">${row.description}</td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div class="focus-grid">
-              ${focusCards
-                .map(
-                  (item) => `
-                    <div class="focus-card">
-                      <div class="focus-top">
-                        <div class="focus-icon">${item[0]}</div>
-                        <div>
-                          <div class="focus-priority">${item[1]}</div>
-                          <div class="focus-category">${item[2]}</div>
-                          <div class="focus-owner">${item[3]}</div>
-                        </div>
-                      </div>
-                      <div class="focus-text">${item[4]}</div>
-                    </div>
-                  `,
-                )
-                .join("")}
+            ${renderTrendPanel(selectedCountry, selectedCountry.name)}
+          </div>
+        `;
+        return;
+      }
+
+      const detail = getEffectDetail();
+      const selectedProduct = getSelectedProduct();
+      wrap.innerHTML = `
+        <div class="effect-layout">
+          <div>
+            <div class="module4-head">
+              <div class="crumbs">
+                <button class="crumb dim" data-effect-back="country">第一层：国家</button>
+                <div class="crumb">第二层：${detail.country} 产品代</div>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="detail-table">
+                <thead>
+                  <tr>
+                    <th>国家</th>
+                    <th>产品代</th>
+                    <th>来源</th>
+                    <th>实际金额</th>
+                    <th>占比</th>
+                    <th>投入有效</th>
+                    <th>投入待复盘</th>
+                    <th>重点异常</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${detail.products.map(product => `
+                    ${product.sources.map((source, index) => `
+                      <tr>
+                        ${index === 0 ? `<td rowspan="${product.sources.length}"><strong>${product.country}</strong></td>` : ""}
+                        ${index === 0 ? `<td rowspan="${product.sources.length}"><a class="drill-link-inline merged-product" href="javascript:void(0)" data-effect-product="${product.key}">${product.product}</a></td>` : ""}
+                        <td>${source[0]}</td>
+                        <td>${source[1]}</td>
+                        <td>${source[2]}</td>
+                        ${index === 0 ? `<td class="status-cell" rowspan="${product.sources.length}">${statusPill("投入有效", product.status)}</td>` : ""}
+                        ${index === 0 ? `<td class="status-cell" rowspan="${product.sources.length}">${statusPill("投入待复盘", product.status)}</td>` : ""}
+                        ${index === 0 ? `<td class="status-cell" rowspan="${product.sources.length}">${statusPill("重点异常", product.status)}</td>` : ""}
+                      </tr>
+                    `).join("")}
+                  `).join("")}
+                </tbody>
+              </table>
             </div>
           </div>
-        </section>
+          ${renderTrendPanel(selectedProduct.trend, selectedProduct.product)}
+        </div>
+      `;
+    }
 
-        <section class="panel linked-panel">
-          <div class="panel-header">
-            <span class="module-tag">妯″潡 2-3</span>
-            <div>
-              <div class="panel-title">宸紓鎷嗚В涓庤垂鐢ㄨВ閲婅仈鍔ㄥ垎鏋?/div>
-            </div>
-          </div>
-          ${renderWaterfall()}
-          ${renderTable()}
-        </section>
+    function bindEffectAnalysisEvents() {
+      document.querySelectorAll("[data-effect-country]").forEach((node) => {
+        node.addEventListener("click", () => {
+          state.effectCountry = node.dataset.effectCountry;
+          state.effectProduct = effectCountryDetails[state.effectCountry].products[0].key;
+          state.effectView = "product";
+          render();
+        });
+      });
 
-        <section class="panel">
-          <div class="panel-header">
-            <span class="module-tag">妯″潡 4</span>
-            <div>
-              <div class="panel-title">鍖哄煙鍙樺姩璐圭敤鏁堟灉鍒嗘瀽</div>
-              <div class="panel-subtitle">浠庡尯鍩熺淮搴﹀垽鏂姇鍏ユ槸鍚︽湁鏁堬紝骞惰仈鍔ㄦ煡鐪嬭垂鐢ㄤ笌婊炲悗鏀跺叆鐨勬湀搴﹁秼鍔裤€?/div>
-            </div>
-          </div>
-          <div class="region-tip">鍏堢湅宸︿晶鍖哄煙缁撴灉鐭╅樀锛屽啀鐐瑰嚮鑹插潡鑱斿姩鍙充晶瓒嬪娍鍥俱€傝繖涓ā鍧楅€傚悎鎬婚儴鐪嬪尯鍩熸晥鐜囷紝鑰屼笉鏄彧鐪嬭垂鐢ㄧ粷瀵瑰€笺€?/div>
-          <div class="region-grid">
-            ${renderMatrix()}
-            ${renderTrend()}
-          </div>
-        </section>
-      </div>
-    </div>
-  `;
+      document.querySelectorAll("[data-effect-product]").forEach((node) => {
+        node.addEventListener("click", () => {
+          state.effectProduct = node.dataset.effectProduct;
+          state.effectView = "product";
+          render();
+        });
+      });
 
-  bindEvents();
-}
+      document.querySelectorAll("[data-effect-back]").forEach((node) => {
+        node.addEventListener("click", () => {
+          state.effectView = "country";
+          render();
+        });
+      });
+    }
 
-function bindEvents() {
-  document.querySelectorAll("[data-select-block]").forEach((node) => {
-    node.addEventListener("click", () => {
-      state.selectedBlockId = node.dataset.selectBlock;
-      renderApp();
-    });
-  });
+    function render() {
+      renderDiffTabs();
+      renderMetricCards();
+      renderViewTabs();
+      renderStatusBar();
+      renderTable();
+      renderEffectAnalysis();
+      bindEffectAnalysisEvents();
+    }
 
-  document.querySelectorAll("[data-select-node]").forEach((node) => {
-    node.addEventListener("click", () => {
-      selectNode(getNode(node.dataset.selectNode));
-      renderApp();
-    });
-  });
-
-  document.querySelectorAll("[data-drill-node]").forEach((node) => {
-    node.addEventListener("click", () => {
-      drillNode(getNode(node.dataset.drillNode));
-      renderApp();
-    });
-  });
-
-  document.querySelectorAll("[data-jump-path]").forEach((node) => {
-    node.addEventListener("click", () => {
-      jumpPath({ key: node.dataset.jumpPath });
-      renderApp();
-    });
-  });
-}
-
-renderApp();
-
-</script>
+    render();
+  </script>
 </body>
 </html>
