@@ -13,6 +13,7 @@ const waterfallBlocks = [
     momRate: "+10%",
     yoyRate: "+20%",
     budgetExecDiff: "+16%",
+    totalAmount: "2,680 万元",
     summary: "项目集中验收导致费用前置确认，是本月最大的单项差异来源。",
     items: [
       ["外包开发费", "520 万元", "+165 万元", "+31.2%", "+38.4%", "一次性事项", "本周需解释", "重点项目验收集中在本月确认。"],
@@ -29,6 +30,7 @@ const waterfallBlocks = [
     momRate: "+6%",
     yoyRate: "+9%",
     budgetExecDiff: "+11%",
+    totalAmount: "2,310 万元",
     summary: "部分区域经营型费用增速快于收入改善，需要从区域效率角度重点复盘。",
     items: [
       ["市场推广费", "190 万元", "+86 万元", "+24.3%", "+31.5%", "经营投入", "本周需解释", "新品推广与路演活动集中投放。"],
@@ -45,6 +47,7 @@ const waterfallBlocks = [
     momRate: "+5%",
     yoyRate: "-3%",
     budgetExecDiff: "+2%",
+    totalAmount: "860 万元",
     summary: "总部管理与共享服务相关费用小幅抬升，绝对额不高，但需要确认增长原因。",
     items: [
       ["咨询服务费", "180 万元", "+63 万元", "+28.4%", "+41.3%", "专项投入", "本周需解释", "流程优化项目启动导致顾问费用增加。"],
@@ -61,6 +64,7 @@ const waterfallBlocks = [
     momRate: "+2%",
     yoyRate: "+6%",
     budgetExecDiff: "+4%",
+    totalAmount: "1,740 万元",
     summary: "培训与支持类费用温和增长，整体可控。",
     items: [
       ["培训费", "42 万元", "+11 万元", "+12.8%", "+16.2%", "正常波动", "可接受", "季度培训计划集中落地。"],
@@ -85,6 +89,38 @@ const waterfallBlocks = [
     ],
   },
 ];
+
+const visibleWaterfallBlocks = waterfallBlocks.filter((block) => block.id !== "other");
+
+const analysisViews = [
+  { id: "hq", label: "总部财务视角" },
+  { id: "business", label: "事业部业财视角" },
+];
+
+const businessViewTableOverrides = {
+  rd: {
+    summary: "当前展示的是研发费用在事业部业财视角下的差异明细，用于拆解研发大类、小类和环比波动原因。",
+    columns: ["研发费用大类", "小类", "当期发生", "上期金额", "环比", "差异原因解析"],
+    rows: [
+      ["技术研发", "技术研发", "860 万元", "780 万元", "+10.3%", "计提比例不变，波动原因是BOM成本+返利上升"],
+      ["产品开发", "自研", "1,240 万元", "930 万元", "+33.3%", "历史项目新增1200万，新项目一次性计提2300。"],
+      ["产品开发", "外研", "720 万元", "590 万元", "+22.0%", "单台成本不变，数量新增XX台，导致成本上升"],
+      ["产品开发", "软件产品", "460 万元", "410 万元", "+12.2%", "计提比例不变，波动原因是BOM成本+返利上升"],
+      ["其他", "其他", "180 万元", "165 万元", "+9.1%", "零星研发支持费用随项目验收节奏小幅增加。"],
+    ],
+  },
+  function: {
+    summary: "当前展示的是职能费用在事业部业财视角下的国家波动明细，用于快速定位差异贡献最大的国家。",
+    columns: ["职能费用波动TOP5国家", "当期发生", "上期金额", "差异原因"],
+    rows: [
+      ["埃塞俄比亚", "320 万元", "210 万元", "职能费用计提因子BOM+返利变动3000万，导致计提金额差异大"],
+      ["尼日利亚", "285 万元", "238 万元", "渠道支持与本地行政保障费用同步增加。"],
+      ["加纳", "176 万元", "132 万元", "共享服务结算节奏提前，带来阶段性费用抬升。"],
+      ["巴基斯坦", "154 万元", "126 万元", "本地运营支持费用随业务恢复小幅增加。"],
+      ["印度", "138 万元", "119 万元", "职能支持项目集中发生，后续需观察是否回落。"],
+    ],
+  },
+};
 
 const focusCards = [
   ["01", "P1 本周解释", "重点解释部门", "研发中心", "研发费用较预算增加 420 万元，主要由外包开发和测试认证费用前置确认带动，需要说明后续是否回落。"],
@@ -345,11 +381,44 @@ const matrixRateMetrics = {
   mexico: { feeRate: "1.4%", feeRateMom: "-3%", feeRateYoy: "0%" },
 };
 
+const productLineRowsByBu = {
+  tecno: [
+    { key: "tecno-camon", sourceKey: "tecno", name: "CAMON", level: "productLine", status: "投入有效", summary: "高端影像线增长稳定，投放与销量释放较匹配。", feeRate: "3.1%", feeRateMom: "+8%", feeRateYoy: "+13%" },
+    { key: "tecno-spark", sourceKey: "tecno", name: "SPARK", level: "productLine", status: "投入待复盘", summary: "大众线投放强度提升，但转化节奏偏慢。", feeRate: "2.8%", feeRateMom: "+11%", feeRateYoy: "+16%" },
+    { key: "tecno-pova", sourceKey: "tecno", name: "POVA", level: "productLine", status: "重点异常", summary: "游戏线费用抬升快于收入改善，需要重点复盘。", feeRate: "3.6%", feeRateMom: "+15%", feeRateYoy: "+22%" },
+    { key: "tecno-phantom", sourceKey: "tecno", name: "PHANTOM", level: "productLine", status: "投入有效", summary: "旗舰线费用可控，品牌拉动较明显。", feeRate: "2.2%", feeRateMom: "+4%", feeRateYoy: "+7%" },
+    { key: "tecno-pop", sourceKey: "tecno", name: "POP", level: "productLine", status: "投入待复盘", summary: "入门线维持投放，但区域间回报分化明显。", feeRate: "1.9%", feeRateMom: "+3%", feeRateYoy: "+5%" },
+  ],
+  infinix: [
+    { key: "infinix-note", sourceKey: "infinix", name: "NOTE", level: "productLine", status: "投入有效", summary: "核心销量线表现稳定，投放效率较高。", feeRate: "2.8%", feeRateMom: "+7%", feeRateYoy: "+10%" },
+    { key: "infinix-hot", sourceKey: "infinix", name: "HOT", level: "productLine", status: "投入有效", summary: "主力促销线收入改善明显。", feeRate: "2.6%", feeRateMom: "+6%", feeRateYoy: "+9%" },
+    { key: "infinix-zero", sourceKey: "infinix", name: "ZERO", level: "productLine", status: "投入待复盘", summary: "高端线品牌费用增加，但销量释放偏慢。", feeRate: "3.0%", feeRateMom: "+9%", feeRateYoy: "+12%" },
+  ],
+  itel: [
+    { key: "itel-a", sourceKey: "itel", name: "A 系列", level: "productLine", status: "投入有效", summary: "基础款费用可控，销量修复平稳。", feeRate: "2.0%", feeRateMom: "+4%", feeRateYoy: "+7%" },
+    { key: "itel-p", sourceKey: "itel", name: "P 系列", level: "productLine", status: "投入有效", summary: "长续航线促销效率较高。", feeRate: "2.2%", feeRateMom: "+5%", feeRateYoy: "+8%" },
+    { key: "itel-city", sourceKey: "itel", name: "CITY", level: "productLine", status: "投入待复盘", summary: "城市渠道投放增加后回报仍需观察。", feeRate: "2.3%", feeRateMom: "+6%", feeRateYoy: "+9%" },
+  ],
+  philips: [
+    { key: "philips-audio", sourceKey: "philips", name: "音频", level: "productLine", status: "投入待复盘", summary: "费用平稳，但收入修复较慢。", feeRate: "1.7%", feeRateMom: "-1%", feeRateYoy: "+2%" },
+    { key: "philips-home", sourceKey: "philips", name: "家电", level: "productLine", status: "重点异常", summary: "家电线收入承压，费用仍需进一步压缩。", feeRate: "1.5%", feeRateMom: "-2%", feeRateYoy: "+1%" },
+  ],
+};
+
 const state = {
   selectedBlockId: "rd",
+  analysisView: "hq",
   selectedNodeKey: "tecno",
   currentLevel: "bu",
   trail: [],
+  drilledBuKey: null,
+  matrixHistory: [],
+  filters: {
+    bu: "ALL",
+    region: "ALL",
+    country: "ALL",
+    productLine: "ALL",
+  },
 };
 
 function levelLabel(level) {
@@ -390,6 +459,130 @@ function getMatrixRateMetrics(node) {
       feeRateYoy: "--",
     }
   );
+}
+
+function getProductLine(node) {
+  const rootKey = node.level === "bu" ? node.key : node.trail?.[0]?.key || node.key;
+  return {
+    tecno: "智能机",
+    infinix: "智能机",
+    itel: "功能机",
+    philips: "生态产品",
+  }[rootKey] || "智能机";
+}
+
+function getFilterOptions() {
+  const productLineOptions = state.drilledBuKey
+    ? (productLineRowsByBu[state.drilledBuKey] || []).map((row) => ({ value: row.name, label: row.name }))
+    : [];
+
+  return {
+    bu: regionTree.map((node) => ({ value: node.key, label: node.name })),
+    region: allRegionNodes.filter((node) => node.level === "region").map((node) => ({ value: node.key, label: node.name })),
+    country: allRegionNodes.filter((node) => node.level === "country").map((node) => ({ value: node.key, label: node.name })),
+    productLine: productLineOptions,
+  };
+}
+
+function getBusinessRows() {
+  const baseRows = regionTree;
+
+  if (!state.drilledBuKey) {
+    return baseRows;
+  }
+
+  return (productLineRowsByBu[state.drilledBuKey] || []).filter((row) => {
+    return state.filters.productLine === "ALL" || row.name === state.filters.productLine;
+  });
+}
+
+function getRegionRows() {
+  return regionTree
+    .filter((node) => state.filters.bu === "ALL" || node.key === state.filters.bu)
+    .flatMap((node) => node.children || [])
+    .filter((node) => {
+      const matchRegion = state.filters.region === "ALL" || node.key === state.filters.region;
+      const matchCountry = state.filters.country === "ALL" || (node.children || []).some((country) => country.key === state.filters.country);
+      return matchRegion && matchCountry;
+    });
+}
+
+function getActiveTrendNode() {
+  if (state.filters.country !== "ALL") return getNode(state.filters.country);
+  if (state.filters.region !== "ALL") return getNode(state.filters.region);
+  if (state.filters.bu !== "ALL") return getNode(state.filters.bu);
+  return getNode(state.selectedNodeKey);
+}
+
+function snapshotMatrixState() {
+  return {
+    selectedNodeKey: state.selectedNodeKey,
+    drilledBuKey: state.drilledBuKey,
+    filters: { ...state.filters },
+  };
+}
+
+function restoreMatrixState(snapshot) {
+  state.selectedNodeKey = snapshot.selectedNodeKey;
+  state.drilledBuKey = snapshot.drilledBuKey;
+  state.filters = { ...snapshot.filters };
+}
+
+function pushMatrixHistory() {
+  state.matrixHistory.push(snapshotMatrixState());
+}
+
+function setFilter(type, value, recordHistory = true) {
+  if (recordHistory) {
+    pushMatrixHistory();
+  }
+
+  state.filters[type] = value;
+
+  if (type === "bu") {
+    if (value === "ALL") {
+      state.drilledBuKey = null;
+      state.filters.productLine = "ALL";
+    } else if (state.drilledBuKey) {
+      state.drilledBuKey = value;
+      state.filters.productLine = "ALL";
+    }
+  }
+
+  if (type === "region") {
+    if (value === "ALL") {
+      state.filters.country = "ALL";
+    } else if (state.filters.country !== "ALL") {
+      const countryNode = getNode(state.filters.country);
+      const currentRegionKey = countryNode.trail?.[1]?.key;
+      if (currentRegionKey !== value) {
+        state.filters.country = "ALL";
+      }
+    }
+  }
+
+  if (type === "country" && value !== "ALL") {
+    const countryNode = getNode(value);
+    const regionKey = countryNode.trail?.[1]?.key;
+    if (regionKey) state.filters.region = regionKey;
+  }
+
+  state.selectedNodeKey = getActiveTrendNode().key;
+}
+
+function drillBusinessView(buKey) {
+  pushMatrixHistory();
+  state.drilledBuKey = buKey;
+  state.filters.bu = buKey;
+  state.filters.productLine = "ALL";
+  state.selectedNodeKey = buKey;
+}
+
+function goBackMatrixView() {
+  const snapshot = state.matrixHistory.pop();
+  if (snapshot) {
+    restoreMatrixState(snapshot);
+  }
 }
 
 function getLevelRows() {
@@ -507,16 +700,64 @@ function buildChart(seriesA, seriesB) {
   `;
 }
 
+function getAnalysisViewLabel() {
+  return analysisViews.find((view) => view.id === state.analysisView)?.label || analysisViews[0].label;
+}
+
+function getTableConfig() {
+  const block = getBlock(state.selectedBlockId);
+  const businessOverride = state.analysisView === "business" ? businessViewTableOverrides[block.id] : null;
+
+  if (businessOverride) {
+    return {
+      blockName: block.name,
+      summary: businessOverride.summary,
+      columns: businessOverride.columns,
+      rows: businessOverride.rows,
+      mode: "plain",
+    };
+  }
+
+  return {
+    blockName: block.name,
+    summary: block.summary,
+    columns: ["费用项", "实际金额", "较预算", "环比", "同比", "标签", "解释判断", "原因说明"],
+    rows: block.items,
+    mode: "default",
+  };
+}
+
+function renderAnalysisTabs() {
+  return `
+    <div class="analysis-tabs">
+      ${analysisViews
+        .map(
+          (view) => `
+            <button
+              type="button"
+              class="analysis-tab ${state.analysisView === view.id ? "active" : ""}"
+              data-analysis-view="${view.id}"
+            >
+              ${view.label}
+            </button>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
 function renderWaterfall() {
-  const maxValue = Math.max(...waterfallBlocks.map((block) => Math.abs(block.diff)));
+  const blockCount = visibleWaterfallBlocks.length;
+  const maxValue = Math.max(...visibleWaterfallBlocks.map((block) => Math.abs(block.diff)));
   return `
     <div class="linked-block">
       <div class="linked-header">
         <div class="section-title">总差异拆解图</div>
       </div>
       <div class="waterfall">
-        <div class="waterfall-grid">
-          ${waterfallBlocks
+        <div class="waterfall-grid" style="grid-template-columns: repeat(${blockCount}, minmax(0, 1fr));">
+          ${visibleWaterfallBlocks
             .map((block) => {
               const isActive = block.id === state.selectedBlockId;
               const barHeight = Math.max(42, (Math.abs(block.diff) / maxValue) * 170);
@@ -534,19 +775,31 @@ function renderWaterfall() {
                   </div>
                   <div class="waterfall-label">
                     <div class="waterfall-name">${block.name}</div>
-                    <div class="waterfall-subtitle">${block.subtitle}</div>
                   </div>
                 </div>
               `;
             })
             .join("")}
         </div>
-        <div class="waterfall-top-metrics waterfall-bottom-metrics">
-          ${waterfallBlocks
+        <div class="waterfall-amount-grid" style="grid-template-columns: repeat(${blockCount}, minmax(0, 1fr));">
+          ${visibleWaterfallBlocks
+            .map(
+              (block) => `
+                <div class="waterfall-amount ${block.id === state.selectedBlockId ? "active" : ""}">
+                  <span>总金额</span>
+                  <strong>${block.totalAmount}</strong>
+                </div>
+              `,
+            )
+            .join("")}
+        </div>
+        <div class="waterfall-top-metrics waterfall-bottom-metrics" style="grid-template-columns: repeat(${blockCount}, minmax(0, 1fr));">
+          ${visibleWaterfallBlocks
             .map(
               (block) => `
                 <div class="waterfall-metric-panel ${block.id === state.selectedBlockId ? "active" : ""}">
                   <div class="waterfall-mini-card">
+                    <div class="waterfall-mini-row"><span>总金额</span><strong>${block.totalAmount}</strong></div>
                     <div class="waterfall-mini-row"><span>费用率</span><strong>${block.feeRate}</strong></div>
                     <div class="waterfall-mini-row"><span>环比</span><strong>${block.momRate}</strong></div>
                     <div class="waterfall-mini-row"><span>同比</span><strong>${block.yoyRate}</strong></div>
@@ -615,69 +868,231 @@ function renderTable() {
   `;
 }
 
-function renderMatrixRows() {
-  return getLevelRows()
-    .map((node) => {
-      const selected = state.selectedNodeKey === node.key;
-      const rateMetrics = getMatrixRateMetrics(node);
-      const cells = ["投入有效", "投入待复盘", "重点异常"]
-        .map((status) => {
-          const active = node.status === status;
-          const cls = active ? `${statusTone[status]} active` : "empty-cell";
-          return `
-            <td>
-              <button class="matrix-cell ${cls}" ${active ? `data-select-node="${node.key}"` : ""}></button>
-            </td>
-          `;
-        })
-        .join("");
+function renderWaterfall() {
+  const blockCount = visibleWaterfallBlocks.length;
+  const maxValue = Math.max(...visibleWaterfallBlocks.map((block) => Math.abs(block.diff)));
+  return `
+    <div class="linked-block">
+      <div class="linked-header">
+        <div class="section-title">${getAnalysisViewLabel()}</div>
+      </div>
+      <div class="waterfall">
+        <div class="waterfall-grid" style="grid-template-columns: repeat(${blockCount}, minmax(0, 1fr));">
+          ${visibleWaterfallBlocks
+            .map((block) => {
+              const isActive = block.id === state.selectedBlockId;
+              const barHeight = Math.max(42, (Math.abs(block.diff) / maxValue) * 170);
+              const isPositive = block.diff >= 0;
+              const zeroTop = 200;
+              const style = isPositive
+                ? `top:${zeroTop - barHeight}px;height:${barHeight}px;`
+                : `top:${zeroTop}px;height:${barHeight}px;`;
+              return `
+                <div class="waterfall-card ${isActive ? "active" : ""}" data-select-block="${block.id}">
+                  <div class="waterfall-stage">
+                    <div class="zero-line" style="top:${zeroTop}px"></div>
+                    <div class="waterfall-value">${block.diff > 0 ? "+" : ""}${block.diff}</div>
+                    <div class="waterfall-bar ${isPositive ? "bar-positive" : "bar-negative"}" style="${style}"></div>
+                  </div>
+                  <div class="waterfall-label">
+                    <div class="waterfall-name">${block.name}</div>
+                  </div>
+                </div>
+              `;
+            })
+            .join("")}
+        </div>
+        <div class="waterfall-amount-grid" style="grid-template-columns: repeat(${blockCount}, minmax(0, 1fr));">
+          ${visibleWaterfallBlocks
+            .map(
+              (block) => `
+                <div class="waterfall-amount ${block.id === state.selectedBlockId ? "active" : ""}">
+                  <span>总金额</span>
+                  <strong>${block.totalAmount}</strong>
+                </div>
+              `,
+            )
+            .join("")}
+        </div>
+        <div class="waterfall-top-metrics waterfall-bottom-metrics" style="grid-template-columns: repeat(${blockCount}, minmax(0, 1fr));">
+          ${visibleWaterfallBlocks
+            .map(
+              (block) => `
+                <div class="waterfall-metric-panel ${block.id === state.selectedBlockId ? "active" : ""}">
+                  <div class="waterfall-mini-card">
+                    <div class="waterfall-mini-row"><span>总金额</span><strong>${block.totalAmount}</strong></div>
+                    <div class="waterfall-mini-row"><span>费用率</span><strong>${block.feeRate}</strong></div>
+                    <div class="waterfall-mini-row"><span>环比</span><strong>${block.momRate}</strong></div>
+                    <div class="waterfall-mini-row"><span>同比</span><strong>${block.yoyRate}</strong></div>
+                    <div class="waterfall-mini-row"><span>预算执行差异</span><strong>${block.budgetExecDiff}</strong></div>
+                  </div>
+                </div>
+              `,
+            )
+            .join("")}
+        </div>
+        <div class="waterfall-total">
+          <span>总部总差异汇总</span>
+          <strong style="font-size:18px;color:#35506b;">+840 万元</strong>
+        </div>
+      </div>
+    </div>
+  `;
+}
 
-      const drill = node.children?.length
-        ? `<button class="drill-link" data-drill-node="${node.key}">查看${node.level === "bu" ? "区域" : "国家"} »</button>`
-        : "";
+function renderTable() {
+  const tableConfig = getTableConfig();
+  return `
+    <div class="linked-block">
+      <div class="linked-header">
+        <div class="section-title">费用解释明细表</div>
+      </div>
+      <div class="current-summary">
+        <strong>当前选中：</strong>${tableConfig.blockName}
+        <div class="subline">${tableConfig.summary}</div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              ${tableConfig.columns.map((column) => `<th>${column}</th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${
+              tableConfig.mode === "default"
+                ? tableConfig.rows
+                    .map(
+                      (item) => `
+                        <tr>
+                          <td>${item[0]}</td>
+                          <td>${item[1]}</td>
+                          <td>${item[2]}</td>
+                          <td>${item[3]}</td>
+                          <td>${item[4]}</td>
+                          <td><span class="small-tag">${item[5]}</span></td>
+                          <td><span class="judge-tag">${item[6]}</span></td>
+                          <td>${item[7]}</td>
+                        </tr>
+                      `,
+                    )
+                    .join("")
+                : tableConfig.rows
+                    .map(
+                      (row) => `
+                        <tr>
+                          ${row.map((cell) => `<td>${cell || ""}</td>`).join("")}
+                        </tr>
+                      `,
+                    )
+                    .join("")
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
 
+function renderMatrixRow(node, leafLabel = "") {
+  const selected = state.selectedNodeKey === node.key;
+  const rateMetrics = node.feeRate
+    ? { feeRate: node.feeRate, feeRateMom: node.feeRateMom, feeRateYoy: node.feeRateYoy }
+    : getMatrixRateMetrics(node);
+  const cells = ["投入有效", "投入待复盘", "重点异常"]
+    .map((status) => {
+      const active = node.status === status;
+      const cls = active ? `${statusTone[status]} active` : "empty-cell";
       return `
-        <tr class="${selected ? "matrix-row-active" : ""}">
-          <td>
-            <div class="matrix-level-cell">
-              <button class="matrix-level-name" data-select-node="${node.key}">${node.name}</button>
-              ${drill || `<span class="matrix-leaf-tag">${levelLabel(node.level)}</span>`}
-            </div>
-          </td>
-          <td class="matrix-kpi-cell"><strong>${rateMetrics.feeRate}</strong></td>
-          <td class="matrix-kpi-cell"><strong>${rateMetrics.feeRateMom}</strong></td>
-          <td class="matrix-kpi-cell"><strong>${rateMetrics.feeRateYoy}</strong></td>
-          ${cells}
-          <td>
-            ${node.summary}
-          </td>
-        </tr>
+        <td>
+          <button class="matrix-cell ${cls}" ${active ? `data-select-node="${node.sourceKey || node.key}"` : ""}></button>
+        </td>
       `;
     })
     .join("");
+
+  const drill =
+    node.level === "bu"
+      ? `<button class="drill-link" data-drill-bu="${node.key}">查看产品线 »</button>`
+      : node.children?.length
+        ? `<button class="drill-link" data-filter-shortcut="country:${node.children[0]?.key || node.key}">查看国家 »</button>`
+        : `<span class="matrix-leaf-tag">${leafLabel || levelLabel(node.level)}</span>`;
+
+  return `
+    <tr class="${selected ? "matrix-row-active" : ""}">
+      <td>
+        <div class="matrix-level-cell">
+          <button class="matrix-level-name" data-select-node="${node.sourceKey || node.key}">${node.name}</button>
+          ${drill}
+        </div>
+      </td>
+      <td class="matrix-kpi-cell"><strong>${rateMetrics.feeRate}</strong></td>
+      <td class="matrix-kpi-cell"><strong>${rateMetrics.feeRateMom}</strong></td>
+      <td class="matrix-kpi-cell"><strong>${rateMetrics.feeRateYoy}</strong></td>
+      ${cells}
+      <td>${node.summary}</td>
+    </tr>
+  `;
+}
+
+function renderMatrixRows() {
+  const businessRows = getBusinessRows();
+  const regionRows = getRegionRows();
+
+  const sectionRow = (title) => `
+    <tr class="matrix-section-row">
+      <td colspan="8">${title}</td>
+    </tr>
+  `;
+
+  return `
+    ${sectionRow(state.drilledBuKey ? "产品线视角" : "事业部视角")}
+    ${businessRows.map((node) => renderMatrixRow(node, state.drilledBuKey ? "产品线" : "事业部BU")).join("")}
+    ${sectionRow("区域视角")}
+    ${
+      regionRows.length
+        ? regionRows.map((node) => renderMatrixRow(node, "区域")).join("")
+        : `<tr class="matrix-empty-row"><td colspan="8">当前筛选下暂无区域数据</td></tr>`
+    }
+  `;
+}
+
+function renderMatrixFilters() {
+  const options = getFilterOptions();
+  const renderSelect = (label, type, optionList) => `
+    <label class="matrix-filter">
+      <span>${label}</span>
+      <select data-filter-type="${type}">
+        <option value="ALL">ALL</option>
+        ${optionList
+          .map((option) => `<option value="${option.value}" ${state.filters[type] === option.value ? "selected" : ""}>${option.label}</option>`)
+          .join("")}
+      </select>
+    </label>
+  `;
+
+  return `
+    <div class="matrix-filters">
+      ${state.matrixHistory.length ? `<button class="matrix-back-btn" data-matrix-back="1">← 返回</button>` : ""}
+      ${renderSelect("事业部", "bu", options.bu)}
+      ${renderSelect("区域", "region", options.region)}
+      ${renderSelect("国家", "country", options.country)}
+      ${renderSelect("产品线", "productLine", options.productLine)}
+    </div>
+  `;
 }
 
 function renderMatrix() {
-  const path = buildPath();
   return `
     <div class="matrix-wrap">
       <div class="matrix-head">
         <div>
           <div class="section-title">区域结果矩阵</div>
-          <div class="section-sub">默认展示事业部，点击蓝色入口可下钻到区域与国家，并联动右侧趋势图。</div>
+          <div class="section-sub">默认展示事业部，新增筛选后可同时查看事业部视角与区域视角，并联动右侧趋势图。</div>
         </div>
         <div class="hint">点击色块联动趋势</div>
       </div>
-      <div class="matrix-path">
-        ${path
-          .map(
-            (item, index) => `
-              <button class="path-chip ${index === path.length - 1 ? "active" : ""}" data-jump-path="${item.key}">${item.name}</button>
-              ${index === path.length - 1 ? "" : '<span class="path-sep">/</span>'}
-            `,
-          )
-          .join("")}
-      </div>
+      ${renderMatrixFilters()}
       <div class="table-wrap">
         <table>
           <thead>
@@ -700,7 +1115,7 @@ function renderMatrix() {
 }
 
 function renderTrend() {
-  const node = getNode(state.selectedNodeKey);
+  const node = getActiveTrendNode();
   return `
     <div class="trend-wrap">
       <div class="trend-head">
@@ -781,6 +1196,7 @@ function renderApp() {
               <div class="panel-title">差异拆解与费用解释联动分析</div>
             </div>
           </div>
+          ${renderAnalysisTabs()}
           ${renderWaterfall()}
           ${renderTable()}
         </section>
@@ -807,6 +1223,13 @@ function renderApp() {
 }
 
 function bindEvents() {
+  document.querySelectorAll("[data-analysis-view]").forEach((node) => {
+    node.addEventListener("click", () => {
+      state.analysisView = node.dataset.analysisView;
+      renderApp();
+    });
+  });
+
   document.querySelectorAll("[data-select-block]").forEach((node) => {
     node.addEventListener("click", () => {
       state.selectedBlockId = node.dataset.selectBlock;
@@ -816,21 +1239,36 @@ function bindEvents() {
 
   document.querySelectorAll("[data-select-node]").forEach((node) => {
     node.addEventListener("click", () => {
-      selectNode(getNode(node.dataset.selectNode));
+      state.selectedNodeKey = node.dataset.selectNode;
       renderApp();
     });
   });
 
-  document.querySelectorAll("[data-drill-node]").forEach((node) => {
+  document.querySelectorAll("[data-filter-shortcut]").forEach((node) => {
     node.addEventListener("click", () => {
-      drillNode(getNode(node.dataset.drillNode));
+      const [type, value] = node.dataset.filterShortcut.split(":");
+      setFilter(type, value);
       renderApp();
     });
   });
 
-  document.querySelectorAll("[data-jump-path]").forEach((node) => {
+  document.querySelectorAll("[data-drill-bu]").forEach((node) => {
     node.addEventListener("click", () => {
-      jumpPath({ key: node.dataset.jumpPath });
+      drillBusinessView(node.dataset.drillBu);
+      renderApp();
+    });
+  });
+
+  document.querySelectorAll("[data-matrix-back]").forEach((node) => {
+    node.addEventListener("click", () => {
+      goBackMatrixView();
+      renderApp();
+    });
+  });
+
+  document.querySelectorAll("[data-filter-type]").forEach((node) => {
+    node.addEventListener("change", () => {
+      setFilter(node.dataset.filterType, node.value);
       renderApp();
     });
   });
