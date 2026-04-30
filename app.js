@@ -547,6 +547,12 @@ const state = {
     country: "ALL",
     productLine: "ALL",
   },
+  marketCaliber: "actual",
+};
+
+const marketCaliberLabels = {
+  actual: "实发口径",
+  accrual: "含计提冲销口径",
 };
 
 function levelLabel(level) {
@@ -1240,12 +1246,13 @@ function renderMatrix() {
 
 function renderTrend() {
   const node = getActiveTrendNode();
+  const caliberLabel = marketCaliberLabels[state.marketCaliber] || marketCaliberLabels.actual;
   return `
     <div class="trend-wrap">
       <div class="trend-head">
         <div>
           <div class="section-title">投入趋势联动</div>
-          <div class="section-sub">查看所选${levelLabel(node.level)}的月度市场费用变动率与滞后收入变动率趋势。</div>
+          <div class="section-sub">查看所选${levelLabel(node.level)}在${caliberLabel}下的月度市场费用变动率与滞后收入变动率趋势。</div>
         </div>
         <div class="region-badge">${node.name}</div>
       </div>
@@ -1437,6 +1444,7 @@ function renderEyeMatrixTable() {
   const businessRows = getBusinessRows();
   const regionRows = getRegionRows();
   const businessTitle = state.drilledBuKey ? "产品线" : "事业部";
+  const caliberLabel = marketCaliberLabels[state.marketCaliber];
   const rows = [
     ...businessRows.map((node) => renderEyeMatrixRow(node, businessTitle)),
     ...(regionRows.length ? [renderEyeMatrixSectionHeader()] : []),
@@ -1445,6 +1453,7 @@ function renderEyeMatrixTable() {
 
   return `
     <div class="eye-matrix-card">
+      <div class="eye-caliber-note">当前口径：${caliberLabel}</div>
       <div class="eye-matrix-layout">
         ${renderEyeTree()}
         <div class="eye-table-shell">
@@ -1512,9 +1521,17 @@ function renderEyeOverview() {
 }
 
 function renderEyeRegionAnalysis() {
+  const isActual = state.marketCaliber === "actual";
   return `
     <section class="eye-card eye-region-card">
-      <div class="eye-section-title">市场费用投入效果分析</div>
+      <div class="eye-section-title eye-section-title-with-control">
+        <span>市场费用投入效果分析</span>
+        <div class="eye-caliber-switch" role="group" aria-label="市场费用口径切换">
+          <button class="${isActual ? "active" : ""}" data-market-caliber="actual">实发口径</button>
+          <span class="eye-switch-track"><span class="eye-switch-thumb ${isActual ? "left" : "right"}"></span></span>
+          <button class="${!isActual ? "active" : ""}" data-market-caliber="accrual">含计提冲销口径</button>
+        </div>
+      </div>
       <div class="eye-region-layout">
         <div class="eye-region-main">
           ${renderEyeMatrixTable()}
@@ -1622,6 +1639,13 @@ function bindEvents() {
   document.querySelectorAll("[data-filter-type]").forEach((node) => {
     node.addEventListener("change", () => {
       setFilter(node.dataset.filterType, node.value);
+      renderApp();
+    });
+  });
+
+  document.querySelectorAll("[data-market-caliber]").forEach((node) => {
+    node.addEventListener("click", () => {
+      state.marketCaliber = node.dataset.marketCaliber;
       renderApp();
     });
   });

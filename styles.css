@@ -280,6 +280,76 @@
   font-weight: 800;
 }
 
+.eye-section-title-with-control {
+  justify-content: flex-start;
+  gap: 18px;
+}
+
+.eye-caliber-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #bfd7f4;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #486581;
+  box-shadow: none;
+}
+
+.eye-caliber-switch button {
+  border: 0;
+  background: transparent;
+  color: #486581;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.eye-caliber-switch button.active {
+  color: #1d4ed8;
+}
+
+.eye-switch-track {
+  position: relative;
+  width: 38px;
+  height: 20px;
+  border-radius: 999px;
+  background: #dbeafe;
+  border: 1px solid #9bc7f4;
+}
+
+.eye-switch-thumb {
+  position: absolute;
+  top: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #2f6fe4;
+  transition: left 160ms ease;
+}
+
+.eye-switch-thumb.left {
+  left: 2px;
+}
+
+.eye-switch-thumb.right {
+  left: 20px;
+}
+
+.eye-caliber-note {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid #d8e4f1;
+  background: #f7fbff;
+  color: #486581;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .eye-matrix-layout {
   display: grid;
   grid-template-columns: 180px minmax(0, 1fr);
