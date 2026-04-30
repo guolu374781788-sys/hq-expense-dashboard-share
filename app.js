@@ -22,16 +22,33 @@ const waterfallBlocks = [
     ],
   },
   {
-    id: "region",
-    name: "区域费用",
+    id: "region_fixed",
+    name: "区域费用-固定",
+    subtitle: "区域基础运营投入",
+    diff: 190,
+    feeRate: "1.6%",
+    momRate: "+4%",
+    yoyRate: "+7%",
+    budgetExecDiff: "+6%",
+    totalAmount: "1,420 万元",
+    summary: "区域固定型投入随组织覆盖和基础运营扩大而增加，需要关注预算节奏。",
+    items: [
+      ["区域人员费用", "620 万元", "+72 万元", "+13.1%", "+18.4%", "固定投入", "持续跟踪", "重点区域岗位补齐带来固定成本上升。"],
+      ["办公与驻点费用", "360 万元", "+48 万元", "+15.4%", "+19.6%", "固定投入", "可接受", "成熟市场驻点与办公室租赁同步增加。"],
+      ["区域基础服务费", "440 万元", "+70 万元", "+18.9%", "+21.3%", "固定投入", "本周需解释", "区域共享服务结算节奏前置。"],
+    ],
+  },
+  {
+    id: "region_variable",
+    name: "区域费用-变动",
     subtitle: "区域经营投入增加",
-    diff: 310,
-    feeRate: "2.7%",
-    momRate: "+6%",
-    yoyRate: "+9%",
-    budgetExecDiff: "+11%",
-    totalAmount: "2,310 万元",
-    summary: "部分区域经营型费用增速快于收入改善，需要从区域效率角度重点复盘。",
+    diff: 120,
+    feeRate: "1.1%",
+    momRate: "+8%",
+    yoyRate: "+14%",
+    budgetExecDiff: "+5%",
+    totalAmount: "890 万元",
+    summary: "区域变动费用增速快于收入改善，需要从投入转化效率角度重点复盘。",
     items: [
       ["市场推广费", "190 万元", "+86 万元", "+24.3%", "+31.5%", "经营投入", "本周需解释", "新品推广与路演活动集中投放。"],
       ["渠道激励费", "145 万元", "+58 万元", "+18.7%", "+25.4%", "经营投入", "持续跟踪", "返利前置带动渠道投入增加。"],
@@ -73,6 +90,24 @@ const waterfallBlocks = [
     ],
   },
   {
+    id: "adjustment",
+    name: "调整项",
+    subtitle: "其他及考核调整",
+    diff: -160,
+    feeRate: "1.6%",
+    momRate: "-7%",
+    yoyRate: "+3%",
+    budgetExecDiff: "-8%",
+    totalAmount: "-160 万元",
+    summary: "调整项合并其他调整与考核调整，用于还原管理口径下的费用差异。",
+    items: [
+      ["费用重分类", "-35 万元", "-35 万元", "-", "-", "口径修正", "可接受", "部分费用重分类至对应费用项目。"],
+      ["跨期结算", "-25 万元", "-25 万元", "-", "-", "结算调整", "可接受", "前期暂估在本月完成冲回。"],
+      ["专项剔除", "-70 万元", "-70 万元", "-", "-", "考核调整", "可接受", "剔除非经常性专项影响。"],
+      ["管理口径调整", "-30 万元", "-30 万元", "-", "-", "考核调整", "持续跟踪", "按考核规则调整部分归属口径。"],
+    ],
+  },
+  {
     id: "other",
     name: "其他调整回冲",
     subtitle: "其他调整回冲",
@@ -100,13 +135,13 @@ const analysisViews = [
 const businessViewTableOverrides = {
   rd: {
     summary: "当前展示的是研发费用在事业部业财视角下的差异明细，用于拆解研发大类、小类和环比波动原因。",
-    columns: ["研发费用大类", "小类", "当期发生", "上期金额", "环比", "差异原因解析"],
+    columns: ["研发费用大类", "国家", "小类", "当期发生", "上期金额", "环比", "差异原因解析"],
     rows: [
-      ["技术研发", "技术研发", "860 万元", "780 万元", "+10.3%", "计提比例不变，波动原因是BOM成本+返利上升"],
-      ["产品开发", "自研", "1,240 万元", "930 万元", "+33.3%", "历史项目新增1200万，新项目一次性计提2300。"],
-      ["产品开发", "外研", "720 万元", "590 万元", "+22.0%", "单台成本不变，数量新增XX台，导致成本上升"],
-      ["产品开发", "软件产品", "460 万元", "410 万元", "+12.2%", "计提比例不变，波动原因是BOM成本+返利上升"],
-      ["其他", "其他", "180 万元", "165 万元", "+9.1%", "零星研发支持费用随项目验收节奏小幅增加。"],
+      ["技术研发", "印度", "技术研发", "860 万元", "780 万元", "+10.3%", "计提比例不变，波动原因是BOM成本+返利上升"],
+      ["产品开发", "尼日利亚", "自研", "1,240 万元", "930 万元", "+33.3%", "历史项目新增1200万，新项目一次性计提2300。"],
+      ["产品开发", "巴基斯坦", "外研", "720 万元", "590 万元", "+22.0%", "单台成本不变，数量新增XX台，导致成本上升"],
+      ["产品开发", "埃塞俄比亚", "软件产品", "460 万元", "410 万元", "+12.2%", "计提比例不变，波动原因是BOM成本+返利上升"],
+      ["其他", "加纳", "其他", "180 万元", "165 万元", "+9.1%", "零星研发支持费用随项目验收节奏小幅增加。"],
     ],
   },
   function: {
@@ -122,10 +157,103 @@ const businessViewTableOverrides = {
   },
 };
 
+const detailTableConfigs = {
+  rd: {
+    linkName: "研发费用明细表",
+    columns: ["研发一级部门", "二级科目", "较预算", "环比", "同比", "标签", "原因说明"],
+    rows: [
+      ["研发公共部门", "设计及认证费", "+1200 万元", "+18.4%", "+24.6%", "前置确认", "外包开发和测试认证费用前置确认，需说明后续是否回落。"],
+      ["技术研发", "BOM测试费", "+860 万元", "+10.3%", "+16.8%", "本周需解释", "多机型测试节奏提前，带动当月费用集中发生。"],
+      ["产品开发", "外包开发费", "+720 万元", "+22.0%", "+28.5%", "一次性事项", "重点项目外包开发验收集中在本月确认。"],
+      ["产品开发", "软件产品费", "+460 万元", "+12.2%", "+15.0%", "持续跟踪", "软件适配和版本验证费用随项目进度增加。"],
+      ["其他", "专利认证费", "+180 万元", "+9.1%", "+11.4%", "可接受", "认证节点集中发生，后续按项目节奏滚动观察。"],
+    ],
+  },
+  region_fixed: {
+    linkName: "区域费用-固定明细表",
+    columns: ["区域", "事业部", "报表项目", "较预算", "环比", "同比", "标签", "原因说明"],
+    rows: [
+      ["东非", "TECNO", "其他固定", "+1200 万元", "+22%", "+22%", "本周需解释", "区域驻点和固定服务结算集中确认。"],
+      ["西非", "INFINIX", "人工成本", "+1300 万元", "+19%", "+19%", "重点复盘", "团队扩编及薪酬补差推动固定成本上升。"],
+      ["中东", "itel", "租赁费用", "+620 万元", "+14%", "+16%", "持续跟踪", "门店和仓储租赁续约带来阶段性上浮。"],
+      ["拉美", "TECNO", "办公保障", "+480 万元", "+11%", "+13%", "可接受", "区域运营支持费用随覆盖范围扩大增加。"],
+      ["东南亚", "Philips", "共享服务", "+360 万元", "+9%", "+10%", "持续跟踪", "共享服务分摊节奏提前。"],
+    ],
+  },
+  region_variable: {
+    linkName: "区域费用-变动明细表",
+    columns: ["区域", "事业部", "报表项目", "较预算", "环比", "同比", "标签", "原因说明"],
+    rows: [
+      ["东非", "TECNO", "市场推广费", "+980 万元", "+24%", "+31%", "重点复盘", "推广投放增加但收入改善不明显，需要复盘投放效率。"],
+      ["西非", "INFINIX", "渠道激励费", "+760 万元", "+21%", "+28%", "本周需解释", "渠道返利前置导致本月变动费用抬升。"],
+      ["中东", "itel", "路演活动费", "+520 万元", "+16%", "+18%", "持续跟踪", "新品路演活动集中落地，需观察销售转化。"],
+      ["拉美", "TECNO", "差旅拓展费", "+410 万元", "+13%", "+15%", "可接受", "客户拜访和拓店动作增加。"],
+      ["东南亚", "Philips", "促销资源", "+300 万元", "+10%", "+12%", "持续跟踪", "促销资源投放节奏提前。"],
+    ],
+  },
+  hq: {
+    linkName: "事业部总部费用明细表",
+    columns: ["事业部", "项目", "较预算", "环比", "同比", "标签", "原因说明"],
+    rows: [
+      ["TECNO事业部", "人工成本", "+1400 万元", "+12%", "+18%", "本周需解释", "季度奖金计提及关键岗位补充带来费用增加。"],
+      ["TECNO事业部", "运营费用（不含人工）", "+680 万元", "+9%", "+11%", "持续跟踪", "总部运营支持项目集中发生。"],
+      ["TECNO事业部", "市场费用", "+520 万元", "+7%", "+10%", "重点复盘", "品牌活动和总部市场支持费用前置。"],
+      ["itel事业部", "人工成本", "-2000 万元", "-8%", "-12%", "预算节奏", "人员费用计提节奏低于预算。"],
+      ["Infinix事业部", "管理费用", "+360 万元", "+6%", "+8%", "可接受", "总部管理支持费用小幅增加。"],
+    ],
+  },
+  function: {
+    linkName: "职能费用明细表",
+    columns: ["职能部门", "二级科目", "较预算", "环比", "同比", "标签", "原因说明"],
+    rows: [
+      ["流程与信息中心-大数据", "系统服务费", "+200 万元", "+5%", "+8%", "本周需解释", "季度奖金计提及云资源服务费增加。"],
+      ["流程与信息中心-AI中心", "研发支持费", "+180 万元", "+7%", "+10%", "持续跟踪", "AI工具试点和模型服务费用增加。"],
+      ["财务共享中心", "咨询服务费", "+150 万元", "+6%", "+9%", "重点复盘", "专项流程优化项目顾问费用集中发生。"],
+      ["人力资源中心", "培训费", "+120 万元", "+4%", "+6%", "可接受", "季度培训计划集中落地。"],
+      ["供应链支持中心", "系统运维费", "+95 万元", "+3%", "+5%", "持续跟踪", "运维服务合同结算提前。"],
+    ],
+  },
+  adjustment: {
+    linkName: "调整项明细表",
+    columns: ["调整大类", "调整子类", "事业部", "环比", "同比", "标签", "原因说明"],
+    rows: [
+      ["直接利润调整", "工厂利润", "TECNO", "-6%", "+2%", "考核调整", "剔除工厂利润归属变化对费用口径的影响。"],
+      ["其他调整项", "玻璃代采补贴", "Infinix", "-4%", "+1%", "口径修正", "玻璃代采补贴按管理口径调整归属。"],
+      ["考核调整项", "移动互联双计", "itel", "-5%", "+3%", "考核调整", "移动互联业务双计部分按考核规则剔除。"],
+      ["其他调整项", "跨期结算", "TECNO", "-3%", "-1%", "结算调整", "前期暂估费用在本月完成冲回。"],
+      ["直接利润调整", "专项剔除", "Philips", "-2%", "+1%", "可接受", "剔除非经营性专项影响。"],
+    ],
+  },
+};
+
 const focusCards = [
-  ["01", "P1 本周解释", "重点解释部门", "研发中心", "研发费用较预算增加 420 万元，主要由外包开发和测试认证费用前置确认带动，需要说明后续是否回落。"],
-  ["02", "P1 重点复盘", "重点复盘区域", "东非", "区域经营费用增长 15%，但滞后收入下降 4%，建议专项复盘投放效率。"],
-  ["03", "P3 持续跟踪", "重点跟踪科目", "咨询服务费", "咨询服务费连续两月高增长，需核实预算外专项范围、合同周期以及后续费用节奏。"],
+  {
+    index: "01",
+    title: "事业部总部费用",
+    summary: "TECNO和itel事业部较预算波动较大",
+    lines: [
+      "TECNO事业部总部费用较预算+8%（+1400万），环比+12%，主要增加原因是季度奖金计提。",
+      "ITEL事业部费用较预算-20%（-2000万），环比-8%，主要减少原因是市场费用投入减少。",
+    ],
+  },
+  {
+    index: "02",
+    title: "职能费用",
+    summary: "流程与信息中心较预算+5%（+200万）",
+    lines: ["主要增加原因是季度奖金计提。"],
+  },
+  {
+    index: "03",
+    title: "研发费用",
+    summary: "研发公共部门-设计及认证费用较预算超出1200万",
+    lines: ["环比+1,720万元，主要由外包开发和测试认证费用前置确认带动，需要说明后续是否回落。"],
+  },
+  {
+    index: "04",
+    title: "区域费用",
+    summary: "重点复盘：西非一区市场费用投入近6个月连续增长",
+    lines: ["但是收入下降，建议专项复盘投入效率。"],
+  },
 ];
 
 const regionTree = [
@@ -707,11 +835,15 @@ function getAnalysisViewLabel() {
 function getTableConfig() {
   const block = getBlock(state.selectedBlockId);
   const businessOverride = state.analysisView === "business" ? businessViewTableOverrides[block.id] : null;
+  const detailConfig = detailTableConfigs[block.id];
+  const linkName = detailConfig?.linkName || `${block.name}明细表`;
 
   if (businessOverride) {
     return {
       blockName: block.name,
       summary: businessOverride.summary,
+      tip: `默认展示异常TOP5，更多明细请查询`,
+      linkName,
       columns: businessOverride.columns,
       rows: businessOverride.rows,
       mode: "plain",
@@ -721,9 +853,11 @@ function getTableConfig() {
   return {
     blockName: block.name,
     summary: block.summary,
-    columns: ["费用项", "实际金额", "较预算", "环比", "同比", "标签", "解释判断", "原因说明"],
-    rows: block.items,
-    mode: "default",
+    tip: `默认展示异常TOP5，更多明细请查询`,
+    linkName,
+    columns: detailConfig?.columns || ["二级科目", "实际金额", "较预算", "环比", "同比", "标签", "解释判断", "原因说明"],
+    rows: detailConfig?.rows || block.items,
+    mode: detailConfig ? "warning" : "default",
   };
 }
 
@@ -760,9 +894,9 @@ function renderWaterfall() {
           ${visibleWaterfallBlocks
             .map((block) => {
               const isActive = block.id === state.selectedBlockId;
-              const barHeight = Math.max(42, (Math.abs(block.diff) / maxValue) * 170);
+              const barHeight = Math.max(30, (Math.abs(block.diff) / maxValue) * 98);
               const isPositive = block.diff >= 0;
-              const zeroTop = 200;
+              const zeroTop = 122;
               const style = isPositive
                 ? `top:${zeroTop - barHeight}px;height:${barHeight}px;`
                 : `top:${zeroTop}px;height:${barHeight}px;`;
@@ -873,17 +1007,14 @@ function renderWaterfall() {
   const maxValue = Math.max(...visibleWaterfallBlocks.map((block) => Math.abs(block.diff)));
   return `
     <div class="linked-block">
-      <div class="linked-header">
-        <div class="section-title">${getAnalysisViewLabel()}</div>
-      </div>
       <div class="waterfall">
         <div class="waterfall-grid" style="grid-template-columns: repeat(${blockCount}, minmax(0, 1fr));">
           ${visibleWaterfallBlocks
             .map((block) => {
               const isActive = block.id === state.selectedBlockId;
-              const barHeight = Math.max(42, (Math.abs(block.diff) / maxValue) * 170);
+              const barHeight = Math.max(30, (Math.abs(block.diff) / maxValue) * 98);
               const isPositive = block.diff >= 0;
-              const zeroTop = 200;
+              const zeroTop = 122;
               const style = isPositive
                 ? `top:${zeroTop - barHeight}px;height:${barHeight}px;`
                 : `top:${zeroTop}px;height:${barHeight}px;`;
@@ -932,12 +1063,20 @@ function renderWaterfall() {
             .join("")}
         </div>
         <div class="waterfall-total">
-          <span>总部总差异汇总</span>
+          <span>实际费用与预算费用差异汇总</span>
           <strong style="font-size:18px;color:#35506b;">+840 万元</strong>
         </div>
       </div>
     </div>
   `;
+}
+
+function renderDetailTableCell(cell, index, tableConfig) {
+  const tagIndex = tableConfig.columns.indexOf("标签");
+  if (index === tagIndex && cell) {
+    return `<td><span class="small-tag">${cell}</span></td>`;
+  }
+  return `<td>${cell || ""}</td>`;
 }
 
 function renderTable() {
@@ -949,7 +1088,10 @@ function renderTable() {
       </div>
       <div class="current-summary">
         <strong>当前选中：</strong>${tableConfig.blockName}
-        <div class="subline">${tableConfig.summary}</div>
+        <div class="subline detail-tip">
+          ${tableConfig.tip}
+          <a class="detail-table-link" href="javascript:void(0)">《${tableConfig.linkName}》</a>
+        </div>
       </div>
       <div class="table-wrap">
         <table>
@@ -959,34 +1101,16 @@ function renderTable() {
             </tr>
           </thead>
           <tbody>
-            ${
-              tableConfig.mode === "default"
-                ? tableConfig.rows
-                    .map(
-                      (item) => `
-                        <tr>
-                          <td>${item[0]}</td>
-                          <td>${item[1]}</td>
-                          <td>${item[2]}</td>
-                          <td>${item[3]}</td>
-                          <td>${item[4]}</td>
-                          <td><span class="small-tag">${item[5]}</span></td>
-                          <td><span class="judge-tag">${item[6]}</span></td>
-                          <td>${item[7]}</td>
-                        </tr>
-                      `,
-                    )
-                    .join("")
-                : tableConfig.rows
-                    .map(
-                      (row) => `
-                        <tr>
-                          ${row.map((cell) => `<td>${cell || ""}</td>`).join("")}
-                        </tr>
-                      `,
-                    )
-                    .join("")
-            }
+            ${tableConfig.rows
+              .slice(0, 5)
+              .map(
+                (row) => `
+                  <tr>
+                    ${row.map((cell, index) => renderDetailTableCell(cell, index, tableConfig)).join("")}
+                  </tr>
+                `,
+              )
+              .join("")}
           </tbody>
         </table>
       </div>
@@ -1120,8 +1244,8 @@ function renderTrend() {
     <div class="trend-wrap">
       <div class="trend-head">
         <div>
-          <div class="section-title">区域趋势联动</div>
-          <div class="section-sub">查看所选${levelLabel(node.level)}的月度费用变动率与滞后收入变动率趋势。</div>
+          <div class="section-title">投入趋势联动</div>
+          <div class="section-sub">查看所选${levelLabel(node.level)}的月度市场费用变动率与滞后收入变动率趋势。</div>
         </div>
         <div class="region-badge">${node.name}</div>
       </div>
@@ -1222,7 +1346,236 @@ function renderApp() {
   bindEvents();
 }
 
+function renderStatusDotCell(node, status, index) {
+  const toneList = ["dot-green", "dot-amber", "dot-red"];
+  const active = node.status === status;
+  return `
+    <td class="eye-dot-cell">
+      ${
+        active
+          ? `<button class="eye-status-dot ${toneList[index] || "dot-gray"}" data-select-node="${node.sourceKey || node.key}"></button>`
+          : `<span class="eye-empty-value">--</span>`
+      }
+    </td>
+  `;
+}
+
+function renderEyeMatrixRow(node, groupLabel) {
+  const selected = state.selectedNodeKey === (node.sourceKey || node.key);
+  const rateMetrics = node.feeRate
+    ? { feeRate: node.feeRate, feeRateMom: node.feeRateMom, feeRateYoy: node.feeRateYoy }
+    : getMatrixRateMetrics(node);
+
+  return `
+    <tr class="${selected ? "eye-row-active" : ""}">
+      <td>${rateMetrics.feeRate}</td>
+      <td>${rateMetrics.feeRateMom}</td>
+      <td>${rateMetrics.feeRateYoy}</td>
+      ${Object.keys(statusTone).map((status, index) => renderStatusDotCell(node, status, index)).join("")}
+      <td>${node.summary}</td>
+    </tr>
+  `;
+}
+
+function renderEyeMatrixSectionHeader() {
+  return `
+    <tr class="eye-section-header-row">
+      <td>费率</td>
+      <td>费率环比</td>
+      <td>费率同比</td>
+      <td>投入有效</td>
+      <td>投入待复盘</td>
+      <td>重点异常</td>
+      <td>说明</td>
+    </tr>
+  `;
+}
+
+function renderEyeTree() {
+  const businessRows = getBusinessRows();
+  const regionRows = getRegionRows();
+  const businessTitle = state.drilledBuKey ? "产品线" : "事业部";
+
+  const businessItems = businessRows
+    .map(
+      (node) => `
+        <div class="eye-tree-item">
+          <button data-select-node="${node.sourceKey || node.key}">${node.name}</button>
+          ${node.level === "bu" ? `<button class="eye-tree-drill" data-drill-bu="${node.key}">»</button>` : ""}
+        </div>
+      `,
+    )
+    .join("");
+
+  const regionItems = regionRows
+    .map(
+      (node) => `
+        <div class="eye-tree-item">
+          <button data-select-node="${node.key}">${node.name}</button>
+          ${node.children?.length ? `<button class="eye-tree-drill" data-filter-shortcut="country:${node.children[0]?.key || node.key}">»</button>` : ""}
+        </div>
+      `,
+    )
+    .join("");
+
+  return `
+    <aside class="eye-tree">
+      ${state.matrixHistory.length ? `<button class="eye-back-chip" data-matrix-back="1">↩ 返回</button>` : ""}
+      <div class="eye-tree-group">
+        <div class="eye-tree-title">${businessTitle}</div>
+        ${businessItems || `<div class="eye-tree-empty">暂无数据</div>`}
+      </div>
+      <div class="eye-tree-group">
+        <div class="eye-tree-title">地区部</div>
+        ${regionItems || `<div class="eye-tree-empty">暂无数据</div>`}
+      </div>
+    </aside>
+  `;
+}
+
+function renderEyeMatrixTable() {
+  const businessRows = getBusinessRows();
+  const regionRows = getRegionRows();
+  const businessTitle = state.drilledBuKey ? "产品线" : "事业部";
+  const rows = [
+    ...businessRows.map((node) => renderEyeMatrixRow(node, businessTitle)),
+    ...(regionRows.length ? [renderEyeMatrixSectionHeader()] : []),
+    ...regionRows.map((node) => renderEyeMatrixRow(node, "地区部")),
+  ];
+
+  return `
+    <div class="eye-matrix-card">
+      <div class="eye-matrix-layout">
+        ${renderEyeTree()}
+        <div class="eye-table-shell">
+          <table class="eye-main-table">
+            <colgroup>
+              <col class="eye-col-rate" />
+              <col class="eye-col-rate" />
+              <col class="eye-col-rate" />
+              <col class="eye-col-status" />
+              <col class="eye-col-status" />
+              <col class="eye-col-status" />
+              <col class="eye-col-desc" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>费率</th>
+                <th>费率环比</th>
+                <th>费率同比</th>
+                <th>投入有效</th>
+                <th>投入待复盘</th>
+                <th>重点异常</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.length ? rows.join("") : `<tr><td colspan="7">当前筛选下暂无数据</td></tr>`}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderEyeOverview() {
+  return `
+    <section class="eye-card eye-overview-card">
+      <div class="eye-section-title">总体判断</div>
+      <div class="eye-overview-body">
+        <div class="judgement eye-judgement">${overview.summary}</div>
+        <div class="eye-focus-row">
+          ${focusCards
+            .map(
+              (item) => `
+                <div class="focus-card eye-focus-card">
+                  <div class="focus-top">
+                    <div class="focus-icon">${item.index}</div>
+                    <div>
+                      <div class="focus-priority">重点跟踪事项</div>
+                      <div class="focus-owner">${item.title}</div>
+                    </div>
+                  </div>
+                  <div class="focus-category">${item.summary}</div>
+                  <div class="focus-text">
+                    ${item.lines.map((line) => `<p>${line}</p>`).join("")}
+                  </div>
+                </div>
+              `,
+            )
+            .join("")}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderEyeRegionAnalysis() {
+  return `
+    <section class="eye-card eye-region-card">
+      <div class="eye-section-title">市场费用投入效果分析</div>
+      <div class="eye-region-layout">
+        <div class="eye-region-main">
+          ${renderEyeMatrixTable()}
+        </div>
+        <div class="eye-region-trend">
+          ${renderTrend()}
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderEyePeriodFilter() {
+  return `
+    <div class="eye-filterbar">
+      <label class="eye-period-field">
+        <span>期间</span>
+        <input value="202603" aria-label="开始期间" />
+      </label>
+      <span class="eye-range-separator">--</span>
+      <label class="eye-period-field">
+        <input value="202603" aria-label="结束期间" />
+      </label>
+    </div>
+  `;
+}
+
+function renderApp() {
+  const app = document.getElementById("app");
+  app.innerHTML = `
+    <div class="eye-page">
+      <header class="eye-topbar">
+        <button class="eye-back-button" data-eye-back="1">↩ 返回</button>
+        <span class="eye-diamond">◆</span>
+        <div class="eye-title">费用分析</div>
+        <div class="eye-unit">单位：万元</div>
+      </header>
+      ${renderEyePeriodFilter()}
+      <main class="eye-content">
+        ${renderEyeOverview()}
+        <section class="eye-card eye-analysis-card">
+          <div class="eye-section-title">预实差异解释明细</div>
+          ${renderAnalysisTabs()}
+          ${renderWaterfall()}
+          ${renderTable()}
+        </section>
+        ${renderEyeRegionAnalysis()}
+      </main>
+    </div>
+  `;
+
+  bindEvents();
+}
+
 function bindEvents() {
+  document.querySelectorAll("[data-eye-back]").forEach((node) => {
+    node.addEventListener("click", () => {
+      window.history.back();
+    });
+  });
+
   document.querySelectorAll("[data-analysis-view]").forEach((node) => {
     node.addEventListener("click", () => {
       state.analysisView = node.dataset.analysisView;

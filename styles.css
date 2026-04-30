@@ -16,6 +16,471 @@
   --shadow: 0 20px 48px rgba(120, 149, 184, 0.18);
 }
 
+.eye-page {
+  min-height: 100vh;
+  background: #f7fbff;
+  color: #182f49;
+}
+
+.eye-topbar {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  background: #182866;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(13, 25, 67, 0.18);
+}
+
+.eye-back-button {
+  border: 0;
+  background: transparent;
+  color: #62a0ff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.eye-diamond {
+  color: #7db6ff;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.eye-title {
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.eye-unit {
+  margin-left: 8px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.eye-filterbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  padding: 10px 18px;
+  border-bottom: 1px solid #d6e1ee;
+  background: #fff;
+}
+
+.eye-period-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.eye-period-field input {
+  width: 156px;
+  height: 36px;
+  border: 1px solid #cfd9e6;
+  background: #f1f6fc;
+  padding: 0 10px;
+  color: #111827;
+  font-size: 16px;
+  outline: none;
+}
+
+.eye-range-separator {
+  color: #6b7280;
+}
+
+.eye-content {
+  padding: 14px 18px 28px;
+}
+
+.eye-card {
+  border: 1px solid #d8e4f1;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.eye-card + .eye-card {
+  margin-top: 14px;
+}
+
+.eye-analysis-card {
+  padding: 14px;
+}
+
+.eye-analysis-card > .eye-section-title {
+  margin: -14px -14px 12px;
+}
+
+.eye-overview-body {
+  padding: 14px;
+}
+
+.eye-judgement {
+  border-radius: 4px;
+  margin-bottom: 12px;
+}
+
+.eye-focus-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.eye-focus-card {
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: none;
+  padding: 14px;
+}
+
+.eye-focus-card .focus-top {
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.eye-focus-card .focus-icon {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 8px;
+}
+
+.eye-focus-card .focus-priority {
+  margin-bottom: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.eye-focus-card .focus-owner {
+  margin-top: 0;
+  color: #0f2d4c;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.eye-focus-card .focus-category {
+  margin-bottom: 8px;
+  color: #385a7d;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.eye-focus-card .focus-text {
+  color: #486581;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.eye-focus-card .focus-text p {
+  margin: 0;
+}
+
+.eye-focus-card .focus-text p + p {
+  margin-top: 6px;
+}
+
+.eye-analysis-card .analysis-tabs {
+  margin-bottom: 10px;
+  border-radius: 2px;
+  padding: 0;
+  gap: 0;
+  border-color: #2f74d8;
+  background: #fff;
+}
+
+.eye-analysis-card .waterfall {
+  padding: 10px;
+}
+
+.eye-analysis-card .waterfall-grid,
+.eye-analysis-card .waterfall-bottom-metrics {
+  gap: 8px;
+}
+
+.eye-analysis-card .waterfall-grid {
+  min-height: 170px;
+}
+
+.eye-analysis-card .waterfall-stage {
+  min-height: 138px;
+  padding: 8px;
+}
+
+.eye-analysis-card .waterfall-bar {
+  left: 8px;
+  right: 8px;
+}
+
+.eye-analysis-card .zero-line {
+  left: 8px;
+  right: 8px;
+}
+
+.eye-analysis-card .waterfall-label {
+  min-height: 38px;
+  padding: 7px 6px;
+}
+
+.eye-analysis-card .waterfall-name {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.eye-analysis-card .waterfall-mini-card {
+  padding: 9px 10px;
+}
+
+.eye-analysis-card .waterfall-mini-row {
+  gap: 8px;
+  font-size: 12px;
+}
+
+.eye-analysis-card .waterfall-mini-row strong {
+  font-size: 13px;
+}
+
+.eye-analysis-card .analysis-tab {
+  min-width: 150px;
+  border-radius: 0;
+  padding: 9px 18px;
+}
+
+.eye-analysis-card .analysis-tab.active {
+  background: #4284ee;
+  color: #fff;
+  box-shadow: none;
+}
+
+.eye-analysis-card .linked-block,
+.eye-analysis-card .waterfall,
+.eye-analysis-card .current-summary,
+.eye-analysis-card .table-wrap {
+  border-radius: 4px;
+}
+
+.eye-analysis-card .linked-block {
+  background: #fff;
+}
+
+.eye-section-title {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid #dce6f1;
+  background: #eef5fd;
+  color: #0f2d4c;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.eye-matrix-layout {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  min-height: 420px;
+}
+
+.eye-region-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.42fr) minmax(360px, 0.58fr);
+  gap: 12px;
+  padding: 12px;
+}
+
+.eye-matrix-card,
+.eye-region-trend {
+  border: 1px solid #d8e4f1;
+  background: #fff;
+  overflow: hidden;
+}
+
+.eye-region-trend .trend-wrap {
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+}
+
+.eye-region-trend .trend-head {
+  background: #eef5fd;
+}
+
+.eye-tree {
+  border-right: 1px solid #d8e4f1;
+  background: #f1f7fd;
+  overflow: auto;
+}
+
+.eye-back-chip {
+  width: 100%;
+  height: 38px;
+  border: 0;
+  border-bottom: 1px solid #d8e4f1;
+  background: #e6f0fb;
+  color: #2f6fe4;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.eye-tree-group {
+  border-bottom: 1px solid #d8e4f1;
+}
+
+.eye-tree-title {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: #e8f0f8;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.eye-tree-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 6px 8px;
+  background: #fff;
+}
+
+.eye-tree-item button {
+  border: 0;
+  background: transparent;
+  color: #3b82f6;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.eye-tree-drill {
+  margin-left: 2px;
+  font-weight: 800;
+}
+
+.eye-tree-empty {
+  padding: 14px;
+  color: #7b8794;
+  text-align: center;
+}
+
+.eye-table-shell {
+  overflow: auto;
+  background: #fff;
+}
+
+.eye-main-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #fff;
+}
+
+.eye-col-rate {
+  width: 92px;
+}
+
+.eye-col-status {
+  width: 104px;
+}
+
+.eye-col-desc {
+  width: 420px;
+}
+
+.eye-main-table thead {
+  background: #eef5fd;
+}
+
+.eye-main-table th,
+.eye-main-table td {
+  border: 1px solid #d8e4f1;
+  height: 52px;
+  padding: 8px 10px;
+  text-align: center;
+  color: #111827;
+  font-size: 14px;
+  vertical-align: middle;
+}
+
+.eye-main-table th {
+  font-weight: 700;
+}
+
+.eye-main-table tbody tr:nth-child(even) td {
+  background: #f6fbff;
+}
+
+.eye-main-table tbody tr.eye-row-active td {
+  background: #edf5ff;
+}
+
+.eye-main-table tbody tr.eye-section-header-row td {
+  background: #eef5fd;
+  color: #0f2d4c;
+  font-weight: 800;
+}
+
+.eye-table-link {
+  border: 0;
+  background: transparent;
+  color: #2f6fe4;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.eye-dot-cell {
+  width: 86px;
+}
+
+.eye-status-dot {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.8);
+}
+
+.dot-green {
+  background: #22c55e;
+}
+
+.dot-amber {
+  background: #f59e0b;
+}
+
+.dot-red {
+  background: #ff4d4f;
+}
+
+.dot-gray {
+  background: #94a3b8;
+}
+
+.eye-empty-value {
+  color: #111827;
+}
+
+.eye-main-table td:last-child {
+  text-align: left;
+  color: #4b5563;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -99,15 +564,15 @@ body {
   border: 1px solid var(--line);
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.56);
-  padding: 18px;
+  padding: 14px;
 }
 
 .linked-block + .linked-block {
-  margin-top: 14px;
+  margin-top: 10px;
 }
 
 .linked-header {
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .linked-divider {
@@ -204,14 +669,14 @@ body {
 .waterfall {
   border: 1px solid var(--line);
   border-radius: 24px;
-  padding: 18px;
+  padding: 14px;
   background: rgba(255, 255, 255, 0.72);
 }
 
 .waterfall-top-metrics {
   display: grid;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 10px;
+  margin-top: 8px;
   padding: 0;
   border-radius: 20px;
   background: transparent;
@@ -224,8 +689,8 @@ body {
 
 .waterfall-mini-card {
   height: 100%;
-  border-radius: 18px;
-  padding: 14px 18px;
+  border-radius: 16px;
+  padding: 10px 14px;
   border: 1px solid rgba(59, 130, 246, 0.14);
   background: rgba(255, 255, 255, 0.72);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3);
@@ -243,20 +708,20 @@ body {
   gap: 16px;
   align-items: center;
   color: #486581;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .waterfall-mini-row + .waterfall-mini-row {
-  margin-top: 10px;
+  margin-top: 6px;
 }
 
 .waterfall-mini-row strong {
   color: #1d4ed8;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .waterfall-bottom-metrics {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .waterfall-amount-grid {
@@ -291,23 +756,23 @@ body {
 
 .waterfall-grid {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   align-items: stretch;
-  min-height: 320px;
+  min-height: 198px;
 }
 
 .waterfall-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   cursor: pointer;
 }
 
 .waterfall-stage {
   position: relative;
   flex: 1;
-  min-height: 250px;
-  border-radius: 22px;
+  min-height: 154px;
+  border-radius: 18px;
   border: 1px solid rgba(56, 189, 248, 0.08);
   background: rgba(233, 241, 251, 0.8);
   padding: 10px;
@@ -353,11 +818,11 @@ body {
 }
 
 .waterfall-label {
-  min-height: 58px;
+  min-height: 40px;
   border: 1px solid rgba(100, 116, 139, 0.35);
   background: rgba(255, 255, 255, 0.74);
-  border-radius: 18px;
-  padding: 10px 12px;
+  border-radius: 14px;
+  padding: 8px 12px;
   text-align: center;
   color: #486581;
   font-size: 13px;
@@ -369,7 +834,7 @@ body {
 
 .waterfall-name {
   color: #102a43;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 800;
   margin-bottom: 0;
 }
@@ -386,15 +851,26 @@ body {
 }
 
 .waterfall-total {
-  margin-top: 16px;
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
   border: 1px dashed var(--line);
   border-radius: 18px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   color: #486581;
+}
+
+.detail-tip {
+  margin-top: 8px;
+}
+
+.detail-table-link {
+  color: #1d4ed8;
+  font-weight: 800;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .explanation-tip,
